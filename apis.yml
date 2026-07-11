@@ -1,0 +1,84 @@
+name: Kudosity
+description: >-
+  Business messaging platform for SMS, MMS, RCS and WhatsApp (formerly Burst SMS / TransmitSMS). Exposes two public REST
+  APIs, OpenAPI contracts, a hosted MCP server, llms.txt files, and published agent plugins.
+url: https://kudosity.apievangelist.com/apis.yml
+created: '2026-07-11'
+modified: '2026-07-11'
+specificationVersion: '0.21'
+tags:
+  - Messaging
+  - SMS
+  - MMS
+  - RCS
+  - WhatsApp
+  - Communications
+  - CPaaS
+  - Webhooks
+  - MCP
+  - Agent-native
+apis:
+  - name: Transmit Message API
+    description: Current v2 REST API covering SMS, MMS, RCS and Webhooks. Authenticated via x-api-key header.
+    humanURL: https://developers.kudosity.com/reference
+    baseURL: https://api.transmitmessage.com
+    tags:
+      - Messaging
+      - SMS
+      - MMS
+      - RCS
+      - WhatsApp
+      - Communications
+      - CPaaS
+      - Webhooks
+      - MCP
+      - Agent-native
+    properties:
+      - type: OpenAPI
+        url: https://developers.kudosity.com/openapi/public-openapi.yaml
+      - type: Documentation
+        url: https://developers.kudosity.com/docs
+      - type: MCP
+        url: https://developers.kudosity.com/mcp
+      - type: LLMSTxt
+        url: https://developers.kudosity.com/llms.txt
+      - type: LLMSTxt
+        url: https://kudosity.com/llms.txt
+      - type: AgentSkills
+        url: https://developers.kudosity.com/docs/claude-plugin
+      - type: AgentSkills
+        url: https://developers.kudosity.com/docs/copilot-extension
+      - type: AgentSkills
+        url: https://developers.kudosity.com/docs/gemini-extension
+      - type: AgentSkills
+        url: https://developers.kudosity.com/docs/openclaw-plugin
+      - type: AgentSkills
+        url: https://developers.kudosity.com/docs/sms-action
+  - name: Transmit SMS API
+    description: Legacy/classic REST API for SMS. Authenticated via HTTP Basic Authentication (API key + secret).
+    humanURL: https://developers.kudosity.com/reference
+    baseURL: https://api.transmitsms.com
+    tags:
+      - Messaging
+      - SMS
+      - MMS
+      - RCS
+      - WhatsApp
+      - Communications
+      - CPaaS
+      - Webhooks
+      - MCP
+      - Agent-native
+    properties:
+      - type: OpenAPI
+        url: https://developers.kudosity.com/openapi/api_documentation.yml
+      - type: Documentation
+        url: https://developers.kudosity.com/docs
+maintainers:
+  - FN: Kudosity
+    url: https://kudosity.com
+generated:
+  by: apis.io/add
+  model: claude-opus-4-8
+  confidence: 98
+  at: '2026-07-11T18:18:34.530Z'
