@@ -1,0 +1,13 @@
+generated: '2026-07-27'
+method: searched
+source: https://kudosity.com/trial + https://developers.kudosity.com/docs/getting-started
+sandbox_environment: false
+test_live_separation: false
+magic_test_values: []
+trial:
+  url: https://kudosity.com/trial
+  length_days: 14
+note: 'Kudosity has no sandbox or test-mode: there is no test/live key prefix, no magic test numbers,
+  and no simulator. Every send from a trial account is a real message to a real handset. This is the single
+  largest agent-safety gap in the profile — an agent holding a key and the MCP execute-request tool has
+  no non-billable way to rehearse a send.'

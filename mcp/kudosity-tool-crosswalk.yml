@@ -1,0 +1,67 @@
+generated: '2026-07-27'
+method: derived
+source: mcp/kudosity-mcp.yml (live tools/list) + both OpenAPI documents
+surfaces:
+  openapi:
+  - openapi/kudosity-transmit-message-openapi-original.yml
+  - openapi/kudosity-transmit-sms-openapi-original.yml
+  mcp:
+    url: https://developers.kudosity.com/mcp
+    tools_list: anonymous (not gated)
+  graphql: null
+binding_model: meta-tool. Kudosity does not project operations one-to-one into MCP tools; it projects
+  the SPECS. Every REST operation is reachable, but only through the generic execute-request tool after
+  discovery — so no tool inherits a per-operation inputSchema.
+crosswalk:
+- tool: list-specs
+  category: discovery
+  rest: []
+  binding: catalog
+  confidence: high
+  note: Enumerates the two OpenAPI documents; no backing API operation.
+- tool: list-endpoints
+  category: discovery
+  rest: []
+  binding: spec
+  confidence: high
+  note: Reads paths[] out of the named spec.
+- tool: search-endpoints
+  category: discovery
+  rest: []
+  binding: spec
+  confidence: high
+  note: Full-text search across paths, operations and parameters.
+- tool: get-endpoint
+  category: schema
+  rest: []
+  binding: spec
+  confidence: high
+  note: Returns one operation object incl. securitySchemes and servers.
+- tool: execute-request
+  category: execution
+  rest:
+  - '*'
+  binding: generic-har
+  confidence: high
+  note: The single tool that reaches all 57 live operations across both APIs, via a HAR request object.
+    Marked destructiveHint:true and openWorldHint:true — an agent calling this can send real, billable
+    messages.
+- tool: route-kudosity-operations
+  category: advisory
+  rest: []
+  binding: none
+  confidence: high
+  note: Decides v1 vs v2 per operation given the caller auth. Encodes reference/about-our-apis as a tool.
+mcp_only:
+- tool: route-kudosity-operations
+  reason: API-version routing advice; there is no REST operation for it.
+rest_only:
+- capability: every operation individually
+  note: All 22 v2 and 35 v1 operations lack a dedicated MCP tool. They are reachable only through execute-request,
+    so an agent gets no typed contract per capability.
+coverage:
+  tools_named: 6
+  tools_bound_to_operations: 0
+  mcp_only: 1
+  rest_operations_total: 57
+  rest_operations_with_a_dedicated_tool: 0

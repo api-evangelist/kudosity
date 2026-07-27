@@ -1,0 +1,33 @@
+generated: '2026-07-27'
+method: searched
+source: https://kudosity.com/pricing
+currency: AUD
+tax_note: all rates quoted ex GST
+model: per-message, volume-tiered; no monthly platform fee published
+plans:
+- name: Pay as you go
+  price: 0.079
+  unit: per SMS
+  best_for: testing, low-volume sending, or unpredictable usage
+- name: Growth
+  price: 0.059
+  unit: per SMS
+  best_for: growing businesses using SMS across marketing, notifications and reminders
+- name: Scale
+  price: 0.049
+  unit: per SMS
+  best_for: large businesses with consistent, high-volume messaging
+- name: Enterprise
+  price: null
+  unit: custom quote
+  best_for: enterprises requiring tailored pricing, integrations and SLA-backed messaging
+trial:
+  available: true
+  url: https://kudosity.com/trial
+  length_days: 14
+  source: provider (Rachel Harvey, Kudosity) 2026-07-10
+notes:
+- Published rates cover SMS only. MMS, WhatsApp and RCS pricing is not published on the pricing page —
+  it is quote-based.
+- No included message volume is stated for any tier.
+- 'Rates are indicative: "actual rates depend on send frequency, volume, use case, and routing requirements."'

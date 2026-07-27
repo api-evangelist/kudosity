@@ -1,0 +1,63 @@
+generated: '2026-07-27'
+method: derived
+source: both OpenAPI documents + docs + https://trust.kudosity.com/
+standards:
+- id: openapi-3.0
+  conforms: true
+  evidence: v2 is OpenAPI 3.0.3, v1 is OpenAPI 3.0.0
+- id: rfc9457-problem-details
+  conforms: true
+  evidence: v2 declares ProblemDetails and seven typed problem schemas; published Error Registry uses
+    type/title/status/detail
+  scope: v2 only — v1 uses a proprietary error-constant envelope
+- id: rfc7617-http-basic
+  conforms: true
+  evidence: v1 securityScheme http/basic
+- id: api-key-header
+  conforms: true
+  evidence: v2 securityScheme apiKey in header x-api-key
+- id: oauth2
+  conforms: false
+  evidence: no oauth2 scheme in either spec
+- id: openid-connect
+  conforms: false
+- id: iso8601-rfc3339-timestamps
+  conforms: true
+  evidence: all timestamps ISO 8601 UTC; v2 schemas use RFC 3339 date-time
+- id: model-context-protocol
+  conforms: true
+  evidence: hosted MCP server, protocol version 2025-06-18, tools capability
+- id: llmstxt
+  conforms: true
+  evidence: llms.txt on both developers.kudosity.com and kudosity.com, with per-section fan-out
+- id: asyncapi
+  conforms: false
+  evidence: webhooks documented but no AsyncAPI document published
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt returns 404
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: no deprecation policy or Sunset header
+- id: iso-27001
+  conforms: true
+  certification: ISO/IEC 27001:2022
+  evidence: https://trust.kudosity.com/
+- id: soc2-type2
+  conforms: true
+  evidence: https://trust.kudosity.com/
+- id: csa-star-caiq-v4
+  conforms: true
+  level: STAR Level 1
+  evidence: https://trust.kudosity.com/
+- id: gdpr
+  conforms: true
+  evidence: Data Processing Agreement + sub-processor list at kudosity.com/legal
+- id: au-spam-act-2003
+  conforms: true
+  evidence: Anti-Spam Compliance Policy at kudosity.com/legal/compliance-policy; STOP-reply opt-out is
+    a first-class OPT_OUT webhook event
+certifications:
+- ISO/IEC 27001:2022
+- SOC 2 Type 2
+- CSA STAR Level 1 (CAIQ v4)

@@ -1,10 +1,32 @@
+accessModel:
+  pricing: public
+  onboarding: self-service
+  trial: true
+  try_now: true
+  public: true
+  label: Public, self-service with a free trial
+  confidence: high
+  source:
+    - https://kudosity.com/pricing
+    - https://kudosity.com/trial
+    - https://developers.kudosity.com/docs/getting-started
+  generated: '2026-07-27'
+  method: searched
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/kudosity.png
 name: Kudosity
 description: >-
-  Business messaging platform for SMS, MMS, RCS and WhatsApp (formerly Burst SMS / TransmitSMS). Exposes two public REST
-  APIs, OpenAPI contracts, a hosted MCP server, llms.txt files, and published agent plugins.
+  Kudosity is an Australian business messaging platform — formerly Burst SMS / TransmitSMS — running two live public REST
+  APIs on two hosts. The Transmit Message API (v2) covers SMS, MMS, WhatsApp and RCS with API-managed webhooks and sender
+  registration; the Transmit SMS API (v1) carries contacts, lists, dedicated virtual numbers, keywords, email-to-SMS and
+  all reporting. Both share one account, one set of senders and one bill. Both ship public OpenAPI documents. What makes
+  Kudosity unusual for its size is the agent-native surface layered on top: a hosted MCP server whose tools/list answers
+  without credentials, llms.txt on both the docs and marketing hosts with per-section fan-out, and five published agent
+  integrations — a Claude Code plugin, a GitHub Copilot extension, a Gemini CLI extension, an OpenClaw channel plugin and
+  an SMS GitHub Action — all open source in a public GitHub organization. RCS is in beta; there is no voice product, no
+  sandbox and no idempotency key.
 url: https://kudosity.apievangelist.com/apis.yml
 created: '2026-07-11'
-modified: '2026-07-11'
+modified: '2026-07-27'
 specificationVersion: '0.21'
 tags:
   - Messaging
@@ -17,10 +39,17 @@ tags:
   - Webhooks
   - MCP
   - Agent-native
+  - Australia
+  - Notifications
+  - Two-Way Messaging
+  - Contact Management
 apis:
   - name: Transmit Message API
-    description: Current v2 REST API covering SMS, MMS, RCS and Webhooks. Authenticated via x-api-key header.
-    humanURL: https://developers.kudosity.com/reference
+    description: >-
+      Current v2 REST API covering SMS, MMS, WhatsApp and RCS, plus API-managed webhooks with event-type filtering and
+      sender registration with phone verification. 22 operations across 15 paths, OpenAPI 3.0.3 with 127 component
+      schemas and RFC 9457 problem details. Authenticated with an API key in the x-api-key header.
+    humanURL: https://developers.kudosity.com/reference/transmit-message-api
     baseURL: https://api.transmitmessage.com
     tags:
       - Messaging
@@ -31,54 +60,166 @@ apis:
       - Communications
       - CPaaS
       - Webhooks
-      - MCP
       - Agent-native
     properties:
+      - type: OpenAPI
+        url: openapi/kudosity-transmit-message-openapi-original.yml
       - type: OpenAPI
         url: https://developers.kudosity.com/openapi/public-openapi.yaml
       - type: Documentation
         url: https://developers.kudosity.com/docs
-      - type: MCP
-        url: https://developers.kudosity.com/mcp
-      - type: LLMSTxt
-        url: https://developers.kudosity.com/llms.txt
-      - type: LLMSTxt
-        url: https://kudosity.com/llms.txt
-      - type: AgentSkills
-        url: https://developers.kudosity.com/docs/claude-plugin
-      - type: AgentSkills
-        url: https://developers.kudosity.com/docs/copilot-extension
-      - type: AgentSkills
-        url: https://developers.kudosity.com/docs/gemini-extension
-      - type: AgentSkills
-        url: https://developers.kudosity.com/docs/openclaw-plugin
-      - type: AgentSkills
-        url: https://developers.kudosity.com/docs/sms-action
+      - type: APIReference
+        url: https://developers.kudosity.com/reference/transmit-message-api
+      - type: Authentication
+        url: https://developers.kudosity.com/reference/authentication
+      - type: Webhooks
+        url: asyncapi/kudosity-webhooks.yml
+      - type: ErrorCatalog
+        url: errors/kudosity-problem-types.yml
+      - type: DataModel
+        url: data-model/kudosity-data-model.yml
   - name: Transmit SMS API
-    description: Legacy/classic REST API for SMS. Authenticated via HTTP Basic Authentication (API key + secret).
-    humanURL: https://developers.kudosity.com/reference
+    description: >-
+      Classic v1 REST API — fully supported, not deprecated. SMS sending with single-request multi-recipient batches and
+      custom tracked-link domains, plus everything v2 does not carry: contacts, lists and custom fields, bulk CSV import,
+      dedicated virtual numbers, inbound keywords, email-to-SMS and all campaign reporting. 35 operations, OpenAPI 3.0.0,
+      JSON or XML responses. Authenticated with HTTP Basic (API key + account secret).
+    humanURL: https://developers.kudosity.com/reference/transmit-sms-api
     baseURL: https://api.transmitsms.com
     tags:
       - Messaging
       - SMS
-      - MMS
-      - RCS
-      - WhatsApp
       - Communications
       - CPaaS
-      - Webhooks
-      - MCP
-      - Agent-native
+      - Contact Management
+      - Reporting
+      - Two-Way Messaging
     properties:
+      - type: OpenAPI
+        url: openapi/kudosity-transmit-sms-openapi-original.yml
       - type: OpenAPI
         url: https://developers.kudosity.com/openapi/api_documentation.yml
       - type: Documentation
         url: https://developers.kudosity.com/docs
+      - type: APIReference
+        url: https://developers.kudosity.com/reference/transmit-sms-api
+      - type: Authentication
+        url: https://developers.kudosity.com/reference/authentication
+      - type: ErrorCodes
+        url: errors/kudosity-error-codes.yml
 maintainers:
   - FN: Kudosity
     url: https://kudosity.com
+    email: rachel.harvey@kudosity.com
 generated:
   by: apis.io/add
   model: claude-opus-4-8
   confidence: 98
   at: '2026-07-11T18:18:34.530Z'
+enriched:
+  at: '2026-07-27'
+  method: searched
+  sources_supplied_by_provider: true
+  supplied_by: Rachel Harvey, Kudosity (2026-07-27)
+  canonical_sources:
+    - https://developers.kudosity.com
+    - https://developers.kudosity.com/llms.txt
+    - https://developers.kudosity.com/docs/mcp
+    - https://kudosity.com
+common:
+  - type: DeveloperPortal
+    url: https://developers.kudosity.com
+  - type: Documentation
+    url: https://developers.kudosity.com/docs
+  - type: APIReference
+    url: https://developers.kudosity.com/reference
+  - type: GettingStarted
+    url: https://developers.kudosity.com/docs/getting-started
+  - type: Support
+    url: https://help.kudosity.com/s/
+  - type: Blog
+    url: https://kudosity.com/resources/articles
+  - type: GitHubOrganization
+    url: https://github.com/kudosity
+  - type: Pricing
+    url: https://kudosity.com/pricing
+  - type: SignUp
+    url: https://kudosity.com/trial
+  - type: Login
+    url: https://app.transmitsms.com
+  - type: TermsOfService
+    url: https://kudosity.com/legal/terms-and-conditions
+  - type: PrivacyPolicy
+    url: https://kudosity.com/legal/privacy-policy
+  - type: SLA
+    url: https://kudosity.com/legal/service-level-agreement
+  - type: Compliance
+    url: https://trust.kudosity.com/
+  - type: TrustCenter
+    url: security/kudosity-trust-center.yml
+  - type: Security
+    url: https://trust.kudosity.com/
+  - type: VulnerabilityDisclosure
+    url: security/kudosity-vulnerability-disclosure.yml
+  - type: DomainSecurity
+    url: security/kudosity-domain-security.yml
+  - type: Authentication
+    url: authentication/kudosity-authentication.yml
+  - type: AgenticAccess
+    url: agentic-access/kudosity-agentic-access.yml
+  - type: MCPServer
+    url: mcp/kudosity-mcp.yml
+  - type: MCP
+    url: https://developers.kudosity.com/mcp
+  - type: ToolCrosswalk
+    url: mcp/kudosity-tool-crosswalk.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: LLMsTxt
+    url: llms/kudosity-llms.txt
+  - type: LLMsTxt
+    url: llms/kudosity-website-llms.txt
+  - type: Webhooks
+    url: asyncapi/kudosity-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/kudosity-problem-types.yml
+  - type: ErrorCodes
+    url: errors/kudosity-error-codes.yml
+  - type: RateLimits
+    url: rate-limits/kudosity-rate-limits.yml
+  - type: Conventions
+    url: conventions/kudosity-conventions.yml
+  - type: Examples
+    url: examples/kudosity-examples.yml
+  - type: DataModel
+    url: data-model/kudosity-data-model.yml
+  - type: Conformance
+    url: conformance/kudosity-conformance.yml
+  - type: Lifecycle
+    url: lifecycle/kudosity-lifecycle.yml
+  - type: ChangeLog
+    url: https://developers.kudosity.com/changelog
+  - type: ChangeLog
+    url: changelog/kudosity-changelog.yml
+  - type: Plans
+    url: plans/kudosity-plans.yml
+  - type: Packages
+    url: packages/kudosity-packages.yml
+  - type: Postman
+    url: https://developers.kudosity.com/reference/postman
+  - type: Integrations
+    url: https://kudosity.com/integrations
+  - type: AgentSkills
+    url: https://developers.kudosity.com/docs/claude-plugin
+  - type: AgentSkills
+    url: https://developers.kudosity.com/docs/copilot-extension
+  - type: AgentSkills
+    url: https://developers.kudosity.com/docs/gemini-extension
+  - type: AgentSkills
+    url: https://developers.kudosity.com/docs/openclaw-plugin
+  - type: AgentSkills
+    url: https://developers.kudosity.com/docs/sms-action
+  - type: SourceCode
+    url: https://github.com/kudosity/ai-agent-examples
+  - type: SourceCode
+    url: https://github.com/kudosity/mcp

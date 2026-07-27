@@ -1,0 +1,54 @@
+generated: '2026-07-27'
+method: searched
+source: https://developers.kudosity.com/reference/errors
+format: rfc9457
+applies_to: Transmit Message API (v2)
+envelope:
+  media_type: application/problem+json
+  fields:
+  - type
+  - title
+  - status
+  - detail
+  extension_fields:
+  - issues[] (code, field, message) on validation problems
+problems:
+- name: NotFoundProblem
+  status: 404
+  title: Not Found
+  type: https://developers.kudosity.com/reference/errors#not-found
+  detail: The requested resource was not found
+- name: UnauthorizedProblem
+  status: 401
+  title: API Authentication Failed
+  type: https://developers.kudosity.com/reference/errors#unauthorized
+  detail: Missing or invalid API key in Authorization header. Verify your API key is correct and has the
+    required permissions
+- name: InputValidationProblem
+  status: 422
+  title: Invalid Input Parameters
+  type: https://developers.kudosity.com/reference/errors#input-validation
+  detail: The request contained invalid, or malformed parameters.
+  fields:
+  - issues
+- name: InternalServerErrorProblem
+  status: 500
+  title: Server Error
+  type: https://developers.kudosity.com/reference/errors#server-error
+  detail: The server encountered an unexpected error
+- name: ForbiddenProblem
+  status: 403
+  source: openapi/kudosity-transmit-message-openapi-original.yml
+  note: Declared in the OpenAPI components; not yet written up in the public Error Registry.
+- name: ConflictProblem
+  status: 409
+  source: openapi/kudosity-transmit-message-openapi-original.yml
+  note: Declared in the OpenAPI components; not yet written up in the public Error Registry.
+- name: TooManyRequestsProblem
+  status: 429
+  source: openapi/kudosity-transmit-message-openapi-original.yml
+  note: Declared in the OpenAPI components; not yet written up in the public Error Registry.
+gaps:
+- The published Error Registry documents 4 of the 10 problem schemas the v2 OpenAPI declares.
+- One example block on the registry page still points at the legacy /errors#input-validation type URI
+  rather than /reference/errors#input-validation.

@@ -1,0 +1,751 @@
+generated: '2026-07-27'
+method: derived
+source: openapi/kudosity-transmit-message-openapi-original.yml, openapi/kudosity-transmit-sms-openapi-original.yml
+count: 48
+note: 'In-spec examples are sparse: 48 operation-level example blocks across 57 operations. Schema-level
+  examples are far more common in v2 (most properties carry one), which is what makes the generated code
+  snippets usable.'
+curl_examples:
+- title: Send an SMS (v2)
+  source: https://developers.kudosity.com/reference/authentication
+  command: 'curl --request POST --url https://api.transmitmessage.com/v2/sms --header ''Content-Type:
+    application/json'' --header ''x-api-key: YOUR_API_KEY'' --data ''{"message":"Hello, world!","sender":"6140000000","recipient":"6140000000"}'''
+- title: Send an SMS (v1)
+  source: https://developers.kudosity.com/reference/authentication
+  command: 'curl --location ''https://api.transmitsms.com/send-sms.json'' --header ''Authorization: Basic
+    BASE64_KEY_COLON_SECRET'' --form ''message="Hello, World"'' --form ''to="6140000000"'' --form ''from="6140000000"'''
+spec_examples:
+- api: v2
+  method: POST
+  path: /v2/mms
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Send MMS
+  example:
+    id: 6fdae71c-dad7-4c36-9734-a69693ec2318
+    recipient: '61435795809'
+    sender: '61481074185'
+    country: AU
+    subject: USS Enterprise
+    message: Check out this amazing specimen.
+    message_ref: ncc1701d
+    content_urls:
+    - http://res.cloudinary.com/burstsms/image/upload/v1590111670/enterprise-d_ghf9t8.jpg
+    status: pending
+    track_links: true
+    created_at: '2022-03-29T04:42:01.631708761Z'
+    updated_at: '2022-03-29T04:42:01.631708761Z'
+- api: v2
+  method: GET
+  path: /v2/mms/{id}
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Get MMS
+  example:
+    id: 6fdae71c-dad7-4c36-9734-a69693ec2318
+    recipient: '61435795809'
+    sender: '61481074185'
+    country: AU
+    subject: USS Enterprise
+    message: Check out this amazing specimen.
+    message_ref: ncc1701d
+    content_urls:
+    - http://res.cloudinary.com/burstsms/image/upload/v1590111670/enterprise-d_ghf9t8.jpg
+    status: sent
+    track_links: true
+    created_at: '2022-03-29T04:42:01.631708Z'
+    updated_at: '2022-03-29T04:42:01.776094Z'
+- api: v2
+  method: POST
+  path: /v2/senders/registrations
+  kind: request
+  media_type: application/json
+  summary: Create a sender registration
+  example:
+    sender: '61412312312'
+    country: AU
+    type: PERSONAL_MOBILE_NUMBER
+    child_account_id: '1234'
+- api: v2
+  method: POST
+  path: /v2/senders/registrations/{registration_id}/verifications
+  kind: request
+  media_type: application/json
+  summary: Request a verification code
+  example:
+    method: SMS
+    originating_sender: '61400000000'
+- api: v2
+  method: POST
+  path: /v2/senders/registrations/{registration_id}/verifications
+  kind: response
+  status: '409'
+  media_type: application/json
+  summary: Request a verification code
+  example:
+    error:
+      detail: a verification code has already been sent for this registration; wait 30 minutes and create
+        a new sender registration to request a new code
+      status: 409
+      title: Conflict
+      type: https://developers.kudosity.com/reference/errors#conflict
+- api: v2
+  method: POST
+  path: /v2/senders/registrations/{registration_id}/verifications/confirmation
+  kind: request
+  media_type: application/json
+  summary: Confirm a verification code
+  example:
+    code: '123456'
+- api: v1
+  method: POST
+  path: /send-sms.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Send SMS
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <message_id>339683245</message_id>\n    <send_at>2020-06-18\
+    \ 02:42:06</send_at>\n    <recipients>1</recipients>\n    <cost>0.087</cost>\n    <sms>1</sms>\n \
+    \   <list>\n        <id>4070887</id>\n        <name>My Test List</name>\n    </list>\n    <delivery_stats>\n\
+    \        <delivered>0</delivered>\n        <pending>0</pending>\n        <bounced>0</bounced>\n  \
+    \      <responses>0</responses>\n        <optouts>0</optouts>\n    </delivery_stats>\n    <error>\n\
+    \        <code>SUCCESS</code>\n        <description>OK</description>\n        <header>200</header>\n\
+    \    </error>\n</response>"
+- api: v1
+  method: POST
+  path: /cancel-sms.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Cancel SMS
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <success>OK</success>\n    <error>\n        <code>SUCCESS</code>\n\
+    \        <description>OK</description>\n    </error>\n</response>"
+- api: v1
+  method: POST
+  path: /cancel-sms.json
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Cancel SMS
+  example:
+    success: OK
+    error:
+      code: SUCCESS
+      description: OK
+- api: v1
+  method: POST
+  path: /format-number.json
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Format Number
+  example:
+    number:
+      countrycode: 65
+      nationalnumber: 96112234
+      national_leading_zeroes: 96112234
+      rawinput: null
+      international: 6596112234
+      type: 1
+      isValid: true
+    error:
+      code: SUCCESS
+      description: OK
+- api: v1
+  method: POST
+  path: /get-sms-responses.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Get Responses by MessageID, Keyword or Mobile
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <page>\n        <count>1</count>\n        <number>1</number>\n\
+    \    </page>\n    <total>1</total>\n    <responses>\n        <item>\n            <id>36573149</id>\n\
+    \            <message_id>339814842</message_id>\n            <list_id>4070947</list_id>\n        \
+    \    <received_at>2020-06-23 10:03:44</received_at>\n            <first_name/>\n            <last_name/>\n\
+    \            <msisdn>61478038915</msisdn>\n            <response>Hi There, this is a sample response</response>\n\
+    \            <longcode>61429720235</longcode>\n            <original_message>This is my message, click\
+    \ on my link TapTh.is/hO2HL7b0</original_message>\n        </item>\n    </responses>\n    <error>\n\
+    \        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+- api: v1
+  method: POST
+  path: /get-sms-responses.json
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Get Responses by MessageID, Keyword or Mobile
+  example:
+    page:
+      count: 1
+      number: 1
+    total: 1
+    responses:
+    - id: 36573149
+      message_id: 339814842
+      list_id: 4070947
+      received_at: '2020-06-23 10:03:44'
+      first_name: null
+      last_name: null
+      msisdn: 61478038915
+      response: Hi There, this is a sample response
+      longcode: 61429720235
+      original_message: This is my message, click on my link TapTh.is/hO2HL7b0
+    error:
+      code: SUCCESS
+      description: OK
+- api: v1
+  method: GET
+  path: /get-user-sms-responses.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Get Responses by  Time Frame
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <page>\n        <count>1</count>\n        <number>1</number>\n\
+    \    </page>\n    <total>4</total>\n    <responses>\n        <item>\n            <id>36573149</id>\n\
+    \            <message_id>339814842</message_id>\n            <list_id>4070947</list_id>\n        \
+    \    <received_at>2020-06-23 10:03:44</received_at>\n            <first_name/>\n            <last_name/>\n\
+    \            <msisdn>61478038915</msisdn>\n            <response>Hi There, this is a sample response</response>\n\
+    \            <longcode>61429720235</longcode>\n        </item>\n        <item>\n            <id>36573132</id>\n\
+    \            <message_id>340267059</message_id>\n            <list_id>4070887</list_id>\n        \
+    \    <received_at>2020-06-23 10:03:05</received_at>\n            <first_name>Ella</first_name>\n \
+    \           <last_name>B</last_name>\n            <msisdn>61478038915</msisdn>\n            <response>I\
+    \ there, this is a sample response</response>\n            <longcode>61429625067</longcode>\n    \
+    \    </item>\n        <item>\n            <id>36283700</id>\n            <message_id>338808275</message_id>\n\
+    \            <list_id>4070947</list_id>\n            <received_at>2020-06-15 01:15:49</received_at>\n\
+    \            <first_name/>\n            <last_name/>\n            <msisdn>61478038915</msisdn>\n \
+    \           <response>Received response</response>\n            <longcode>61436446702</longcode>\n\
+    \        </item>\n        <item>\n            <id>36230542</id>\n            <message_id>338116740</message_id>\n\
+    \            <list_id>4070947</list_id>\n            <received_at>2020-06-12 00:06:10</received_at>\n\
+    \            <first_name/>\n            <last_name/>\n            <msisdn>61478038915</msisdn>\n \
+    \           <response>Testing email sms</response>\n            <longcode>61429238797</longcode>\n\
+    \        </item>\n    </responses>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n\
+    \    </error>\n</response>"
+- api: v1
+  method: POST
+  path: /get-sms.json
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Get Message/Campaign Information
+  example:
+    message_id: 339814842
+    send_at: '2020-06-18 11:17:44'
+    recipients: 1
+    cost: 0.087
+    sms: 1
+    message: This is my message, click on my link [tracked-link]
+    delivery_stats:
+      delivered: 1
+      pending: 0
+      bounced: 0
+      responses: 1
+      optouts: 0
+    error:
+      code: SUCCESS
+      description: OK
+- api: v1
+  method: POST
+  path: /get-sms.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Get Message/Campaign Information
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <message_id>339814842</message_id>\n    <send_at>2020-06-18\
+    \ 11:17:44</send_at>\n    <recipients>1</recipients>\n    <cost>0.087</cost>\n    <sms>1</sms>\n \
+    \   <message>This is my message, click on my link [tracked-link]</message>\n    <delivery_stats>\n\
+    \        <delivered>1</delivered>\n        <pending>0</pending>\n        <bounced>0</bounced>\n  \
+    \      <responses>1</responses>\n        <optouts>0</optouts>\n    </delivery_stats>\n    <error>\n\
+    \        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+- api: v1
+  method: POST
+  path: /get-sms-delivery-status.json
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Get SMS Delivery Status
+  example:
+    stats:
+      message_id: 339814842
+      sender_id: 61429720235
+      mobile: 61478038915
+      send_at: '2020-06-18 11:17:44'
+      datetime: '2020-06-18 11:17:00'
+      status: delivered
+      message: This is my message, click on my link TapTh.is/hO2HL7b0
+    error:
+      code: SUCCESS
+      description: OK
+- api: v1
+  method: POST
+  path: /get-sms-delivery-status.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Get SMS Delivery Status
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <stats>\n        <message_id>339814842</message_id>\n\
+    \        <sender_id>61429720235</sender_id>\n        <mobile>61478038915</mobile>\n        <send_at>2020-06-18\
+    \ 11:17:44</send_at>\n        <datetime>2020-06-18 11:17:00</datetime>\n        <status>delivered</status>\n\
+    \        <message>This is my message, click on my link TapTh.is/hO2HL7b0</message>\n    </stats>\n\
+    \    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n\
+    </response>"
+- api: v1
+  method: POST
+  path: /get-sms-stats.json
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Get Message/Campaign Report
+  example:
+    stats:
+      hard_bounced: 0
+      soft_bounced: 0
+      total: 1
+      recipientCount: 1
+      delivered: 1
+      pending: 0
+      bounced: 0
+      responses: 1
+      opt-outs: 0
+      link_hits: 0
+    error:
+      code: SUCCESS
+      description: OK
+- api: v1
+  method: POST
+  path: /get-sms-stats.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Get Message/Campaign Report
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <stats>\n        <hard_bounced>0</hard_bounced>\n\
+    \        <soft_bounced>0</soft_bounced>\n        <total>1</total>\n        <recipientCount>1</recipientCount>\n\
+    \        <delivered>1</delivered>\n        <pending>0</pending>\n        <bounced>0</bounced>\n  \
+    \      <responses>1</responses>\n        <opt-outs>0</opt-outs>\n        <link_hits>0</link_hits>\n\
+    \    </stats>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n\
+    \    </error>\n</response>\n"
+- api: v1
+  method: POST
+  path: /get-sms-sent.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Get Message/Campaign Recipients
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <page>\n        <count>1</count>\n        <number>1</number>\n\
+    \    </page>\n    <total>1</total>\n    <message>\n        <message_id>339814842</message_id>\n  \
+    \      <send_at>2020-06-18 11:17:44</send_at>\n        <recipients>1</recipients>\n        <cost>0.087</cost>\n\
+    \        <sms>1</sms>\n        <delivery_stats>\n            <delivered>1</delivered>\n          \
+    \  <pending>0</pending>\n            <bounced>0</bounced>\n            <responses>1</responses>\n\
+    \            <optouts>0</optouts>\n        </delivery_stats>\n    </message>\n    <recipients>\n \
+    \       <item>\n            <msisdn>61478038915</msisdn>\n            <first_name></first_name>\n\
+    \            <last_name></last_name>\n            <delivery_status>delivered</delivery_status>\n \
+    \           <optout>false</optout>\n        </item>\n    </recipients>\n    <error>\n        <code>SUCCESS</code>\n\
+    \        <description>OK</description>\n    </error>\n</response>"
+- api: v1
+  method: POST
+  path: /add-list.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Add List
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <id>4213652</id>\n    <name>User List</name>\n  \
+    \  <created>2020-06-24 05:26:59</created>\n    <members_active>0</members_active>\n    <fields>\n\
+    \        <field_1>Email</field_1>\n        <field_2>Postcode</field_2>\n        <field_3>ID</field_3>\n\
+    \    </fields>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n\
+    \    </error>\n</response>"
+- api: v1
+  method: POST
+  path: /remove-list.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Remove List
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n\
+    \    </error>\n</response>"
+- api: v1
+  method: POST
+  path: /add-to-list.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Add Contact to List
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <list_id>4213644</list_id>\n    <msisdn>61429720235</msisdn>\n\
+    \    <first_name/>\n    <last_name/>\n    <created_at>2020-06-24 07:09:03</created_at>\n    <status>active</status>\n\
+    \    <fields>\n        <Email>Telstra</Email>\n        <Postcode/>\n        <ID/>\n        <Handset/>\n\
+    \    </fields>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n\
+    \    </error>\n</response>"
+- api: v1
+  method: POST
+  path: /edit-list-member.json
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Update Contact
+  example:
+    list_id: 4213644
+    msisdn: 61429720235
+    first_name: ''
+    last_name: ''
+    created_at: '2020-06-24 07:09:03'
+    status: active
+    fields:
+      Email: Optus
+      Postcode: ''
+      ID: ''
+      Handset: ''
+    error:
+      code: SUCCESS
+      description: OK
+- api: v1
+  method: POST
+  path: /edit-list-member.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Update Contact
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <list_id>4213644</list_id>\n    <msisdn>61429720235</msisdn>\n\
+    \    <first_name/>\n    <last_name/>\n    <created_at>2020-06-24 07:09:03</created_at>\n    <status>active</status>\n\
+    \    <fields>\n        <Email>Optus</Email>\n        <Postcode/>\n        <ID/>\n        <Handset/>\n\
+    \    </fields>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n\
+    \    </error>\n</response>"
+- api: v1
+  method: POST
+  path: /delete-from-list.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Remove Contact
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <list_ids>\n        <item>4213644</item>\n    </list_ids>\n\
+    \    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n\
+    </response>"
+- api: v1
+  method: POST
+  path: /optout-list-member.json
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Opt Out/Unsubscribe Contact
+  example:
+    list_ids:
+    - 4214121
+    error:
+      code: SUCCESS
+      description: OK
+- api: v1
+  method: POST
+  path: /optout-list-member.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Opt Out/Unsubscribe Contact
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <list_ids>\n        <item>4214121</item>\n    </list_ids>\n\
+    \    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n\
+    </response>"
+- api: v1
+  method: POST
+  path: /add-contacts-bulk-progress.json
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Check Progress Of Import
+  example:
+    list_id: 4214121
+    status: completed
+    importlength: 2
+    completed: 2
+    duplicates: 0
+    skipped: 0
+    optout: 0
+    imported: 2
+    error:
+      code: SUCCESS
+      description: OK
+- api: v1
+  method: POST
+  path: /add-contacts-bulk-progress.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Check Progress Of Import
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <list_id>4214121</list_id>\n    <status>completed</status>\n\
+    \    <importlength>2</importlength>\n    <completed>2</completed>\n    <duplicates>0</duplicates>\n\
+    \    <skipped>0</skipped>\n    <optout>0</optout>\n    <imported>2</imported>\n    <error>\n     \
+    \   <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+- api: v1
+  method: GET
+  path: /get-numbers.json
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Get Numbers
+  example:
+    page:
+      count: 1
+      number: 1
+    numbers_total: 1
+    filter: owned
+    numbers:
+    - number: 61436446702
+      price: 25
+      auto_renew: true
+      next_charge: '2020-07-15'
+      status: active
+    error:
+      code: SUCCESS
+      description: OK
+- api: v1
+  method: GET
+  path: /get-numbers.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Get Numbers
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <page>\n        <count>1</count>\n        <number>1</number>\n\
+    \    </page>\n    <numbers_total>1</numbers_total>\n    <filter>owned</filter>\n    <numbers>\n  \
+    \      <item>\n            <number>61436446702</number>\n            <price>25</price>\n         \
+    \   <auto_renew>true</auto_renew>\n            <next_charge>2020-07-15</next_charge>\n           \
+    \ <status>active</status>\n        </item>\n    </numbers>\n    <error>\n        <code>SUCCESS</code>\n\
+    \        <description>OK</description>\n    </error>\n</response>"
+- api: v1
+  method: POST
+  path: /get-number.json
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Get Number Information
+  example:
+    number: 61418279031
+    price: 25
+    auto_renew: true
+    next_charge: '2020-07-24'
+    status: active
+    error:
+      code: SUCCESS
+      description: OK
+- api: v1
+  method: POST
+  path: /get-number.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Get Number Information
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <number>61418279031</number>\n    <price>25</price>\n\
+    \    <auto_renew>true</auto_renew>\n    <next_charge>2020-07-24</next_charge>\n    <status>active</status>\n\
+    \    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n\
+    </response>"
+- api: v1
+  method: POST
+  path: /edit-number-options.json
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Edit Number Options
+  example:
+    error:
+      code: SUCCESS
+      description: OK
+- api: v1
+  method: POST
+  path: /edit-number-options.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Edit Number Options
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n\
+    \    </error>\n</response>"
+- api: v1
+  method: POST
+  path: /add-email.json
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Add Email
+  example:
+    success: true
+    error:
+      code: SUCCESS
+      description: OK
+- api: v1
+  method: POST
+  path: /add-email.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Add Email
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <success>true</success>\n    <error>\n        <code>SUCCESS</code>\n\
+    \        <description>OK</description>\n    </error>\n</response>"
+- api: v1
+  method: POST
+  path: /delete-email.json
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Delete Email
+  example:
+    success: true
+    error:
+      code: SUCCESS
+      description: OK
+- api: v1
+  method: POST
+  path: /delete-email.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Delete Email
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <success>true</success>\n    <error>\n        <code>SUCCESS</code>\n\
+    \        <description>OK</description>\n    </error>\n</response>"
+- api: v1
+  method: POST
+  path: /add-keyword.json
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Add Keyword
+  example:
+    keyword: NEWS
+    reference: Gym news
+    number: 61418279031
+    list_id: 4214634
+    welcome_message: Welcome to Mike's gym news
+    member_message: Thanks for your continued support
+    forward_url: http://example.com/gym-promo
+    forward_sms: 61491570157,61491570158
+    forward_email: news@example.com,mike@example.com
+    status: open
+    billing_date: '2020-07-24'
+    error:
+      code: SUCCESS
+      description: OK
+- api: v1
+  method: POST
+  path: /add-keyword.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Add Keyword
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <keyword>GYM</keyword>\n    <reference>Gym news</reference>\n\
+    \    <number>61418279031</number>\n    <list_id>4214637</list_id>\n    <welcome_message>Welcome to\
+    \ Mike's gym news</welcome_message>\n    <member_message>Thanks for your continued support</member_message>\n\
+    \    <forward_url>http://example.com/gym-promo</forward_url>\n    <forward_sms>61491570157,61491570158</forward_sms>\n\
+    \    <forward_email>news@example.com,mike@example.com</forward_email>\n    <status>open</status>\n\
+    \    <billing_date>2020-07-24</billing_date>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n\
+    \    </error>\n</response>"
+- api: v1
+  method: POST
+  path: /edit-keyword.json
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Edit Keyword
+  example:
+    keyword: NEWS
+    reference: Gym news
+    number: 61418279031
+    list_id: 4214634
+    welcome_message: Welcome to Fitness gym news
+    member_message: Thanks for your continued support
+    forward_url: http://example.com/gym-promo
+    forward_sms: 61491570157,61491570158
+    forward_email: news@example.com,mike@example.com
+    status: open
+    billing_date: '2020-07-24'
+    error:
+      code: SUCCESS
+      description: OK
+- api: v1
+  method: POST
+  path: /edit-keyword.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Edit Keyword
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <keyword>NEWS</keyword>\n    <reference>Gym news</reference>\n\
+    \    <number>61418279031</number>\n    <list_id>4214634</list_id>\n    <welcome_message>Welcome to\
+    \ Fitness gym news</welcome_message>\n    <member_message>Thanks for your continued support</member_message>\n\
+    \    <forward_url>http://example.com/gym-promo</forward_url>\n    <forward_sms>61491570157,61491570158</forward_sms>\n\
+    \    <forward_email>news@example.com,mike@example.com</forward_email>\n    <status>open</status>\n\
+    \    <billing_date>2020-07-24</billing_date>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n\
+    \    </error>\n</response>"
+- api: v1
+  method: POST
+  path: /get-keywords.json
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Get Keywords
+  example:
+    page:
+      count: 1
+      number: 1
+    keywords_total: 2
+    keywords:
+    - keyword: GYM
+      reference: Gym news
+      number: 61418279031
+      list_id: 4214637
+      welcome_message: Welcome to Mike's gym news
+      member_message: Thanks for your continued support
+      forward_url: http://example.com/gym-promo
+      forward_sms: 61491570157,61491570158
+      forward_email: news@example.com,mike@example.com
+      status: open
+      billing_date: '2020-07-24'
+    - keyword: NEWS
+      reference: Gym news
+      number: 61418279031
+      list_id: 4214634
+      welcome_message: Welcome to Mike's gym news
+      member_message: Thanks for your continued support
+      forward_url: http://example.com/gym-promo
+      forward_sms: 61491570157,61491570158
+      forward_email: news@example.com,mike@example.com
+      status: open
+      billing_date: '2020-07-24'
+    error:
+      code: SUCCESS
+      description: OK
+- api: v1
+  method: POST
+  path: /get-keywords.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Get Keywords
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <page>\n        <count>1</count>\n        <number>1</number>\n\
+    \    </page>\n    <keywords_total>2</keywords_total>\n    <keywords>\n        <item>\n           \
+    \ <keyword>GYM</keyword>\n            <reference>Gym news</reference>\n            <number>61418279031</number>\n\
+    \            <list_id>4214637</list_id>\n            <welcome_message>Welcome to Mike's gym news</welcome_message>\n\
+    \            <member_message>Thanks for your continued support</member_message>\n            <forward_url>http://example.com/gym-promo</forward_url>\n\
+    \            <forward_sms>61491570157,61491570158</forward_sms>\n            <forward_email>news@example.com,mike@example.com</forward_email>\n\
+    \            <status>open</status>\n            <billing_date>2020-07-24</billing_date>\n        </item>\n\
+    \        <item>\n            <keyword>NEWS</keyword>\n            <reference>Gym news</reference>\n\
+    \            <number>61418279031</number>\n            <list_id>4214634</list_id>\n            <welcome_message>Welcome\
+    \ to Mike's gym news</welcome_message>\n            <member_message>Thanks for your continued support</member_message>\n\
+    \            <forward_url>http://example.com/gym-promo</forward_url>\n            <forward_sms>61491570157,61491570158</forward_sms>\n\
+    \            <forward_email>news@example.com,mike@example.com</forward_email>\n            <status>open</status>\n\
+    \            <billing_date>2020-07-24</billing_date>\n        </item>\n    </keywords>\n    <error>\n\
+    \        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+- api: v1
+  method: GET
+  path: /get-balance.json
+  kind: response
+  status: '200'
+  media_type: application/json
+  summary: Get Balance
+  example:
+    balance: 73.954
+    currency: AUD
+    error:
+      code: SUCCESS
+      description: OK
+- api: v1
+  method: GET
+  path: /get-balance.json
+  kind: response
+  status: '200'
+  media_type: text/plain
+  summary: Get Balance
+  example: "<?xml version=\"1.0\"?>\n<response>\n    <balance>73.954</balance>\n    <currency>AUD</currency>\n\
+    \    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n\
+    </response>"

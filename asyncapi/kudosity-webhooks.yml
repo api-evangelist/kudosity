@@ -1,0 +1,80 @@
+generated: '2026-07-27'
+method: searched
+source: https://developers.kudosity.com/reference/webhooks-1 + openapi/kudosity-transmit-message-openapi-original.yml
+spec_type: null
+asyncapi_published: false
+note: 'Kudosity publishes no AsyncAPI document. It does publish a real, API-managed webhook surface, captured
+  here: v2 webhooks are created/listed/updated/deleted through the REST API with an event-type filter;
+  v1 callbacks are configured in the UI or per send-sms call.'
+transport:
+  v2: HTTPS POST, JSON body
+  v1: HTTPS GET, query-string parameters
+management:
+  v2: REST — POST/GET/PUT/DELETE /v2/webhook
+  v1: account SETTINGS, per-feature Forward-to-URL, or send-sms parameters
+events:
+- name: SMS_STATUS
+  api: v2
+  description: 'SMS status change: sent, failed, soft_bounce, hard_bounce, delivered, undelivered. Multiple
+    events per message.'
+- name: SMS_INBOUND
+  api: v2
+  description: Inbound SMS from a recipient back to the sender.
+- name: MMS_STATUS
+  api: v2
+  description: 'MMS status change (internal statuses: sent, failed).'
+- name: MMS_INBOUND
+  api: v2
+  description: Inbound MMS from a recipient.
+- name: WHATSAPP_STATUS
+  api: v2
+  description: 'WhatsApp message lifecycle: SENT, DELIVERED, READ, FAILED.'
+- name: WHATSAPP_INBOUND
+  api: v2
+  description: Inbound WhatsApp message.
+- name: RCS_STATUS
+  api: v2
+  description: 'RCS message lifecycle: SENT, DELIVERED, READ, FAILED.'
+- name: RCS_INBOUND
+  api: v2
+  description: Inbound RCS message.
+- name: LINK_HIT
+  api: v2
+  description: A recipient visited a tracked link.
+- name: OPT_OUT
+  api: v2
+  description: A recipient opted out via link or by replying STOP.
+- name: delivery (DLR) callback
+  api: v1
+  description: 'Delivery receipt. Params: message_id, mobile, datetime, status (delivered|pending|soft-bounce|hard-bounce),
+    user_id.'
+- name: reply callback
+  api: v1
+  description: 'SMS reply or inbound SMS. Params: user_id, message_id, mobile, longcode, datetime_entry,
+    response, response_id, is_optout.'
+- name: link hits callback
+  api: v1
+  description: Tracked tapth.is link clicked. Params include list_id, message_id, mobile, link_hits, firstname,
+    lastname.
+- name: list action callback
+  api: v1
+  description: 'Contact added to or removed from a list. Params: type (Add|Delete), datetime_entry, list_id,
+    mobile, plus custom fields 1-10.'
+filters:
+  v2:
+  - sender
+  - status
+  - message_ref
+  - campaign_id
+  note: Filter semantics differ by event class — status events filter the status payload, LINK_HIT/OPT_OUT
+    filter the source_message, inbound events filter the recipient.
+retries:
+  v1: '4 attempts with increasing delay: 1 minute, 5 minutes, 1 hour, 24 hours'
+  v2: retried on failure with a more granular schedule than v1
+signing:
+  header: x-transmitsms-signature
+  algorithm: HMAC-SHA256 keyed by the account API secret
+callback_priority:
+- send-sms call parameter
+- Forward-to-URL on the feature
+- default URL in account SETTINGS

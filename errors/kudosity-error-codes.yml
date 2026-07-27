@@ -1,0 +1,41 @@
+generated: '2026-07-27'
+method: searched
+source: https://developers.kudosity.com/reference/status-codes
+applies_to: Transmit SMS API (v1)
+envelope:
+  shape: '{"error": {"code": "...", "description": "..."}}'
+  note: v1 uses a string error-constant envelope, not RFC 9457. v2 uses problem+json.
+codes:
+- code: SUCCESS
+  status: 200
+  description: OK
+- code: AUTH_FAILED_NO_DATA
+  status: 401
+  description: You have not provided auth data.
+- code: AUTH_FAILED
+  status: 401
+  description: The auth data you have provided is invalid.
+- code: NOT_IMPLEMENTED
+  status: 404
+  description: The method you are requesting is unsupported.
+- code: OVER_LIMIT
+  status: 429
+  description: You have exceeded the request limit.
+- code: FIELD_EMPTY
+  status: 400
+  description: Required field is empty.
+- code: FIELD_INVALID
+  status: 400
+  description: Field has invalid format.
+- code: NO_ACCESS
+  status: 400
+  description: You don't have access to this feature.
+- code: KEY_EXISTS
+  status: 400
+  description: The resource with this key already exists.
+- code: LEDGER_ERROR
+  status: 400
+  description: Insufficient funds to carry out debit.
+- code: BAD_CALLER_ID
+  status: 400
+  description: The sender ID you have set is not valid or number is inactive or expired.

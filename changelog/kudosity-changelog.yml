@@ -1,0 +1,44 @@
+generated: '2026-07-27'
+method: searched
+source: https://developers.kudosity.com/changelog
+scheme: dated entries, no semantic version numbers
+window: most recent 10 entries as of 2026-07-27
+entries:
+- title: Send messages from AI agents & workflows
+  breaking: false
+  highlights: New guide plus the open-source github.com/kudosity/ai-agent-examples repo — dependency-free
+    Node.js examples for SMS, MMS, WhatsApp and RCS from agents.
+- title: 'Kudosity for GitHub: Copilot Extension and SMS Action'
+  breaking: false
+  highlights: Copilot extension for natural-language messaging in VS Code and a composite GitHub Action
+    for sending SMS from CI.
+- title: OpenClaw Plugin for AI Developers
+  breaking: false
+  highlights: Kudosity SMS registered as a first-class OpenClaw channel plugin (ClawHub + npm).
+- title: Gemini CLI Extension for AI Developers
+  breaking: false
+  highlights: Published to the Gemini CLI Extension Gallery.
+- title: Claude Plugin for AI Developers
+  breaking: false
+  highlights: Kudosity plugin on the official Claude Code marketplace (/plugin install kudosity-sms).
+- title: Senders Registration Endpoint (Personal Senders)
+  breaking: false
+  highlights: New POST /v2/senders/registrations plus verification request/confirm endpoints.
+- title: October 2025 — Reporting Endpoints and MCP Server
+  date: 2025-10
+  breaking: false
+  highlights: Smart API Version Routing added to the MCP server; new reporting endpoints.
+- title: 'New Release: MCP Server'
+  date: '2025-08-25'
+  breaking: false
+  highlights: First release of the hosted Kudosity MCP server.
+- title: RCS API Launch
+  date: '2025-07-02'
+  breaking: false
+  highlights: RCS messaging with intelligent SMS fallback and enhanced delivery tracking.
+- title: Enhanced Webhooks with Filtering
+  date: '2025-06-10'
+  breaking: false
+  highlights: Granular webhook subscription filtering to reduce noise.
+observation: Five of the ten most recent entries are agent/AI surfaces, not messaging features — the roadmap
+  is visibly weighted toward agent-native distribution.

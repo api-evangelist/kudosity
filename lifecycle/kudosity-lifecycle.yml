@@ -1,0 +1,38 @@
+generated: '2026-07-27'
+method: searched
+source: https://developers.kudosity.com/reference/about-our-apis + /changelog + kudosity.com/legal
+versioning:
+  scheme: parallel major versions on separate hosts
+  current: v2 (Transmit Message API)
+  previous: v1 (Transmit SMS API) — fully supported, not deprecated
+  docs: https://developers.kudosity.com/reference/about-our-apis
+  guidance: New builds start on v2. v1 retained for multi-recipient sends, custom tracked link domains
+    and XML responses, which v2 does not yet cover.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  note: No published deprecation or sunset policy. The docs state v1 is "fully supported" and there is
+    "no rush to migrate", but no dated end-of-life commitment exists. Field-level deprecations do appear
+    in the v2 spec (WebhookResponse.is_sandbox, WebhookRequest.event_type superseded by filter.event_type).
+deprecated_fields:
+- spec: openapi/kudosity-transmit-message-openapi-original.yml
+  schema: WebhookResponse
+  field: is_sandbox
+  note: Deprecated. Will be removed in a future version.
+- spec: openapi/kudosity-transmit-message-openapi-original.yml
+  schema: WebhookRequest
+  field: event_type
+  note: Deprecated — use filter.event_type instead.
+beta:
+- capability: RCS API
+  status: beta
+  url: https://developers.kudosity.com/docs/rcs-beta
+  note: API and docs described as evolving; no major breaking changes anticipated. Regional availability
+    varies with Google RBM rollout.
+sla:
+  url: https://kudosity.com/legal/service-level-agreement
+  uptime_target: null
+status_page: null
+status_page_note: status.kudosity.com does not resolve to a status page (404); no uptime page found on
+  kudosity.com, developers.kudosity.com or the trust centre.
+changelog: https://developers.kudosity.com/changelog

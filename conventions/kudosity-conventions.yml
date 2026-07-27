@@ -1,0 +1,66 @@
+generated: '2026-07-27'
+method: searched
+source: https://developers.kudosity.com/reference/ (api-overview section) + both OpenAPI documents
+authentication:
+  v2:
+    style: api key
+    location: header
+    parameter: x-api-key
+  v1:
+    style: http basic
+    value: base64(api_key:api_secret)
+  docs: https://developers.kudosity.com/reference/authentication
+  note: API secret is a user-chosen value set on the account SETTINGS page, not issued by Kudosity.
+idempotency:
+  supported: false
+  evidence: No idempotency key header, parameter or documentation in either OpenAPI or the docs.
+  note: 'For a messaging API this is a real agent-safety gap: a retried send is a second billable message.
+    v2 offers message_ref for reconciliation after the fact, but it is not a de-duplication key.'
+pagination:
+  style: page-number
+  request_params:
+  - page
+  - max
+  response_block: 'page: {count, number}'
+  defaults:
+    page: 1
+    max: 10
+  max_page_size: 100
+  docs: https://developers.kudosity.com/reference/pagination
+  applies_to: Transmit SMS API (v1)
+rate_limiting:
+  limit: 15 requests/second/account
+  status: 429
+  code: OVER_LIMIT
+  retry: none — throttled message requests are dropped, not retried
+  negotiable: yes, on request
+  headers: null
+  docs: https://developers.kudosity.com/reference/rate-limiting
+timestamps:
+  format: ISO 8601
+  timezone: UTC always
+  note: v2 schemas use RFC 3339 date-time (e.g. 2025-08-26T10:30:00Z).
+  docs: https://developers.kudosity.com/reference/timestamps
+content_negotiation:
+  v2: JSON only
+  v1: JSON or XML (.json / .xml path suffix)
+  docs: https://developers.kudosity.com/reference/requests
+versioning:
+  scheme: separate hosts + uri path
+  v2: https://api.transmitmessage.com/v2/...
+  v1: https://api.transmitsms.com/<action>.json
+error_envelope:
+  v2: RFC 9457 application/problem+json
+  v1: 'error: {code, description}'
+webhook_security:
+  signature_header: x-transmitsms-signature
+  algorithm: HMAC-SHA256 over the JSON-encoded callback params, keyed by the account API secret
+  ordering: parameters must be hashed in the exact order they appear in the callback
+  docs: https://developers.kudosity.com/docs/validating-webhook-signatures-from-kudosity
+request_tracing:
+  supported: false
+  note: No request-id / correlation-id header documented on either API.
+message_reference:
+  field: message_ref
+  api: v2
+  purpose: caller-supplied reference returned alongside the Kudosity message id

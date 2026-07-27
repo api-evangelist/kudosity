@@ -1,0 +1,25 @@
+# Kudosity Documentation
+
+> Documentation for Kudosity
+
+Each section below links to its own llms.txt, which indexes every page in that section. Category links narrow to a single category.
+
+## Guides
+
+- [Guides index](https://developers.kudosity.com/docs/llms.txt): full section index
+- [Basics](https://developers.kudosity.com/docs/basics/llms.txt)
+- [AI & Agents 🤖🦾](https://developers.kudosity.com/docs/ai-agents/llms.txt)
+- [RCS](https://developers.kudosity.com/docs/rcs/llms.txt)
+- [WhatsApp](https://developers.kudosity.com/docs/whatsapp/llms.txt)
+- [Salesforce](https://developers.kudosity.com/docs/salesforce/llms.txt)
+
+## API Reference
+
+- [API Reference index](https://developers.kudosity.com/reference/llms.txt): full section index
+- [API Overview](https://developers.kudosity.com/reference/api-overview/llms.txt)
+- [Transmit SMS API](https://developers.kudosity.com/reference/transmit-sms-api/llms.txt)
+- [Transmit Message API](https://developers.kudosity.com/reference/transmit-message-api/llms.txt)
+
+## Changelog
+
+- [Changelog index](https://developers.kudosity.com/changelog/llms.txt): full section index

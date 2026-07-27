@@ -1,0 +1,101 @@
+generated: '2026-07-27'
+method: searched
+status: published
+source: https://developers.kudosity.com/docs/mcp
+server:
+  name: Kudosity
+  version: '1.0'
+  transport: http
+  url: https://developers.kudosity.com/mcp
+  protocol_version: '2025-06-18'
+  capabilities:
+    tools: true
+    resources: false
+    prompts: false
+  source_code: https://github.com/kudosity/mcp
+  introspection: anonymous — tools/list answers without credentials; execute-request needs account credentials
+  auth:
+  - api: Transmit Message API (v2)
+    method: api key
+    header: x-api-key
+  - api: Transmit SMS API (v1)
+    method: http basic
+    header: 'Authorization: Basic base64(key:secret)'
+  install:
+  - client: claude code
+    command: claude mcp add kudosity --scope project -- npx mcp-remote https://developers.kudosity.com/mcp
+  - client: cursor
+    config: ~/.cursor/mcp.json
+  - client: windsurf
+    config: ~/.codeium/windsurf/mcp_config.json
+shape: spec-navigator, not operation-per-tool. The server exposes the two OpenAPI documents as a searchable
+  surface plus one generic HAR executor and a version-routing advisor, rather than one tool per API operation.
+  An agent discovers the endpoint, then calls execute-request.
+tools:
+- name: list-endpoints
+  description: Lists all API paths and their HTTP methods with summaries, organized by path. Results can
+    be passed directly into 'get-endpoint'.
+  required:
+  - title
+  read_only: true
+  destructive: false
+- name: get-endpoint
+  description: Gets detailed information about a specific API endpoint, including security schemes and
+    servers
+  required:
+  - path
+  - method
+  - title
+  read_only: true
+  destructive: false
+- name: search-endpoints
+  description: Performs a deep search through paths, operations, and parameters to discover relevant API
+    endpoints. Use this tool to find specific API capabilities, required parameters, or data models based
+    on search keywords. Results can be passed directly into 'get-endpoint'.
+  required:
+  - pattern
+  read_only: true
+  destructive: false
+- name: list-specs
+  description: Lists all available OpenAPI specs. Use the title to select a spec.
+  required: []
+  read_only: true
+  destructive: false
+- name: execute-request
+  description: Executes an API request with a given HAR request object.
+  required:
+  - harRequest
+  - title
+  read_only: false
+  destructive: true
+- name: route-kudosity-operations
+  description: Determine which Kudosity API version (V1 or V2) to use for each operation, based on what
+    the user wants to do (send SMS, configure webhooks, update contacts, get reports, etc.) and their
+    available authentication method. Always return a per-operation routing plan that specifies version,
+    endpoint, auth, and example. Ask clarifying questions if info is missing.
+  required: []
+  read_only: true
+  destructive: false
+divergence:
+  docs_advertise:
+  - list-specs
+  - list-endpoints
+  - get-endpoint
+  - search-specs
+  - get-request-body
+  - get-response-schema
+  - list-security-schemes
+  - search-documentation
+  - get-code-snippet
+  - execute-request
+  live_tools_list:
+  - list-endpoints
+  - get-endpoint
+  - search-endpoints
+  - list-specs
+  - execute-request
+  - route-kudosity-operations
+  note: The docs page lists ten capability names; the live tools/list returns six. search-specs, get-request-body,
+    get-response-schema, list-security-schemes, search-documentation and get-code-snippet are not exposed
+    as discrete tools, and route-kudosity-operations is live but undocumented. Documented-vs-live drift
+    — worth reporting to the provider.

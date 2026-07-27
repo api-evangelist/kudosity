@@ -1,0 +1,22 @@
+generated: '2026-07-27'
+method: searched
+source: https://developers.kudosity.com/reference/rate-limiting
+rate_limits:
+- scope: account
+  limit_count: 15
+  limit_unit: second
+  applies_to: all API calls
+  status_on_exceed: 429
+  error_code: OVER_LIMIT
+  behaviour: requests are dropped, not queued or retried
+  headers: null
+  increase: available on request for heavy users
+- scope: webhook delivery
+  limit_count: 10
+  limit_unit: second
+  applies_to: outbound webhook POSTs (per-webhook rate_limit field, v2)
+  source: openapi/kudosity-transmit-message-openapi-original.yml
+  note: Configurable per webhook; 10 rps is the documented example value.
+gaps:
+- No RateLimit / X-RateLimit response headers are documented or present in either spec, so a client (or
+  an agent) cannot see remaining budget before it trips the limit.

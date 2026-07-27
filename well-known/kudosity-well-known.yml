@@ -1,0 +1,13 @@
+generated: '2026-07-27'
+method: searched
+hosts_probed:
+- https://kudosity.com
+- https://developers.kudosity.com
+- https://api.transmitmessage.com
+- https://api.transmitsms.com
+documents: []
+result: none
+note: 'No /.well-known surface on any host: security.txt, openid-configuration, oauth-authorization-server,
+  api-catalog and ai-plugin.json all return 404 (the API hosts return 401 for every path, including unauthenticated
+  discovery paths). RFC 9116 security.txt and an /.well-known/api-catalog are the two cheapest wins available
+  here.'

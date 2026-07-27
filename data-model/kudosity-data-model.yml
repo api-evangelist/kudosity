@@ -1,0 +1,130 @@
+generated: '2026-07-27'
+method: derived
+source: openapi/kudosity-transmit-message-openapi-original.yml
+note: Entity graph derived from the 127 component schemas of the Transmit Message (v2) OpenAPI. The v1
+  spec declares no components at all, so its objects are documented only in prose and cannot be graphed.
+entities:
+- name: Message
+  id_prefix: null
+  domain: messaging
+  variants:
+  - SMS
+  - MMS
+  - Whatsapp
+  - Rcs
+  note: Each channel has its own request/response pair rather than one polymorphic message resource.
+  relationships:
+  - to: Sender
+    type: belongs_to
+    via: sender
+  - to: MessageEvent
+    type: has_many
+    via: events
+  - to: Webhook
+    type: notifies
+    via: event_type filter
+- name: MessageEvent
+  domain: messaging
+  states:
+  - SENT
+  - DELIVERED
+  - READ
+  - FAILED
+  schemas:
+  - WhatsappMessageEvent
+  - RCSMessageEvent
+  relationships:
+  - to: Message
+    type: belongs_to
+    via: message id
+- name: Sender
+  domain: identity
+  schemas:
+  - SenderRegistration
+  - SenderRegistrationRequest
+  - SenderRegistrationDetails
+  - SenderRegistrationStatus
+  relationships:
+  - to: Verification
+    type: has_many
+    via: registration_id
+  - to: Message
+    type: has_many
+    via: sender
+- name: Verification
+  domain: identity
+  schemas:
+  - Verification
+  - VerificationConfirmation
+  - VerificationMethod
+  - VerificationStatus
+  relationships:
+  - to: Sender
+    type: belongs_to
+    via: registration_id
+- name: Webhook
+  domain: events
+  schemas:
+  - WebhookRequest
+  - WebhookResponse
+  - WebhookListResponse
+  - Filter
+  fields:
+  - id
+  - name
+  - url
+  - filter
+  - rate_limit
+  - created_at
+  relationships:
+  - to: EventType
+    type: filters_on
+    via: filter.event_type
+- name: Campaign
+  domain: engagement
+  schemas:
+  - CampaignResponse
+  - CampaignAudience
+  - CampaignChannel
+  - CampaignSendStrategy
+  - CampaignStatus
+  note: Campaign schemas are declared in components but no /v2/campaigns path is exposed in this spec
+    — an unreleased or internal surface visible through the contract.
+  relationships:
+  - to: ContactList
+    type: belongs_to
+    via: CampaignContactListSource
+  - to: Message
+    type: has_many
+    via: channel
+- name: ContactList
+  domain: contacts
+  note: Owned by the v1 API (add-list, add-to-list, edit-list-member, get-lists). v2 references lists
+    only as a campaign audience source.
+  relationships:
+  - to: Contact
+    type: has_many
+    via: list_id
+- name: Contact
+  domain: contacts
+  note: v1 only — mobile plus up to 10 custom fields.
+- name: Number
+  domain: connectivity
+  note: v1 only — dedicated virtual numbers (lease-number, get-numbers, edit-number-options).
+- name: Keyword
+  domain: connectivity
+  note: v1 only — inbound keyword routing.
+- name: Problem
+  domain: errors
+  schemas:
+  - ProblemDetails
+  - InputValidationProblem
+  - UnauthorizedProblem
+  - NotFoundProblem
+  - ForbiddenProblem
+  - ConflictProblem
+  - TooManyRequestsProblem
+  - InternalServerErrorProblem
+observation: 'The data core is split across two APIs and never rejoined: messaging, senders and webhooks
+  live in v2; contacts, lists, numbers, keywords, email-to-SMS and all reporting live in v1. An agent
+  doing anything list-driven has to hold both credentials at once.'
