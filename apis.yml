@@ -49,7 +49,7 @@ apis:
       Current v2 REST API covering SMS, MMS, WhatsApp and RCS, plus API-managed webhooks with event-type filtering and
       sender registration with phone verification. 22 operations across 15 paths, OpenAPI 3.0.3 with 127 component
       schemas and RFC 9457 problem details. Authenticated with an API key in the x-api-key header.
-    humanURL: https://developers.kudosity.com/reference/transmit-message-api
+    humanURL: https://developers.kudosity.com/reference/about-mms
     baseURL: https://api.transmitmessage.com
     tags:
       - Messaging
@@ -69,7 +69,7 @@ apis:
       - type: Documentation
         url: https://developers.kudosity.com/docs
       - type: APIReference
-        url: https://developers.kudosity.com/reference/transmit-message-api
+        url: https://developers.kudosity.com/reference/about-mms
       - type: Authentication
         url: https://developers.kudosity.com/reference/authentication
       - type: Webhooks
@@ -84,7 +84,7 @@ apis:
       custom tracked-link domains, plus everything v2 does not carry: contacts, lists and custom fields, bulk CSV import,
       dedicated virtual numbers, inbound keywords, email-to-SMS and all campaign reporting. 35 operations, OpenAPI 3.0.0,
       JSON or XML responses. Authenticated with HTTP Basic (API key + account secret).
-    humanURL: https://developers.kudosity.com/reference/transmit-sms-api
+    humanURL: https://developers.kudosity.com/reference/post_send-sms-json
     baseURL: https://api.transmitsms.com
     tags:
       - Messaging
@@ -102,7 +102,7 @@ apis:
       - type: Documentation
         url: https://developers.kudosity.com/docs
       - type: APIReference
-        url: https://developers.kudosity.com/reference/transmit-sms-api
+        url: https://developers.kudosity.com/reference/post_send-sms-json
       - type: Authentication
         url: https://developers.kudosity.com/reference/authentication
       - type: ErrorCodes
