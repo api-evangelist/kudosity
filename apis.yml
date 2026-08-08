@@ -171,7 +171,7 @@ common:
     url: agentic-access/kudosity-agentic-access.yml
   - type: MCPServer
     url: mcp/kudosity-mcp.yml
-  - type: MCP
+  - type: MCPServer
     url: https://developers.kudosity.com/mcp
   - type: ToolCrosswalk
     url: mcp/kudosity-tool-crosswalk.yml
