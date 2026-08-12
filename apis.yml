@@ -127,6 +127,8 @@ enriched:
     - https://developers.kudosity.com/docs/mcp
     - https://kudosity.com
 common:
+  - type: IssueTracker
+    url: https://github.com/kudosity/mcp/issues
   - type: PostmanWorkspace
     url: https://www.postman.com/kinlaneapi/kudosity/overview
   - type: DeveloperPortal
