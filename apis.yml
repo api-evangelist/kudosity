@@ -24,7 +24,7 @@ description: >-
   integrations — a Claude Code plugin, a GitHub Copilot extension, a Gemini CLI extension, an OpenClaw channel plugin and
   an SMS GitHub Action — all open source in a public GitHub organization. RCS is in beta; there is no voice product, no
   sandbox and no idempotency key.
-url: https://kudosity.apievangelist.com/apis.yml
+url: https://raw.githubusercontent.com/api-evangelist/kudosity/refs/heads/main/apis.yml
 created: '2026-07-11'
 modified: '2026-07-27'
 specificationVersion: '0.21'
