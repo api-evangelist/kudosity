@@ -99,3 +99,11 @@ divergence:
     get-response-schema, list-security-schemes, search-documentation and get-code-snippet are not exposed
     as discrete tools, and route-kudosity-operations is live but undocumented. Documented-vs-live drift
     — worth reporting to the provider.
+deployment:
+  mode: remote
+  endpoint: https://developers.kudosity.com/mcp
+  verified: probed
+  probe: live
+  tools: 6
+  checked: '2026-08-12'
+  source: catalog MCP census
