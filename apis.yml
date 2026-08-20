@@ -36,6 +36,21 @@ tags:
   - WhatsApp
   - Communications
   - CPaaS
+  - Webhook
+  - MCP
+  - agent-native
+  - Australia
+  - Notification
+  - Two-Way Messaging
+  - Contact Management
+tags_raw:
+  - Messaging
+  - SMS
+  - MMS
+  - RCS
+  - WhatsApp
+  - Communications
+  - CPaaS
   - Webhooks
   - MCP
   - Agent-native
@@ -52,6 +67,16 @@ apis:
     humanURL: https://developers.kudosity.com/reference/about-mms
     baseURL: https://api.transmitmessage.com
     tags:
+      - Messaging
+      - SMS
+      - MMS
+      - RCS
+      - WhatsApp
+      - Communications
+      - CPaaS
+      - Webhook
+      - agent-native
+    tags_raw:
       - Messaging
       - SMS
       - MMS
