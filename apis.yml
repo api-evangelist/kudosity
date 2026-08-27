@@ -59,79 +59,408 @@ tags_raw:
   - Two-Way Messaging
   - Contact Management
 apis:
-  - name: Transmit Message API
-    description: >-
-      Current v2 REST API covering SMS, MMS, WhatsApp and RCS, plus API-managed webhooks with event-type filtering and
-      sender registration with phone verification. 22 operations across 15 paths, OpenAPI 3.0.3 with 127 component
-      schemas and RFC 9457 problem details. Authenticated with an API key in the x-api-key header.
-    humanURL: https://developers.kudosity.com/reference/about-mms
-    baseURL: https://api.transmitmessage.com
-    tags:
-      - Messaging
-      - SMS
-      - MMS
-      - RCS
-      - WhatsApp
-      - Communications
-      - CPaaS
-      - Webhook
-      - agent-native
-    tags_raw:
-      - Messaging
-      - SMS
-      - MMS
-      - RCS
-      - WhatsApp
-      - Communications
-      - CPaaS
-      - Webhooks
-      - Agent-native
-    properties:
-      - type: OpenAPI
-        url: openapi/kudosity-transmit-message-openapi-original.yml
-      - type: OpenAPI
-        url: https://developers.kudosity.com/openapi/public-openapi.yaml
-      - type: Documentation
-        url: https://developers.kudosity.com/docs
-      - type: APIReference
-        url: https://developers.kudosity.com/reference/about-mms
-      - type: Authentication
-        url: https://developers.kudosity.com/reference/authentication
-      - type: Webhooks
-        url: asyncapi/kudosity-webhooks.yml
-      - type: ErrorCatalog
-        url: errors/kudosity-problem-types.yml
-      - type: DataModel
-        url: data-model/kudosity-data-model.yml
-  - name: Transmit SMS API
-    description: >-
-      Classic v1 REST API — fully supported, not deprecated. SMS sending with single-request multi-recipient batches and
-      custom tracked-link domains, plus everything v2 does not carry: contacts, lists and custom fields, bulk CSV import,
-      dedicated virtual numbers, inbound keywords, email-to-SMS and all campaign reporting. 35 operations, OpenAPI 3.0.0,
-      JSON or XML responses. Authenticated with HTTP Basic (API key + account secret).
-    humanURL: https://developers.kudosity.com/reference/post_send-sms-json
-    baseURL: https://api.transmitsms.com
-    tags:
-      - Messaging
-      - SMS
-      - Communications
-      - CPaaS
-      - Contact Management
-      - Reporting
-      - Two-Way Messaging
-    properties:
-      - type: OpenAPI
-        url: openapi/kudosity-transmit-sms-openapi-original.yml
-      - type: OpenAPI
-        url: https://developers.kudosity.com/openapi/api_documentation.yml
-      - type: Documentation
-        url: https://developers.kudosity.com/docs
-      - type: APIReference
-        url: https://developers.kudosity.com/reference/post_send-sms-json
-      - type: Authentication
-        url: https://developers.kudosity.com/reference/authentication
-      - type: ErrorCodes
-        url: errors/kudosity-error-codes.yml
+- aid: kudosity:kudosity-account-api
+  name: Kudosity Account API
+  description: The Account API from Kudosity — 1 operation(s) for account.
+  humanURL: https://developers.kudosity.com/reference/about-mms
+  baseURL: https://api.transmitmessage.com
+  tags:
+  - Account
+  properties:
+  - type: OpenAPI
+    url: openapi/kudosity-account-api-openapi.yml
+  - type: Documentation
+    url: https://developers.kudosity.com/docs
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/about-mms
+  - type: Authentication
+    url: https://developers.kudosity.com/reference/authentication
+  - type: Webhooks
+    url: asyncapi/kudosity-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/kudosity-problem-types.yml
+  - type: DataModel
+    url: data-model/kudosity-data-model.yml
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/post_send-sms-json
+  - type: ErrorCodes
+    url: errors/kudosity-error-codes.yml
+- aid: kudosity:kudosity-contacts-lists-api
+  name: Kudosity Contacts & Lists API
+  description: The Contacts & Lists API from Kudosity — 9 operation(s) for contacts & lists.
+  humanURL: https://developers.kudosity.com/reference/about-mms
+  baseURL: https://api.transmitmessage.com
+  tags:
+  - Contacts & Lists
+  properties:
+  - type: OpenAPI
+    url: openapi/kudosity-contacts-lists-api-openapi.yml
+  - type: Documentation
+    url: https://developers.kudosity.com/docs
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/about-mms
+  - type: Authentication
+    url: https://developers.kudosity.com/reference/authentication
+  - type: Webhooks
+    url: asyncapi/kudosity-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/kudosity-problem-types.yml
+  - type: DataModel
+    url: data-model/kudosity-data-model.yml
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/post_send-sms-json
+  - type: ErrorCodes
+    url: errors/kudosity-error-codes.yml
+- aid: kudosity:kudosity-email-sms-api
+  name: Kudosity Email SMS API
+  description: The Email SMS API from Kudosity — 2 operation(s) for email sms.
+  humanURL: https://developers.kudosity.com/reference/about-mms
+  baseURL: https://api.transmitmessage.com
+  tags:
+  - Email SMS
+  properties:
+  - type: OpenAPI
+    url: openapi/kudosity-email-sms-api-openapi.yml
+  - type: Documentation
+    url: https://developers.kudosity.com/docs
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/about-mms
+  - type: Authentication
+    url: https://developers.kudosity.com/reference/authentication
+  - type: Webhooks
+    url: asyncapi/kudosity-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/kudosity-problem-types.yml
+  - type: DataModel
+    url: data-model/kudosity-data-model.yml
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/post_send-sms-json
+  - type: ErrorCodes
+    url: errors/kudosity-error-codes.yml
+- aid: kudosity:kudosity-keywords-api
+  name: Kudosity Keywords API
+  description: The Keywords API from Kudosity — 3 operation(s) for keywords.
+  humanURL: https://developers.kudosity.com/reference/about-mms
+  baseURL: https://api.transmitmessage.com
+  tags:
+  - Keywords
+  properties:
+  - type: OpenAPI
+    url: openapi/kudosity-keywords-api-openapi.yml
+  - type: Documentation
+    url: https://developers.kudosity.com/docs
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/about-mms
+  - type: Authentication
+    url: https://developers.kudosity.com/reference/authentication
+  - type: Webhooks
+    url: asyncapi/kudosity-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/kudosity-problem-types.yml
+  - type: DataModel
+    url: data-model/kudosity-data-model.yml
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/post_send-sms-json
+  - type: ErrorCodes
+    url: errors/kudosity-error-codes.yml
+- aid: kudosity:kudosity-mms-api
+  name: Kudosity MMS API
+  description: The primary method of sending MMS
+  humanURL: https://developers.kudosity.com/reference/about-mms
+  baseURL: https://api.transmitmessage.com
+  tags:
+  - MMS
+  properties:
+  - type: OpenAPI
+    url: openapi/kudosity-mms-api-openapi.yml
+  - type: Documentation
+    url: https://developers.kudosity.com/docs
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/about-mms
+  - type: Authentication
+    url: https://developers.kudosity.com/reference/authentication
+  - type: Webhooks
+    url: asyncapi/kudosity-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/kudosity-problem-types.yml
+  - type: DataModel
+    url: data-model/kudosity-data-model.yml
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/post_send-sms-json
+  - type: ErrorCodes
+    url: errors/kudosity-error-codes.yml
+- aid: kudosity:kudosity-numbers-api
+  name: Kudosity Numbers API
+  description: The Numbers API from Kudosity — 4 operation(s) for numbers.
+  humanURL: https://developers.kudosity.com/reference/about-mms
+  baseURL: https://api.transmitmessage.com
+  tags:
+  - Numbers
+  properties:
+  - type: OpenAPI
+    url: openapi/kudosity-numbers-api-openapi.yml
+  - type: Documentation
+    url: https://developers.kudosity.com/docs
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/about-mms
+  - type: Authentication
+    url: https://developers.kudosity.com/reference/authentication
+  - type: Webhooks
+    url: asyncapi/kudosity-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/kudosity-problem-types.yml
+  - type: DataModel
+    url: data-model/kudosity-data-model.yml
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/post_send-sms-json
+  - type: ErrorCodes
+    url: errors/kudosity-error-codes.yml
+- aid: kudosity:kudosity-rcs-api
+  name: Kudosity RCS API
+  description: The RCS API from Kudosity — 3 operation(s) for rcs.
+  humanURL: https://developers.kudosity.com/reference/about-mms
+  baseURL: https://api.transmitmessage.com
+  tags:
+  - RCS
+  properties:
+  - type: OpenAPI
+    url: openapi/kudosity-rcs-api-openapi.yml
+  - type: Documentation
+    url: https://developers.kudosity.com/docs
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/about-mms
+  - type: Authentication
+    url: https://developers.kudosity.com/reference/authentication
+  - type: Webhooks
+    url: asyncapi/kudosity-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/kudosity-problem-types.yml
+  - type: DataModel
+    url: data-model/kudosity-data-model.yml
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/post_send-sms-json
+  - type: ErrorCodes
+    url: errors/kudosity-error-codes.yml
+- aid: kudosity:kudosity-reporting-api
+  name: Kudosity Reporting API
+  description: The Reporting API from Kudosity — 11 operation(s) for reporting.
+  humanURL: https://developers.kudosity.com/reference/about-mms
+  baseURL: https://api.transmitmessage.com
+  tags:
+  - Reporting
+  properties:
+  - type: OpenAPI
+    url: openapi/kudosity-reporting-api-openapi.yml
+  - type: Documentation
+    url: https://developers.kudosity.com/docs
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/about-mms
+  - type: Authentication
+    url: https://developers.kudosity.com/reference/authentication
+  - type: Webhooks
+    url: asyncapi/kudosity-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/kudosity-problem-types.yml
+  - type: DataModel
+    url: data-model/kudosity-data-model.yml
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/post_send-sms-json
+  - type: ErrorCodes
+    url: errors/kudosity-error-codes.yml
+- aid: kudosity:kudosity-senders-api
+  name: Kudosity Senders API
+  description: The Senders API from Kudosity — 4 operation(s) for senders.
+  humanURL: https://developers.kudosity.com/reference/about-mms
+  baseURL: https://api.transmitmessage.com
+  tags:
+  - Senders
+  properties:
+  - type: OpenAPI
+    url: openapi/kudosity-senders-api-openapi.yml
+  - type: Documentation
+    url: https://developers.kudosity.com/docs
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/about-mms
+  - type: Authentication
+    url: https://developers.kudosity.com/reference/authentication
+  - type: Webhooks
+    url: asyncapi/kudosity-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/kudosity-problem-types.yml
+  - type: DataModel
+    url: data-model/kudosity-data-model.yml
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/post_send-sms-json
+  - type: ErrorCodes
+    url: errors/kudosity-error-codes.yml
+- aid: kudosity:kudosity-sms-api
+  name: Kudosity SMS API
+  description: >-
+    The primary method of sending SMS.
+
+
+    You can elect to pass us the recipient numbers from your database each time you make an API call.
+
+
+    In order to send to a local number for a recipient the Sender virtual number needs to be in the same
+    country.
+
+
+    You can pass us the recipient number in international format and we will deliver your message with
+    the Sender virtual number on your account for the same country.
+
+
+    If you do not have a Sender virtual number for the same country we will use a local number for the
+    country you are sending to in order to deliver your message.
+
+
+    List of countries we currently deliver to: [Global Delivery List](https://help.kudosity.com/support/solutions/articles/44001077065-global-sms-delivery-list)
+  humanURL: https://developers.kudosity.com/reference/about-mms
+  baseURL: https://api.transmitmessage.com
+  tags:
+  - SMS
+  properties:
+  - type: OpenAPI
+    url: openapi/kudosity-sms-api-openapi.yml
+  - type: Documentation
+    url: https://developers.kudosity.com/docs
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/about-mms
+  - type: Authentication
+    url: https://developers.kudosity.com/reference/authentication
+  - type: Webhooks
+    url: asyncapi/kudosity-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/kudosity-problem-types.yml
+  - type: DataModel
+    url: data-model/kudosity-data-model.yml
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/post_send-sms-json
+  - type: ErrorCodes
+    url: errors/kudosity-error-codes.yml
+- aid: kudosity:kudosity-webhook-api
+  name: Kudosity Webhook API
+  description: "Our webhooks API allows you to subscribe to events for SMS, MMS, and RCS messages. Using\
+    \ them requires you to have URLs (https) configured on your account that can receive POST requests\
+    \ over the internet.\n\nThe `event_type` field is an enum that specifies which event to subscribe\
+    \ to:\n\n- LINK_HIT\n- OPT_OUT\n- MMS_STATUS\n- MMS_INBOUND\n- SMS_INBOUND\n- SMS_STATUS\n- RCS_STATUS\n\
+    \    \n\nFor status events, the nested `status` field is an enum with these values:\n\n- FAILED: Failed\
+    \ because of an error from the carrier or handset.\n    \n- SENT: Submitted to the carrier.\n- ACCEPTED:\
+    \ Accepted by the carrier and delivery may have been attempted (but is not confirmed).\n- DELIVERED:\
+    \ Delivered to handset.\n- SOFT_BOUNCE: Undeliverable due to handset being switched off, out of range\
+    \ or other temporary deliverability issue.\n- HARD_BOUNCE: Handset was disconnected.\n- OTHER: Any\
+    \ other status from the carrier.\n    \n\n## Link Hit\n\nThe `LINK_HIT` event is triggered any time\
+    \ a recipient visits a link that is tracked. Track Links is an optional flag on the send message API\
+    \ calls. Along with the URL that was being tracked is a hits field indicating how many visits this\
+    \ tracked link has in total and a source_message which contains the track link sent to the recipient.\n\
+    \n###### Example Payloads\n\n```json Hit link in MMS {\n  \"event_type\": \"LINK_HIT\",\n  \"timestamp\"\
+    : \"2021-05-06T05:19:42Z\",\n  \"link_hit\": {\n    \"hits\": 1,\n    \"url\": \"https://www.example.com/abc\"\
+    ,\n    \"source_message\": {\n      \"type\": \"MMS\",\n      \"id\": \"b50e4dc1-e57f-459c-a15c-526bee00a4c4\"\
+    ,\n      \"message\": \"Hey, Check this out! http://clckme.info/KYhSsuIH Opt-out reply STOP\",\n \
+    \     \"message_ref\": \"D701\",\n      \"recipient\": \"61435790000\",\n      \"sender\": \"61481074191\"\
+    ,\n      \"subject\": \"Hello\",\n      \"content_urls\": [\n        \"https://res.cloudinary.com/burstsms/image/upload/v1618798563/284KB_qgqtbe.jpg\"\
+    \n      ]\n    }\n  }\n} ``` ```json Hit link in SMS {\n  \"event_type\": \"LINK_HIT\",\n  \"timestamp\"\
+    : \"2021-07-20T23:14:04Z\",\n  \"link_hit\": {\n    \"hits\": 1,\n    \"url\": \"https://www.example.com/abc\"\
+    ,\n    \"source_message\": {\n      \"type\": \"SMS\",\n      \"id\": \"faf68308-16cd-4cf9-aef7-47342bd405be\"\
+    ,\n      \"message\": \"Hey, Check this out! http://clckme.info/KYhSsuIH for Opt-out reply STOP or\
+    \ hit opt out link - http://nsub.me/vqHTcCsh \",\n      \"message_ref\": \"D301\",\n      \"recipient\"\
+    : \"61435795809\",\n      \"sender\": \"61481074185\"\n    }\n  }\n} ```\n## Opt Out\n\nThe `OPT_OUT`\
+    \ event is triggered when a recipient has visited an opt-out link in a message they have received\
+    \ or by sending a message with the text \"STOP\".\n\nUsing parameter \\[opt-out-link\\] in message\
+    \ body, inserts the opt-out link.\n\nThe source field will be set according to the method a recipient\
+    \ has used to opt-out and contain a value of either link or SMS.\n  \n\n###### Example Payloads\n\n\
+    ```json Opt out via link {\n  \"event_type\": \"OPT_OUT\",\n  \"timestamp\": \"2021-05-06T05:16:20Z\"\
+    ,\n  \"opt_out\": {\n    \"source\": \"LINK_HIT\",\n    \"source_message\": {\n      \"type\": \"\
+    SMS\",\n      \"id\": \"a51ebe4e-a412-440e-a8d9-464e68a521cc\",\n      \"message\": \"Hey, Check this\
+    \ out! http://clckme.info/KYhSsuIH for Opt-out reply STOP or hit opt out link - http://nsub.me/vqHTcCsh\"\
+    ,\n      \"message_ref\": \"ncc5009d\",\n      \"recipient\": \"61435790000\",\n      \"sender\":\
+    \ \"61481074190\"  \n    }\n  }\n} ``` ```json Opt out via message {\n  \"event_type\": \"OPT_OUT\"\
+    ,\n  \"timestamp\": \"2021-05-06T05:16:20Z\",\n  \"opt_out\": {\n    \"source\": \"SMS_INBOUND\",\n\
+    \    \"source_message\": {\n      \"type\": \"SMS\",\n      \"id\": \"a51ebe4e-a412-440e-a8d9-464e68a521cc\"\
+    ,\n      \"message\": \"Hey, Check this out! http://clckme.info/KYhSsuIH for Opt-out reply STOP or\
+    \ hit opt out link - http://nsub.me/vqHTcCsh\",\n      \"message_ref\": \"ncc5009d\",\n      \"recipient\"\
+    : \"61435790000\",\n      \"sender\": \"61481074190\"\n    }\n  }\n} ```\n## MMS Status\n\nThe `MMS_STATUS`\
+    \ event data is posted to you for changes to an MMS message status. These are currently only comprised\
+    \ of internal statuses (SENT, FAILED).\n\n###### Example Payload\n\n```json {\n  \"event_type\": \"\
+    MMS_STATUS\",\n  \"timestamp\": \"2021-05-06T05:19:33Z\",\n  \"status\": {\n    \"type\": \"MMS\"\
+    ,\n    \"id\": \"b50e4dc1-e57f-459c-a15c-526bee00a4c4\",\n    \"message_ref\": \"D7001\",\n    \"\
+    recipient\": \"61435790000\",\n    \"sender\": \"61481074191\",\n    \"status\": \"SENT\"\n  }\n}\
+    \ ```\n## SMS Inbound\n\nThe `SMS_INBOUND` event is posted to you on receipt of an SMS sent from a\
+    \ recipient to one of the senders listed on your account. For convenience we will try and find a message\
+    \ that you have sent to this recipient from that sender and supply it as the `last_message` field.\
+    \ This is useful for determining if an inbound message is potentially a reply. The `routed_via` field\
+    \ will display when a shared local number has been used to deliver your message.\n\n###### Example\
+    \ Payload\n\n```json {\n  \"event_type\": \"SMS_INBOUND\",\n  \"timestamp\": \"2021-05-06T05:16:33Z\"\
+    ,\n  \"mo\": {\n    \"type\":\"SMS\",\n    \"id\": \"alss-2way-605b31c7-d2c49104\",\n    \"message\"\
+    : \"Stop\",\n    \"recipient\": \"61481074190\",\n    \"routed_via\": \"447507333300\",\n    \"sender\"\
+    : \"447507222200\",\n    \"last_message\": {\n      \"type\":\"SMS\",\n      \"id\": \"a51ebe4e-a412-440e-a8d9-464e68a521cc\"\
+    ,     \n      \"message\": \"Hey, check this out!\",\n      \"message_ref\": \"ncc5009d\",\n     \
+    \ \"recipient\": \"447507222200\",\n      \"routed_via\": \"447507333300\",\n      \"sender\": \"\
+    61481074190\"\n    }\n  }\n} ```\n## SMS Status\n\nThe `SMS_STATUS` event data is posted to you for\
+    \ changes to a SMS message status. Multiple status events can be triggered for a single message.\n\
+    \nThe `routed_via` field will display when a shared local number has been used to deliver your message.\n\
+    \n###### Example Payload\n\n```json {\n  \"event_type\": \"SMS_STATUS\",\n  \"timestamp\": \"2021-05-06T05:16:07Z\"\
+    ,\n  \"status\": {\n    \"type\": \"SMS\",\n    \"id\": \"a51ebe4e-a412-440e-a8d9-464e68a521cc\",\n\
+    \    \"message_ref\": \"ncc5009d\",\n    \"recipient\": \"447507222200\",\n    \"routed_via\": \"\
+    447507333300\",\n    \"sender\": \"61481074190\",\n    \"status\": \"SENT\"\n  }\n} ```\n## RCS Status\n\
+    \nThe `RCS_STATUS` event data is posted to you for changes to an RCS message status. RCS supports\
+    \ enhanced status tracking including read receipts.\n\nRCS-specific statuses include:\n\n- SENT: Submitted\
+    \ to the carrier.\n- DELIVERED: Delivered to handset.\n- FAILED: Failed because of an error from the\
+    \ carrier or handset.\n- READ: Message was read by the recipient (RCS-specific feature).\n\n######\
+    \ Example Payload\n\n```json {\n  \"event_type\": \"RCS_STATUS\",\n  \"timestamp\": \"2025-01-07T05:16:07Z\"\
+    ,\n  \"webhook_id\": \"fd0e6485-b905-44c1-bd55-fee1d0d6d864\",\n  \"webhook_name\": \"RCS Status Webhook\"\
+    ,\n  \"status\": {\n    \"type\": \"RCS\",\n    \"id\": \"6fdae71c-dad7-4c36-9734-a69693ecf3b4\",\n\
+    \    \"message_ref\": \"order-12345\",\n    \"recipient\": \"+447903749662\",\n    \"sender\": \"\
+    DemoSender\",\n    \"status\": \"READ\"\n  }\n} ```"
+  humanURL: https://developers.kudosity.com/reference/about-mms
+  baseURL: https://api.transmitmessage.com
+  tags:
+  - Webhook
+  properties:
+  - type: OpenAPI
+    url: openapi/kudosity-webhook-api-openapi.yml
+  - type: Documentation
+    url: https://developers.kudosity.com/docs
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/about-mms
+  - type: Authentication
+    url: https://developers.kudosity.com/reference/authentication
+  - type: Webhooks
+    url: asyncapi/kudosity-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/kudosity-problem-types.yml
+  - type: DataModel
+    url: data-model/kudosity-data-model.yml
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/post_send-sms-json
+  - type: ErrorCodes
+    url: errors/kudosity-error-codes.yml
+- aid: kudosity:kudosity-whatsapp-api
+  name: Kudosity Whats App API
+  description: The WhatsApp API from Kudosity — 2 operation(s) for whatsapp.
+  humanURL: https://developers.kudosity.com/reference/about-mms
+  baseURL: https://api.transmitmessage.com
+  tags:
+  - WhatsApp
+  properties:
+  - type: OpenAPI
+    url: openapi/kudosity-whatsapp-api-openapi.yml
+  - type: Documentation
+    url: https://developers.kudosity.com/docs
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/about-mms
+  - type: Authentication
+    url: https://developers.kudosity.com/reference/authentication
+  - type: Webhooks
+    url: asyncapi/kudosity-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/kudosity-problem-types.yml
+  - type: DataModel
+    url: data-model/kudosity-data-model.yml
+  - type: APIReference
+    url: https://developers.kudosity.com/reference/post_send-sms-json
+  - type: ErrorCodes
+    url: errors/kudosity-error-codes.yml
 maintainers:
   - FN: Kudosity
     url: https://kudosity.com
