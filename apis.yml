@@ -493,6 +493,9 @@ enriched:
     - https://developers.kudosity.com/docs/mcp
     - https://kudosity.com
 common:
+  - type: CapabilityMap
+    url: capabilities/kudosity-capability-edges.yml
+    name: Kudosity Business Capability Map
   - type: IssueTracker
     url: https://github.com/kudosity/mcp/issues
   - type: PostmanWorkspace
