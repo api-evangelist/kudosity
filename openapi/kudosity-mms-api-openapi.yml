@@ -1,0 +1,285 @@
+openapi: 3.2.0
+info:
+  title: Transmit Message MMS API
+  description: Transmit APIs
+  version: '20250101'
+  x-go-package: github.com/oapi-codegen/runtime
+servers:
+- url: https://api.transmitmessage.com
+security:
+- ApiKeyAuth: []
+tags:
+- name: MMS
+  description: The primary method of sending MMS
+paths:
+  /v2/mms:
+    post:
+      tags:
+      - MMS
+      summary: Send MMS
+      description: 'The Send MMS endpoint allows you to send multimedia messages (MMS) to recipients. '
+      security:
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MMSSendRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MMSResponse'
+              example:
+                id: 6fdae71c-dad7-4c36-9734-a69693ec2318
+                recipient: '61435795809'
+                sender: '61481074185'
+                country: AU
+                subject: USS Enterprise
+                message: Check out this amazing specimen.
+                message_ref: ncc1701d
+                content_urls:
+                - http://res.cloudinary.com/burstsms/image/upload/v1590111670/enterprise-d_ghf9t8.jpg
+                status: pending
+                track_links: true
+                created_at: '2022-03-29T04:42:01.631708761Z'
+                updated_at: '2022-03-29T04:42:01.631708761Z'
+  /v2/mms/{id}:
+    get:
+      tags:
+      - MMS
+      summary: Get MMS
+      description: This request retrieves the information of an existing sent MMS message. You only need to supply the unique message id that was returned upon creation.
+      security:
+      - ApiKeyAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique ID of the sent MMS
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: A single MMS message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MMSResponse'
+              example:
+                id: 6fdae71c-dad7-4c36-9734-a69693ec2318
+                recipient: '61435795809'
+                sender: '61481074185'
+                country: AU
+                subject: USS Enterprise
+                message: Check out this amazing specimen.
+                message_ref: ncc1701d
+                content_urls:
+                - http://res.cloudinary.com/burstsms/image/upload/v1590111670/enterprise-d_ghf9t8.jpg
+                status: sent
+                track_links: true
+                created_at: '2022-03-29T04:42:01.631708Z'
+                updated_at: '2022-03-29T04:42:01.776094Z'
+        '400':
+          description: Invalid MMS ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: invalid MMS ID
+        '404':
+          description: MMS not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: MMS not found
+components:
+  schemas:
+    MMSResponse:
+      type: object
+      description: MMS message details.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the MMS message.
+          example: 6fdae71c-dad7-4c36-9734-a69693ec2318
+        recipient:
+          type: string
+          description: The destination number for delivery.
+          example: '61435795809'
+        sender:
+          type: string
+          description: The sender number.
+          example: '61481074185'
+        country:
+          type: string
+          description: Country code.
+          example: AU
+          x-go-type-skip-optional-pointer: true
+        subject:
+          type: string
+          description: Subject of the message.
+          example: USS Enterprise
+          x-go-type-skip-optional-pointer: true
+        message:
+          type: string
+          description: Body text of the message.
+          example: Check out this amazing specimen.
+          x-go-type-skip-optional-pointer: true
+        message_ref:
+          type: string
+          description: Reference supplied by your system.
+          example: ncc1701d
+          x-go-type-skip-optional-pointer: true
+        content_urls:
+          type: array
+          description: List of media file URLs.
+          items:
+            type: string
+          example:
+          - http://res.cloudinary.com/burstsms/image/upload/v1590111670/enterprise-d_ghf9t8.jpg
+        status:
+          type: string
+          description: Status of the message.
+          example: sent
+        track_links:
+          type: boolean
+          description: Whether link tracking is enabled.
+          example: true
+        is_sandbox:
+          type: boolean
+          deprecated: true
+          description: Deprecated. Will be removed in a future version.
+          x-go-type-skip-optional-pointer: true
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the MMS was created.
+          example: '2022-03-29T04:42:01.631708Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp when the MMS was last updated.
+          example: '2022-03-29T04:42:01.776094Z'
+      required:
+      - id
+      - recipient
+      - sender
+      - country
+      - subject
+      - message
+      - message_ref
+      - content_urls
+      - status
+      - track_links
+      - created_at
+      - updated_at
+      - is_sandbox
+    MMSSendRequest:
+      type: object
+      properties:
+        subject:
+          type: string
+          description: Subject of the message. Maximum length of 20 characters.
+          pattern: ^[\x00-\x7F]*$
+          example: USS Enterprise
+          maxLength: 20
+          x-oapi-codegen-extra-tags:
+            valid: ascii
+          x-go-type-skip-optional-pointer: true
+        message:
+          type: string
+          description: 'Body text of the message. Maximum length of 1,000 characters.
+
+            If opt-out is required, insert parameter [opt-out-link]
+
+            into the message and a link will be generated.
+
+            '
+          x-go-type-skip-optional-pointer: true
+        message_ref:
+          type: string
+          description: 'A reference supplied by your system. Maximum length of 500 characters.
+
+            This reference will be passed back in webhooks so that you can
+
+            relate events to messages you sent.
+
+            For example, being able to relate a Link Hit event to a specific
+
+            sent message.
+
+            '
+          maxLength: 500
+          x-oapi-codegen-extra-tags:
+            valid: length(0|500)
+          x-go-type-skip-optional-pointer: true
+        sender:
+          type: string
+          description: The sender is the number that shows recipients who sent the message.
+          x-oapi-codegen-extra-tags:
+            valid: required
+        recipient:
+          type: string
+          description: 'The destination number for delivery.
+
+            Can be either in local format or in international format.
+
+            For international format, it should follow E.164 standard.
+
+            [http://en.wikipedia.org/wiki/E.164](http://en.wikipedia.org/wiki/E.164)
+
+            Can only send to Australia currently.
+
+            Examples of conversions to E.164 format:
+
+            Australia 0438 333 061 => 61438333061
+
+            '
+          x-oapi-codegen-extra-tags:
+            valid: required
+        content_urls:
+          type: array
+          items:
+            type: string
+          description: "Specify a list of URLs of the media file(s) that you are trying to send. \nSupported file formats include jpg, gif, png, MP3, and video MP4. Only one image up to 400 KB can be attached at a time.\nURLs must be absolute paths to the media file, they cannot be relative paths. For example, https://outbound-mms.smsbump.com/2024/fashion.gif.\n"
+          x-oapi-codegen-extra-tags:
+            valid: required
+        track_links:
+          type: boolean
+          description: 'Enable the link tracking feature which replaces links in outbound messages
+
+            with shortened links.
+
+            This allows us to track when recipients view links.
+
+            '
+          x-go-type-skip-optional-pointer: true
+        is_sandbox:
+          type: boolean
+          deprecated: true
+          description: Deprecated. Will be removed in a future version.
+          x-go-type-skip-optional-pointer: true
+      required:
+      - sender
+      - recipient
+      - content_urls
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: 'All API requests require your API credentials, you will find them once logged into your account on the SETTINGS page. Scroll down to API Settings to find your API key.
+
+        '

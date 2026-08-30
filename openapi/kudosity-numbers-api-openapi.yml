@@ -1,0 +1,395 @@
+openapi: 3.2.0
+info:
+  title: Transmit SMS Numbers API
+  description: '<p>With so many SMS APIs on the market today, you might think that they all do the same thing: send text messages. But with our flexible and powerful suite of APIs, you can do more than that.</p>'
+  version: 1.0.0
+servers:
+- url: https://api.transmitsms.com
+tags:
+- name: Numbers
+paths:
+  /lease-number.json:
+    post:
+      tags:
+      - Numbers
+      summary: Add Dedicated Virtual Number
+      description: 'Lease Number
+
+
+        Dedicated virtual numbers are used to receive MO (Mobile Originated) messages. They also make sure that all of your messages are sent from a number that is always the same. Dedicated Virtual Number availability is limited to certain countries. Check [Global Sender ID Information](https://portal.transmitsms.com/s/article/Global-Sender-ID-Information) for availability for your destination coutry.'
+      security:
+      - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                number:
+                  type: integer
+                  description: Number to lease. Omit this field to be given a random number. Use "get-numbers" to find out which numbers are currently available.
+                forward_url:
+                  type: string
+                  format: uri
+                  description: Assign a callback URL to the number. A URL on your system which we can call to notify you of incoming messages. If required, this parameter can be different for each message sent. Will override the default Reply Callback URL if set in the SETTINGS section of your account.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  number:
+                    type: string
+                    description: Number assigned to your account
+                  price:
+                    type: number
+                    description: Monthly cost of number leased in account currency
+                  next_charge:
+                    type: string
+                    format: date
+                    description: Date of next monthly charge. In ISO8601 format (YYYY-MM-DD).
+                  auto_renew:
+                    type: boolean
+                    description: Returns auto_renew status of number. Always returns true for new number.
+              examples:
+                example-0:
+                  summary: Example 2
+                  value:
+                    number: 61418279031
+                    price: 25
+                    next_charge: '2020-07-24'
+                    auto_renew: true
+                    status: active
+                    error:
+                      code: SUCCESS
+                      description: OK
+                example-1:
+                  summary: Example 1
+                  value:
+                    number: 61417861086
+                    price: 25
+                    next_charge: '2020-07-24'
+                    auto_renew: true
+                    status: active
+                    error:
+                      code: SUCCESS
+                      description: OK
+  /get-numbers.json:
+    get:
+      tags:
+      - Numbers
+      summary: Get Numbers
+      description: 'Edit inbound options for a dedicated virtual number.
+
+
+        **Get a list of numbers leased by you or available to be leased.**
+
+
+        Dedicated virtual numbers are used to receive MO (Mobile Originated) messages. They also make sure that all of your messages are sent from a number that is always the same. Dedicated Virtual Number availability is limited to certain countries. Check [Global SMS delivery list](https://support.transmitsms.com/support/solutions/articles/44001940675-global-sms-delivery-list) for availability for your destination country.
+
+
+        ## Pagination
+
+
+        This endpoint supports pagination using the page/max pattern:
+
+
+        **Parameters:**
+
+        - `page`: Page number starting from 1 (default: 1)
+
+        - `max`: Maximum results per page (default: varies, recommended: 10-100)
+
+        - `filter`: Choose ''owned'' or ''available'' (default: owned)
+
+
+        **Response Structure:**
+
+        The response includes pagination metadata:
+
+        - `page.count`: Total number of pages available
+
+        - `page.number`: Current page number
+
+        - `numbers_total`: Total count of numbers matching the filter
+
+
+        **Navigation Examples:**
+
+        ```
+
+        # First page of owned numbers (default)
+
+        GET /get-numbers.json
+
+
+        # Second page with 20 results per page
+
+        GET /get-numbers.json?page=2&max=20
+
+
+        # Available numbers for leasing
+
+        GET /get-numbers.json?filter=available&max=50
+
+
+        # Navigate through all pages
+
+        GET /get-numbers.json?page=1&max=100
+
+        GET /get-numbers.json?page=2&max=100
+
+        # Continue until page.number >= page.count
+
+        ```
+
+
+        **Best Practices:**
+
+        - Use max=10-20 for UI display purposes
+
+        - Use max=50-100 for administrative tasks
+
+        - Check page.count to determine if more pages exist
+
+        - Filter by ''owned'' vs ''available'' to reduce dataset size
+
+        - For large accounts, consider filtering by country or status'
+      security:
+      - basicAuth: []
+      parameters:
+      - in: query
+        name: filter
+        schema:
+          type: string
+          enum:
+          - owned
+          - available
+        description: Choose owned or available. Default is owned.
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Page number for pagination.
+      - in: query
+        name: max
+        schema:
+          type: integer
+        description: Maximum results returned per page.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: object
+                    properties:
+                      count:
+                        type: integer
+                        description: Number of pages
+                      number:
+                        type: integer
+                        description: Page number
+                  numbers_total:
+                    type: integer
+                    description: Total amount of numbers leased
+                  numbers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        number:
+                          type: string
+                          description: Number assigned to your account
+                        price:
+                          type: number
+                          description: Monthly cost of number leased
+                        next_charge:
+                          type: string
+                          format: date
+                          description: Date of next monthly charge in YYYY-MM-DD format
+                        auto_renew:
+                          type: boolean
+                          description: Returns auto_renew status of number
+              example:
+                page:
+                  count: 1
+                  number: 1
+                numbers_total: 1
+                filter: owned
+                numbers:
+                - number: 61436446702
+                  price: 25
+                  auto_renew: true
+                  next_charge: '2020-07-15'
+                  status: active
+                error:
+                  code: SUCCESS
+                  description: OK
+            text/plain:
+              schema:
+                type: string
+              example: "<?xml version=\"1.0\"?>\n<response>\n    <page>\n        <count>1</count>\n        <number>1</number>\n    </page>\n    <numbers_total>1</numbers_total>\n    <filter>owned</filter>\n    <numbers>\n        <item>\n            <number>61436446702</number>\n            <price>25</price>\n            <auto_renew>true</auto_renew>\n            <next_charge>2020-07-15</next_charge>\n            <status>active</status>\n        </item>\n    </numbers>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+  /get-number.json:
+    post:
+      tags:
+      - Numbers
+      summary: Get Number Information
+      description: 'Get detailed information about a number you have leased.
+
+        '
+      security:
+      - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - number
+              properties:
+                number:
+                  type: integer
+                  description: Number to retrieve Omit this field to be given a random number. Use get-numbers to find out which numbers are currently available.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  number:
+                    type: string
+                    description: Number assigned to your account
+                  price:
+                    type: number
+                    description: Monthly cost of number leased in account currency
+                  next_charge:
+                    type: string
+                    format: date
+                    description: Date of next monthly charge in ISO8601 format (YYYY-MM-DD)
+                  auto_renew:
+                    type: boolean
+                    description: Returns auto_renew status of number
+                  status:
+                    type: string
+                    description: Status of number (e.g., active)
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        description: Error code
+                      header:
+                        type: integer
+                        description: HTTP status code
+                      description:
+                        type: string
+                        description: Description of the error
+              example:
+                number: 61418279031
+                price: 25
+                auto_renew: true
+                next_charge: '2020-07-24'
+                status: active
+                error:
+                  code: SUCCESS
+                  description: OK
+            text/plain:
+              schema:
+                type: string
+              example: "<?xml version=\"1.0\"?>\n<response>\n    <number>61418279031</number>\n    <price>25</price>\n    <auto_renew>true</auto_renew>\n    <next_charge>2020-07-24</next_charge>\n    <status>active</status>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+  /edit-number-options.json:
+    post:
+      tags:
+      - Numbers
+      summary: Edit Number Options
+      description: 'Edit inbound options for a dedicated virtual number.
+
+
+        These options adjust behaviour for messages that are sent to this number.'
+      security:
+      - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - number
+              properties:
+                number:
+                  type: integer
+                  description: Dedicated virtual number assigned to your account. A list of numbers on your account can be retrieved using get-numbers.
+                  example: 1234567890
+                forward_email:
+                  type: string
+                  description: Forward incoming SMS to a set of email addresses. Emails can be comma separated.
+                  example: example1@example.com, example2@example.com
+                forward_sms:
+                  type: integer
+                  description: Forward incoming SMS to a set of mobile numbers. Numbers must be in international format. Can be comma separated.
+                  example: 1234567890, 9876543210
+                forward_url:
+                  type: string
+                  description: Forward incoming messages to a callback URL.
+                  example: http://example.com/callback
+                list_id:
+                  type: integer
+                  description: Add senders of incoming messages to this list.
+                  example: 1234
+                welcome_message:
+                  type: string
+                  description: Auto responder for all messages received.
+                  example: Welcome to our service! Thank you for contacting us.
+                members_message:
+                  type: string
+                  description: Auto-response if the number is already on the list. Must be adding the number to a list.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        description: Error code indicating success.
+                        example: SUCCESS
+                      description:
+                        type: string
+                        description: Description of the success.
+                        example: OK
+              example:
+                error:
+                  code: SUCCESS
+                  description: OK
+            text/plain:
+              schema:
+                type: string
+              example: "<?xml version=\"1.0\"?>\n<response>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: 'Use the `Authorization` header with the value `Basic {base64(api_key:api_secret)}`.
+
+        - `api_key`: Your API key
+
+        - `api_secret`: Your API secret
+
+        '

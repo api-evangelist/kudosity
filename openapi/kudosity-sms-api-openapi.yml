@@ -1,0 +1,1096 @@
+openapi: 3.2.0
+info:
+  title: Kudosity SMS API
+  x-refined-note:
+  - x-go-package differs across the merged source definitions and was not carried
+  version: '1.0'
+  description: 'Operations tagged SMS across 2 of this provider''s published API definitions: kudosity-transmit-message-openapi-original.yml, kudosity-transmit-sms-openapi-original.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.transmitmessage.com
+- url: https://api.transmitsms.com
+tags:
+- name: SMS
+  description: 'The primary method of sending SMS.
+
+
+    You can elect to pass us the recipient numbers from your database each time you make an API call.
+
+
+    In order to send to a local number for a recipient the Sender virtual number needs to be in the same country.
+
+
+    You can pass us the recipient number in international format and we will deliver your message with the Sender virtual number on your account for the same country.
+
+
+    If you do not have a Sender virtual number for the same country we will use a local number for the country you are sending to in order to deliver your message.
+
+
+    List of countries we currently deliver to: [Global Delivery List](https://help.kudosity.com/support/solutions/articles/44001077065-global-sms-delivery-list)'
+paths:
+  /v2/sms/{id}:
+    get:
+      tags:
+      - SMS
+      summary: Get SMS
+      description: Retrieves information about an existing SMS message. You only need to supply the unique message id that was returned upon message creation.
+      security:
+      - ApiKeyAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Unique ID of the sent SMS
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: A single SMS message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SMSResponse'
+        '404':
+          description: SMS not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: SMS not found
+    servers:
+    - url: https://api.transmitmessage.com
+  /v2/sms:
+    get:
+      tags:
+      - SMS
+      summary: List SMS
+      description: Retrieves a list of SMS messages. You can limit the number of messages returned and filter by properties listed in the parameters section.
+      security:
+      - ApiKeyAuth: []
+      parameters:
+      - name: query
+        in: query
+        description: 'Filter query parameters are added to the URL. Use as:
+
+          ?limit=1&page=2&start_date=2024-01-01T00:00:00Z
+
+          '
+        schema:
+          $ref: '#/components/schemas/ListSMSRequest'
+      responses:
+        '200':
+          description: A list of SMS messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListSMSResponse'
+    post:
+      tags:
+      - SMS
+      summary: Send SMS
+      description: Send a message from sender to recipient using the values shown in the parameters section.
+      security:
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendSMSRequest'
+      responses:
+        '200':
+          description: The SMS that was sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SMSResponse'
+    servers:
+    - url: https://api.transmitmessage.com
+  /send-sms.json:
+    post:
+      tags:
+      - SMS
+      summary: Send SMS
+      description: You can elect to pass us the recipient numbers from your database each time you make a call, or you can elect to store recipient data in a contact list and submit only the list_id to trigger the send. This is best for large databases. To add a list please refer to the add-list call.
+      security:
+      - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - message
+              - to
+              properties:
+                message:
+                  type: string
+                  description: 'Message Content Can be up to 612 alphanumeric characters. A part is 160 characters for a single SMS or 153 characters per part for multi-part SMS. If the message contains Unicode UTF8 encoded characters such as emoji’s or non latin character sets, then a single part is 70 characters or 67 characters for multiple parts. More information on message length and encoding: <a href="https://support.transmitsms.com/support/solutions/articles/44001940835-sms-message-length-and-character-count">SMS message length and character count</a>'
+                  example: Hello, world!
+                to:
+                  type: string
+                  description: Recipient Number/s Single number or set of up to 500 comma separated numbers to send the SMS to. Invalid numbers will be ignored. Number must be defined in E.164 international format. You can use countrycode parameter to format numbers that are in local format.
+                  example: '61478038915'
+                list_id:
+                  type: integer
+                  description: Recipient list This ID is the numerical reference to one of your recipient lists. It is found in the URL and displayed on a destination list page in your account. A list ID can also be created using the add-list call.
+                  example: 12345
+                countrycode:
+                  type: string
+                  description: 'Format the to number in international format. 2 letter ISO 3166 format country code or country name. Automatically formats numbers to international format required for reliable SMS delivery. eg. In Australia 0422222222 will become 6142222222 when set to AU or Australia. If not set to numbers must be defined in E.164 international format.
+
+
+                    | COUNTRY | COUNTRY CODE     | LOCAL          | INTERNATIONAL          |
+
+                    |--------|--------------|----------------------|----------------------|
+
+                    | Australia    | au      | 0491570156        |61491570156    |
+
+                    | New Zealand    | nz  | 0212670129    |64212670129         |
+
+                    | United Kingdom   | gb       | 0750017696    |44750017696  |
+
+                    | United States    | us  | 2513551145        |12513551145   |
+
+                    '
+                  example: US
+                from:
+                  type: string
+                  description: Sender ID Usually a dedicated virtual mobile number (VMN) or short code found in the NUMBERS section of your account. If no value is set here, it will default to the shared Sender ID for the country you are sending to. Can also be an 11 character alphanumeric sender if available for the destination country. You will need to click on the Add Sender ID button found in the NUMBERS section of your account in order to request the use of an Alphanumeric Sender ID. Sender ID functionality varies by country. <a href="https://portal.transmitsms.com/s/article/Global-Sender-ID-Information">Global Sender ID Information</a> Mobile and dedicated VMN's should be in international format. Alphanumeric senders (cannot be replied to) can have a maximum of 11 characters. No spaces. If opt out is required, using Custom Sender ID, use parameter [unsub-reply-link] in message to insert opt out link.
+                  example: Sender123
+                send_at:
+                  type: string
+                  format: date-time
+                  description: Schedule a message at a specific time. Must be in ISO8601 format YYYY-MM-DD HH:MM:SS utilising UTC Timezone. Eg. 2020-04-27 06:00:00
+                  example: '2024-04-24T12:00:00Z'
+                validity:
+                  type: integer
+                  description: Expire a message send if it is undeliverable Specify the maximum time to attempt to deliver. In minutes, 0 (zero) or not set implies maximum validity period. If a message is not delivered and not failed it is given a PENDING status in the system. These messages can be requested to be expired by the carrier after a certain time. This will return a DLR with a soft-bounce value. If no value is set, messages that remain in a PENDING state will be expired by the system automatically after 72hrs. <a href="https://support.transmitsms.com/support/solutions/articles/44001940868-what-does-a-message-with-a-pending-status-mean-">What does a message with a pending status mean?</a>
+                  example: 1440
+                replies_to_email:
+                  type: string
+                  description: 'Send Replies to this Email Specify an email address to send responses to this message. Email will come from the email address @transmitsms.com eg. 0456789010@transmitsms.com NOTE: If expectation is for replies to this email to be returned to the recipient as SMS then the email address must be authorised to send messages in your account under the ''EMAIL SMS'' section. Emails can also be authorised using the add-email call. <a href="https://support.transmitsms.com/support/solutions/articles/44001940840-how-to-set-up-email-sms">How to set up Email SMS</a>'
+                  example: example@example.com
+                tracked_link_url:
+                  type: string
+                  description: Converts this URL into a unique shortened tracking link Converts this URL to unique tapth.is/xxxxxx tracking link for each contact. Inserted into message with variable [tracked-link]. Only one [tracked-link] can be defined per message.
+                  example: https://example.com
+                link_hits_callback:
+                  type: string
+                  description: Send a link hit notification to this callback URL A URL on your system which we can call to notify you of a hit on your [tracked-link]. If required, this parameter can be different for each message sent. Will override the default DLR Callback URL if set in the SETTINGS section of your account.
+                  example: https://callback.example.com/linkhit
+                dlr_callback:
+                  type: string
+                  description: Send a delivery notification to this callback URL A URL on your system which we can call to notify you of Delivery Receipts. If required, this parameter can be different for each message sent. Will override the default DLR Callback URL if set in the SETTINGS section of your account.
+                  example: https://callback.example.com/delivery
+                reply_callback:
+                  type: string
+                  description: Send a reply notification to a callback URL A URL on your system which we can call to notify you of incoming messages. If required, this parameter can be different for each message sent. Will override the default Reply Callback URL if set in the SETTINGS section of your account.
+                  example: https://callback.example.com/reply
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: "<?xml version=\"1.0\"?>\n<response>\n    <message_id>339683245</message_id>\n    <send_at>2020-06-18 02:42:06</send_at>\n    <recipients>1</recipients>\n    <cost>0.087</cost>\n    <sms>1</sms>\n    <list>\n        <id>4070887</id>\n        <name>My Test List</name>\n    </list>\n    <delivery_stats>\n        <delivered>0</delivered>\n        <pending>0</pending>\n        <bounced>0</bounced>\n        <responses>0</responses>\n        <optouts>0</optouts>\n    </delivery_stats>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n        <header>200</header>\n    </error>\n</response>"
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message_id:
+                    type: integer
+                    description: Numeric ID assigned to the message sent. This can be used in conjunction with other calls to retrieve information and reporting about the message sent.
+                    example: 339683245
+                  send_at:
+                    type: string
+                    format: date-time
+                    description: Date and time that message was sent from your account Returned in ISO8601 format YYYY-MM-DD HH:MM:SS in UTC Timezone.
+                    example: '2020-06-18T02:42:06Z'
+                  recipients:
+                    type: integer
+                    description: Recipient count. Count of number of recipients message was sent to either in list or to parameter.
+                    example: 1
+                  cost:
+                    type: number
+                    description: Total cost of all messages. Returned as value per account currency to 3 decimal places 0.000
+                    example: 0.087
+                  sms:
+                    type: integer
+                    description: Total number of message parts delivered. If the message is longer than 160 characters this will return count of all parts. Eg. if a 180 character message is delivered to 2 recipients. Value returned will be 4.
+                    example: 1
+                  list:
+                    type: object
+                    description: Information about the list the message was sent Timezone.
+                    properties:
+                      id:
+                        type: integer
+                        description: 'This ID is the numerical reference to one of your recipient lists. It is found in the URL and displayed on a destination list page in your account. '
+                      name:
+                        type: string
+                        description: Name of the list that message was sent to.
+                  delivery_stats:
+                    type: object
+                    description: Delivery stats.
+                    properties:
+                      delivered:
+                        type: integer
+                        description: Number of delivered messages.
+                        example: 0
+                      pending:
+                        type: integer
+                        description: Number of pending messages.
+                        example: 0
+                      bounced:
+                        type: integer
+                        description: Number of bounced messages.
+                        example: 0
+                      responses:
+                        type: integer
+                        description: Number of responses.
+                        example: 0
+                      optouts:
+                        type: integer
+                        description: Number of opt-outs.
+                        example: 0
+                  error:
+                    type: object
+                    description: 'Error messages related to this call:
+
+
+                      | CODE          | HEADER           | DESCRIPTION                                                           |
+
+                      |---------------|------------------|-----------------------------------------------------------------------|
+
+                      | LEDGER_ERROR  | 400              | There was a problem with payment. Please check the output for more details. |
+
+                      | LIST_EMPTY    | 400              | The list you provided doesn''t have active recipients.                 |
+
+                      | RECIPIENTS_ERROR | 400            | No valid recipients left after validation.                            |
+
+                      '
+                    properties:
+                      code:
+                        type: string
+                        description: Error code.
+                        example: SUCCESS
+                      header:
+                        type: integer
+                        description: Error code.
+                        example: '400'
+                      description:
+                        type: string
+                        description: Description of the error.
+                        example: OK
+    servers:
+    - url: https://api.transmitsms.com
+  /cancel-sms.json:
+    post:
+      tags:
+      - SMS
+      summary: Cancel SMS
+      description: Messages scheduled can be cancelled using the message ID. Return a JSON or XML response by adding the appropriate extension to the base url (See examples).
+      security:
+      - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - id
+              properties:
+                id:
+                  type: integer
+                  description: Numeric ID assigned to the message sent.
+      responses:
+        '200':
+          description: OK
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Thu, 18 Jun 2020 11:20:59 GMT
+            Content-Type:
+              schema:
+                type: string
+                example: text/xml; charset=utf-8
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Server:
+              schema:
+                type: string
+                example: nginx/1.14.2
+            Expires:
+              schema:
+                type: string
+                example: Thu, 19 Nov 1981 08:52:00 GMT
+            Cache-Control:
+              schema:
+                type: string
+                example: no-store, no-cache, must-revalidate
+            Pragma:
+              schema:
+                type: string
+                example: no-cache
+            X-Mashape-Billing:
+              schema:
+                type: string
+                example: Queries=1
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
+            Vary:
+              schema:
+                type: string
+                example: Accept-Encoding
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: "<?xml version=\"1.0\"?>\n<response>\n    <success>OK</success>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+            application/json:
+              schema:
+                type: object
+              example:
+                success: OK
+                error:
+                  code: SUCCESS
+                  description: OK
+    servers:
+    - url: https://api.transmitsms.com
+  /format-number.json:
+    post:
+      tags:
+      - SMS
+      summary: Format Number
+      description: 'In the majority of cases, mobile phone number data coming from external systems is not ideal for SMS delivery. For highest reliability and to be able to route correctly a mobile number should be formatted in international format E.164
+
+        Normally however a number is stored in a CRM or contact database in local format, with spaces, hyphens and other types of unwanted characters that can cause a delivery to fail. The format-number call is used to sanitise a number by combining the country and the number. eg.
+
+        > Australia 0438 333 061 will become 61438333061
+
+        > New Zealand 0212172782 will become 64212172782
+
+        > USA (281) 869-1226 will become 12818691226'
+      security:
+      - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - msisdn
+              - countrycode
+              properties:
+                msisdn:
+                  type: integer
+                  description: Numeric to check Badly formatted number coming from source such as CRM or exported list.
+                countrycode:
+                  type: string
+                  description: 2 letter ISO countrycode or country name <a href="https://support.transmitsms.com/support/solutions/articles/44001940675-global-sms-delivery-list">Global SMS delivery list</a>
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  number:
+                    type: object
+                    properties:
+                      countrycode:
+                        type: integer
+                        description: International dialling code for destination country
+                      nationalnumber:
+                        type: integer
+                        description: Reformatted number without leading 0
+                      national_leading_zeroes:
+                        type: integer
+                        description: Unused, currently returns as per national_number
+                      rawinput:
+                        type: string
+                        description: Unused, always returns null
+                      international:
+                        type: integer
+                        description: Reformatted number in international format
+                      type:
+                        type: integer
+                        description: 'Returns numerical value depending on type of number.
+
+
+                          | VALUE | TYPE           |
+
+                          |-------|----------------|
+
+                          | 0     | Landline       |
+
+                          | 1     | Mobile Number  |
+
+                          | 10    | Invalid number |
+
+                          '
+                      isValid:
+                        type: boolean
+                        description: Checks to see if number is valid. Returns true or false.
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      description:
+                        type: string
+              example:
+                number:
+                  countrycode: 65
+                  nationalnumber: 96112234
+                  national_leading_zeroes: 96112234
+                  rawinput: null
+                  international: 6596112234
+                  type: 1
+                  isValid: true
+                error:
+                  code: SUCCESS
+                  description: OK
+    servers:
+    - url: https://api.transmitsms.com
+  /get-sms-responses.json:
+    post:
+      tags:
+      - SMS
+      summary: Get Responses by MessageID, Keyword or Mobile
+      description: Responses to your outgoing messages can be picked up in a few different ways. Your DLR Callback URL in your account settings, is the default URL we post incoming DLR's to. You can also set the DLR Callback URL separately for individual messages, using a parameter on the send-sms call. You can also poll the following endpoints for responses.
+      security:
+      - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - message_id
+              - keyword_id
+              - keyword
+              - number
+              properties:
+                message_id:
+                  type: integer
+                  description: Numeric ID assigned to the message sent. Required if **keyword_id** or **keyword is** not set.
+                start:
+                  type: string
+                  format: date-time
+                  description: A date within the last 12 months to start the report from. Must be in ISO8601 format YYYY-MM-DD HH:MM:SS utilizing UTC Timezone. If start and end date not supplied, will get everything from the last 30 days only.
+                end:
+                  type: string
+                  format: date-time
+                  description: A date within the last 12 months to end the report at. Must be in ISO8601 format YYYY-MM-DD HH:MM:SS utilizing UTC Timezone. If start and end date not supplied, will get everything from the last 30 days only.
+                keyword_id:
+                  type: integer
+                  description: Numeric ID assigned to the keyword. ID is assigned on creation of keyword in your account. A keyword can be created using add-keyword request. Keyword ID can be returned using the get-keyword request. NOTE A keyword IS NOT a specific string within the message. Required if **message_id** or **keyword** not set
+                keyword:
+                  type: string
+                  description: Keyword name. Name is assigned on creation of keyword in your account. A keyword can be created using add-keyword request. Keyword name can be returned using the get-keyword request. NOTE A keyword IS NOT a specific string within the message. Required if **message_id** or **keyword** not set
+                number:
+                  type: integer
+                  description: Filter results by Virtual Mobile Number (VMN). Get responses for messages containing a keyword received on a specific VMN. Numbers can be returned using the get-numbers request. Required if **keyword** not set
+                msisdn:
+                  type: integer
+                  description: Filter results by Responder Mobile Number (VMN). Get responses to messages that were from a specific mobile number.
+                include_original:
+                  type: boolean
+                  description: Include text of message that reply was sent to.
+                page:
+                  type: integer
+                  description: Page number, for pagination.
+                max:
+                  type: integer
+                  description: Maximum results returned per page.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: "<?xml version=\"1.0\"?>\n<response>\n    <page>\n        <count>1</count>\n        <number>1</number>\n    </page>\n    <total>1</total>\n    <responses>\n        <item>\n            <id>36573149</id>\n            <message_id>339814842</message_id>\n            <list_id>4070947</list_id>\n            <received_at>2020-06-23 10:03:44</received_at>\n            <first_name/>\n            <last_name/>\n            <msisdn>61478038915</msisdn>\n            <response>Hi There, this is a sample response</response>\n            <longcode>61429720235</longcode>\n            <original_message>This is my message, click on my link TapTh.is/hO2HL7b0</original_message>\n        </item>\n    </responses>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+            application/json:
+              schema:
+                type: object
+              example:
+                page:
+                  count: 1
+                  number: 1
+                total: 1
+                responses:
+                - id: 36573149
+                  message_id: 339814842
+                  list_id: 4070947
+                  received_at: '2020-06-23 10:03:44'
+                  first_name: null
+                  last_name: null
+                  msisdn: 61478038915
+                  response: Hi There, this is a sample response
+                  longcode: 61429720235
+                  original_message: This is my message, click on my link TapTh.is/hO2HL7b0
+                error:
+                  code: SUCCESS
+                  description: OK
+    servers:
+    - url: https://api.transmitsms.com
+  /get-user-sms-responses.json:
+    get:
+      tags:
+      - SMS
+      summary: Get Responses by  Time Frame
+      description: 'Gets the messsages from a defined timeframe.
+
+
+        ## Pagination
+
+
+        This endpoint supports pagination using the page/max pattern:
+
+
+        **Parameters:**
+
+        - `page`: Page number starting from 1 (default: 1)
+
+        - `max`: Maximum results per page (default: 10, recommended: 10-100)
+
+        - `mobile`: Required mobile number filter (E.164 format)
+
+        - `start`/`end`: Optional date range filters
+
+
+        **Response Structure:**
+
+        The response includes pagination metadata:
+
+        - `page.count`: Total number of pages available
+
+        - `page.number`: Current page number
+
+        - `total`: Total count of SMS responses matching the filters
+
+
+        **Navigation Examples:**
+
+        ```
+
+        # First page of responses for a mobile number (default)
+
+        GET /get-user-sms-responses.json?mobile=61478038915
+
+
+        # Second page with 25 results per page
+
+        GET /get-user-sms-responses.json?mobile=61478038915&page=2&max=25
+
+
+        # Responses within date range with pagination
+
+        GET /get-user-sms-responses.json?mobile=61478038915&start=2020-04-01T00:00:00Z&end=2020-04-30T23:59:59Z&max=50
+
+
+        # Navigate through all pages
+
+        GET /get-user-sms-responses.json?mobile=61478038915&page=1&max=20
+
+        GET /get-user-sms-responses.json?mobile=61478038915&page=2&max=20
+
+        # Continue until page.number >= page.count
+
+        ```
+
+
+        **Best Practices:**
+
+        - Use max=10-25 for UI display of conversation history
+
+        - Use max=50-100 for data export or analysis tasks
+
+        - Always specify date ranges for large datasets to improve performance
+
+        - Check page.count to determine if more pages exist
+
+        - Use sorting parameters (sort_field, order) to organize results effectively
+
+        - Consider the mobile number is required - this endpoint is designed for per-contact message history'
+      security:
+      - basicAuth: []
+      parameters:
+      - in: query
+        name: mobile
+        schema:
+          type: integer
+        required: true
+        description: The mobile number of the recipient. Number must be defined in E.164 international format. You can use countrycode parameter to format numbers that are in local format.
+        example: 61478038915
+      - in: query
+        name: countrycode
+        schema:
+          type: string
+        description: 'Format the mobile number to international format using 2-letter ISO 3166 country code or country name. 2 letter ISO 3166 format country code or country name. Automatically formats numbers to international format required for reliable SMS delivery. eg. In Australia 0422222222 will become 6142222222 when set to AU or Australia. If not set to numbers must be defined in E.164 international format.
+
+          | COUNTRY        | COUNTRY CODE | LOCAL      | INTERNATIONAL |
+
+          |----------------|--------------|------------|---------------|
+
+          | Australia      | au           | 0491570156 | 61491570156   |
+
+          | New Zealand    | nz           | 0212670129 | 64212670129   |
+
+          | United Kingdom | gb           | 0750017696 | 44750017696   |
+
+          | United States  | us           | 2513551145 | 12513551145   |
+
+          '
+        example: au
+      - in: query
+        name: start
+        schema:
+          type: string
+          format: date-time
+        description: The start date and time to filter messages. Must be in ISO8601 format YYYY-MM-DD HH:MM:SS utilizing UTC Timezone. If start and end date not supplied, will get everything from the account registration to current date.
+        example: '2020-04-27 06:00:00'
+      - in: query
+        name: end
+        schema:
+          type: string
+          format: date-time
+        description: The end date and time to filter messages. Must be in ISO8601 format YYYY-MM-DD HH:MM:SS utilizing UTC Timezone. If start and end date not supplied, will get everything from the account registration to current date.
+        example: '2020-04-27 06:00:00'
+      - in: query
+        name: sort_field
+        schema:
+          type: string
+        description: 'Sort by one of the following fields: delivery_status, message_id, datetime_send.
+
+          '
+        example: delivery_status
+      - in: query
+        name: order
+        schema:
+          type: string
+        description: Order by either ascending (asc) or descending (desc).
+        example: asc
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Page number for pagination.
+        example: 1
+      - in: query
+        name: max
+        schema:
+          type: integer
+        description: Maximum results returned per page.
+        example: 10
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: Numeric ID assigned to the message received.
+                  message_id:
+                    type: integer
+                    description: Numeric ID assigned to the message that was responded to.
+                  list_id:
+                    type: integer
+                    description: Numeric ID of the list that the original message was sent to. Returns 0 if message was not sent to a list.
+                  received_at:
+                    type: string
+                    format: date-time
+                    description: Date and time that response was received to your account. Returned in ISO8601 format YYYY-MM-DD HH:MM:SS in UTC Timezone.
+                  first_name:
+                    type: string
+                    description: First name of responder. Retrieved from list contact if available.
+                  last_name:
+                    type: string
+                    description: Last name of responder. Retrieved from list contact if available.
+                  msisdn:
+                    type: integer
+                    description: Mobile number of responder.
+                  error:
+                    type: object
+                    description: 'Error messages related to this call. For general errors see the API Introduction.
+
+
+                      | CODE           | HEADER | DESCRIPTION                                                |
+
+                      |----------------|--------|------------------------------------------------------------|
+
+                      | FIELD_INVALID  | 400    | If you provide ''keyword'', you must provide ''number''        |
+
+                      | FIELD_INVALID  | 400    | Field "keyword_id" has wrong type, expected type - numeric |
+
+                      | NO_ACCESS      | 400    | You do not have access to this ‘message’                   |
+
+                      '
+                    properties:
+                      CODE:
+                        type: integer
+                        description: Error code.
+                      HEADER:
+                        type: integer
+                        description: HTTP status code.
+                      DESCRIPTION:
+                        type: string
+                        description: Description of the error.
+            text/plain:
+              schema:
+                type: string
+              example: "<?xml version=\"1.0\"?>\n<response>\n    <page>\n        <count>1</count>\n        <number>1</number>\n    </page>\n    <total>4</total>\n    <responses>\n        <item>\n            <id>36573149</id>\n            <message_id>339814842</message_id>\n            <list_id>4070947</list_id>\n            <received_at>2020-06-23 10:03:44</received_at>\n            <first_name/>\n            <last_name/>\n            <msisdn>61478038915</msisdn>\n            <response>Hi There, this is a sample response</response>\n            <longcode>61429720235</longcode>\n        </item>\n        <item>\n            <id>36573132</id>\n            <message_id>340267059</message_id>\n            <list_id>4070887</list_id>\n            <received_at>2020-06-23 10:03:05</received_at>\n            <first_name>Ella</first_name>\n            <last_name>B</last_name>\n            <msisdn>61478038915</msisdn>\n            <response>I there, this is a sample response</response>\n            <longcode>61429625067</longcode>\n        </item>\n        <item>\n            <id>36283700</id>\n            <message_id>338808275</message_id>\n            <list_id>4070947</list_id>\n            <received_at>2020-06-15 01:15:49</received_at>\n            <first_name/>\n            <last_name/>\n            <msisdn>61478038915</msisdn>\n            <response>Received response</response>\n            <longcode>61436446702</longcode>\n        </item>\n        <item>\n            <id>36230542</id>\n            <message_id>338116740</message_id>\n            <list_id>4070947</list_id>\n            <received_at>2020-06-12 00:06:10</received_at>\n            <first_name/>\n            <last_name/>\n            <msisdn>61478038915</msisdn>\n            <response>Testing email sms</response>\n            <longcode>61429238797</longcode>\n        </item>\n    </responses>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+    servers:
+    - url: https://api.transmitsms.com
+components:
+  schemas:
+    SendSMSRequest:
+      type: object
+      properties:
+        message:
+          type: string
+          description: 'Body text of the message.
+
+            The message will be split into multiple parts if required. A part is 160 characters for a single SMS or 153 characters per part for multi-part SMS. If the message contains Unicode UTF8 encoded characters such as emoji’s or non latin character sets, then a single part is 70 characters or 67 characters for multiple parts.
+
+
+            More information on message length and encoding: https://support.transmitsms.com/s/article/44001076957-how-many-characters-can-i-have-in-my-text-message
+
+
+            If opt-out is required, insert parameter [opt-out-link] into the message and a link will be generated.
+
+            '
+          x-oapi-codegen-extra-tags:
+            valid: required
+        message_ref:
+          type: string
+          maxLength: 500
+          description: 'A reference supplied by your system. This reference will be passed back in webhooks so that you can relate events to messages you sent. For example, being able to relate a Link Hit event to a specific sent message.
+
+            '
+          x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            valid: length(0|500)
+        sender:
+          type: string
+          description: 'Sender is the number (or alphanumeric) that the message appears from on the handset.
+
+            Sender number must be assigned to your account for the country you are sending to. Contact us to get sender number(s) registered to your account.
+
+            Sender number functionality varies by country. You can send from an alphanumeric sender if it is available for the destination country.
+
+            Global SMS delivery list: https://support.transmitsms.com/s/article/page-products-connectivity-global-delivery-list
+
+
+            Alphanumeric senders (which cannot be replied to) have a maximum of 11 characters. Only letters, numbers, underscore, hyphen or space are allowed and they are included in the total character count. (Consecutive underscore, hyphen, space is not allowed.)
+
+            '
+          x-oapi-codegen-extra-tags:
+            valid: required
+        recipient:
+          type: string
+          description: "The destination number for delivery.\nCan be either in local format or in international format. Must be in the same country as the sender.\nFor international format, it should follow E.164 standard. http://en.wikipedia.org/wiki/E.164\n\nExamples of conversions to E.164 format:\n  Australia 0438 333 061 => 61438333061\n  New Zealand 0212172782 => 64212172782\n  USA (281) 869-1226 => 12818691226\n"
+          x-oapi-codegen-extra-tags:
+            valid: required
+        track_links:
+          type: boolean
+          description: 'Enable the link tracking feature which replaces links in outbound messages with shortened links. This allows us to track when recipients view links.
+
+            '
+          x-go-type-skip-optional-pointer: true
+      required:
+      - message
+      - sender
+      - recipient
+    Direction:
+      type:
+      - string
+      - 'null'
+      description: 'Message direction.
+
+        - OUT: Sent to the provider.
+
+        - IN: Sent from the provider.
+
+        '
+      enum:
+      - OUT
+      - IN
+    ListSMSResponse:
+      type: object
+      description: List of SMS messages.
+      properties:
+        smses:
+          type: array
+          items:
+            $ref: '#/components/schemas/SMSResponse'
+        total_records:
+          type: string
+        total_segments:
+          type: string
+      required:
+      - smses
+      - total_records
+      - total_segments
+    OrderByField:
+      type: string
+      description: 'Sort order. Default is CREATED_AT_ASC.
+
+        - CREATED_AT_ASC: Created at ascending.
+
+        - CREATED_AT_DESC: Created at descending.
+
+        '
+      enum:
+      - CREATED_AT_ASC
+      - CREATED_AT_DESC
+    Status:
+      type:
+      - string
+      - 'null'
+      description: 'Message status.
+
+        - PENDING: Queued for processing.
+
+        - SENT: Submitted to the provider.
+
+        - FAILED: Failed because of an error from the provider, a carrier, or the handset.
+
+        - DELIVERED: Delivered to handset.
+
+        - ACCEPTED: Accepted by the provider and delivery might have been attempted (but is not confirmed).
+
+        - SOFT_BOUNCE: Undeliverable due to handset being switched off, out of range or other temporary deliverability issue.
+
+        - HARD_BOUNCE: Handset was disconnected.
+
+        - OTHER: Any other DLR status from the provider.
+
+        - REJECTED: Message pending approval was rejected by the Kudosity support team.
+
+        - PENDING_APPROVAL: Message is pending approval by the Kudosity support team.
+
+        - SUBMITTED: Message is submitted to the provider.
+
+        - UNDELIVERABLE: Message is undeliverable.
+
+        - READ: Message is read by the recipient.
+
+        '
+      enum:
+      - PENDING
+      - SENT
+      - FAILED
+      - DELIVERED
+      - ACCEPTED
+      - SOFT_BOUNCE
+      - HARD_BOUNCE
+      - OTHER
+      - REJECTED
+      - PENDING_APPROVAL
+      - SUBMITTED
+      - UNDELIVERABLE
+      - READ
+    Format:
+      type:
+      - string
+      - 'null'
+      description: Response format
+      enum:
+      - JSON
+      - CSV
+    SMSResponse:
+      type: object
+      description: SMS message details.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the SMS message.
+          example: 2d2c8fb6-e514-4f5f-9706-0672b0259218
+        recipient:
+          type: string
+          description: The destination number for delivery.
+          example: '61478038915'
+        recipient_country:
+          type: string
+          description: Recipient country code.
+          example: AU
+        sender:
+          type: string
+          description: The sender number.
+          example: '61481074185'
+        sender_country:
+          type: string
+          description: Sender country code.
+          example: AU
+        message_ref:
+          type: string
+          description: Reference supplied by your system.
+          example: ncc1701d
+          x-go-type-skip-optional-pointer: true
+        message:
+          type: string
+          description: Body text of the SMS message.
+          example: Report to the ready room! Opt-out reply STOP
+        status:
+          type: string
+          description: Status of the message.
+          example: delivered
+        sms_count:
+          type: string
+          description: Number of SMS parts the message was split into.
+          example: '1'
+        is_gsm:
+          type: boolean
+          description: Whether the message uses GSM encoding.
+          example: true
+        is_sandbox:
+          type: boolean
+          deprecated: true
+          description: Deprecated. Will be removed in a future version.
+        routed_via:
+          type: string
+          description: The route used to send the message.
+          example: ''
+        track_links:
+          type: boolean
+          description: Whether link tracking is enabled.
+          example: true
+        direction:
+          type: string
+          description: Direction of the message (IN/OUT).
+          example: OUT
+        created_at:
+          type: string
+          description: Timestamp when the SMS was created.
+          example: '2022-03-28T06:12:52.450674000Z'
+        updated_at:
+          type: string
+          description: Timestamp when the SMS was last updated.
+          example: '2022-03-28T06:12:52.450674000Z'
+      required:
+      - id
+      - recipient
+      - recipient_country
+      - sender
+      - sender_country
+      - message_ref
+      - message
+      - status
+      - sms_count
+      - is_gsm
+      - is_sandbox
+      - routed_via
+      - track_links
+      - direction
+      - created_at
+      - updated_at
+      example:
+        id: 2d2c8fb6-e514-4f5f-9706-0672b0259218
+        recipient: '61478038915'
+        recipient_country: AU
+        sender: '61481074185'
+        sender_country: AU
+        message_ref: ncc1701d
+        message: Report to the ready room! Opt-out reply STOP
+        status: delivered
+        sms_count: '1'
+        is_gsm: true
+        routed_via: ''
+        track_links: true
+        direction: OUT
+        created_at: '2022-03-28T06:12:52.450674000Z'
+        updated_at: '2022-03-28T06:12:52.450674000Z'
+    ListSMSRequest:
+      type: object
+      properties:
+        limit:
+          type: string
+          description: Limit the number of SMS. Defaults to 100 for JSON.
+          x-go-type-skip-optional-pointer: true
+        page:
+          type: string
+          description: Page number in combination with limit. Defaults to 1 for JSON.
+          x-go-type-skip-optional-pointer: true
+        start_date:
+          type: string
+          format: string
+          description: Start date for SMS created, in RFC3339 format.
+          x-go-type-skip-optional-pointer: true
+        end_date:
+          type: string
+          format: string
+          description: End date for SMS created date, in RFC3339 format.
+          x-go-type-skip-optional-pointer: true
+        recipient:
+          type: string
+          description: Recipient filter.
+          x-go-type-skip-optional-pointer: true
+        sender:
+          type: string
+          description: Sender filter.
+          x-go-type-skip-optional-pointer: true
+        message_ref:
+          type: string
+          description: Message reference filter.
+          x-go-type-skip-optional-pointer: true
+        status:
+          $ref: '#/components/schemas/Status'
+        format:
+          $ref: '#/components/schemas/Format'
+        recipient_countries:
+          type: array
+          items:
+            type: string
+          description: ISO 3166 country codes. https://www.iso.org/iso-3166-country-codes.html
+        direction:
+          $ref: '#/components/schemas/Direction'
+        order_by:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderByField'
+          description: Sort order. Default is CREATED_AT_ASC.
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: 'All API requests require your API credentials, you will find them once logged into your account on the SETTINGS page. Scroll down to API Settings to find your API key.
+
+        '
+    basicAuth:
+      type: http
+      scheme: basic
+      description: 'Use the `Authorization` header with the value `Basic {base64(api_key:api_secret)}`.
+
+        - `api_key`: Your API key
+
+        - `api_secret`: Your API secret
+
+        '
+x-refined-from:
+- kudosity-transmit-message-openapi-original.yml
+- kudosity-transmit-sms-openapi-original.yml

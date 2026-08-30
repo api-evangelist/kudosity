@@ -1,0 +1,149 @@
+openapi: 3.2.0
+info:
+  title: Transmit SMS Email SMS API
+  description: '<p>With so many SMS APIs on the market today, you might think that they all do the same thing: send text messages. But with our flexible and powerful suite of APIs, you can do more than that.</p>'
+  version: 1.0.0
+servers:
+- url: https://api.transmitsms.com
+tags:
+- name: Email SMS
+paths:
+  /add-email.json:
+    post:
+      tags:
+      - Email SMS
+      summary: Add Email
+      description: Authorise Email Address
+      security:
+      - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: 'Email address to register. You may also register a wild-card email which allows any user on the same domain to use Email to SMS. Wild-card format: *@example.com
+
+                    '
+                max_sms:
+                  type: integer
+                  description: 'The maximum number of SMS messages to send from one email message sent from this email address.
+
+                    Possible values:
+
+
+                    - 1 - up to 160 characters (default)
+
+                    - 2 - up to 306 characters
+
+                    - 3 - up to 459 characters
+
+                    - 4 - up to 612 characters
+
+                    '
+                  enum:
+                  - 1
+                  - 2
+                  - 3
+                  - 4
+                  default: 1
+                number:
+                  type: integer
+                  description: Optional dedicated virtual number
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Indicates whether the request was successful.
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        description: Error code indicating the status of the operation.
+                      description:
+                        type: string
+                        description: Description of the error.
+              example:
+                success: true
+                error:
+                  code: SUCCESS
+                  description: OK
+            text/plain:
+              schema:
+                type: string
+              example: "<?xml version=\"1.0\"?>\n<response>\n    <success>true</success>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+  /delete-email.json:
+    post:
+      tags:
+      - Email SMS
+      summary: Delete Email
+      description: Remove an email address from the Email to SMS authorised list.
+      security:
+      - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Email address to remove. Use a wild-card email to remove all emails on that domain.
+              required:
+              - email
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Indicates if the operation was successful.
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        description: Error code if the operation was not successful.
+                      description:
+                        type: string
+                        description: Description of the error if the operation was not successful.
+              example:
+                success: true
+                error:
+                  code: SUCCESS
+                  description: OK
+            text/plain:
+              schema:
+                type: string
+              example: "<?xml version=\"1.0\"?>\n<response>\n    <success>true</success>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: 'Use the `Authorization` header with the value `Basic {base64(api_key:api_secret)}`.
+
+        - `api_key`: Your API key
+
+        - `api_secret`: Your API secret
+
+        '

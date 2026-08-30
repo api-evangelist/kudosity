@@ -1,0 +1,405 @@
+openapi: 3.2.0
+info:
+  title: Transmit Message Webhook API
+  description: Transmit APIs
+  version: '20250101'
+  x-go-package: github.com/oapi-codegen/runtime
+servers:
+- url: https://api.transmitmessage.com
+security:
+- ApiKeyAuth: []
+tags:
+- name: Webhook
+  description: "Our webhooks API allows you to subscribe to events for SMS, MMS, and RCS messages. Using them requires you to have URLs (https) configured on your account that can receive POST requests over the internet.\n\nThe `event_type` field is an enum that specifies which event to subscribe to:\n\n- LINK_HIT\n- OPT_OUT\n- MMS_STATUS\n- MMS_INBOUND\n- SMS_INBOUND\n- SMS_STATUS\n- RCS_STATUS\n    \n\nFor status events, the nested `status` field is an enum with these values:\n\n- FAILED: Failed because of an error from the carrier or handset.\n    \n- SENT: Submitted to the carrier.\n- ACCEPTED: Accepted by the carrier and delivery may have been attempted (but is not confirmed).\n- DELIVERED: Delivered to handset.\n- SOFT_BOUNCE: Undeliverable due to handset being switched off, out of range or other temporary deliverability issue.\n- HARD_BOUNCE: Handset was disconnected.\n- OTHER: Any other status from the carrier.\n    \n\n## Link Hit\n\nThe `LINK_HIT` event is triggered any time a recipient visits a link that is tracked. Track Links is an optional flag on the send message API calls. Along with the URL that was being tracked is a hits field indicating how many visits this tracked link has in total and a source_message which contains the track link sent to the recipient.\n\n###### Example Payloads\n\n```json Hit link in MMS {\n  \"event_type\": \"LINK_HIT\",\n  \"timestamp\": \"2021-05-06T05:19:42Z\",\n  \"link_hit\": {\n    \"hits\": 1,\n    \"url\": \"https://www.example.com/abc\",\n    \"source_message\": {\n      \"type\": \"MMS\",\n      \"id\": \"b50e4dc1-e57f-459c-a15c-526bee00a4c4\",\n      \"message\": \"Hey, Check this out! http://clckme.info/KYhSsuIH Opt-out reply STOP\",\n      \"message_ref\": \"D701\",\n      \"recipient\": \"61435790000\",\n      \"sender\": \"61481074191\",\n      \"subject\": \"Hello\",\n      \"content_urls\": [\n        \"https://res.cloudinary.com/burstsms/image/upload/v1618798563/284KB_qgqtbe.jpg\"\n      ]\n    }\n  }\n} ``` ```json Hit link in SMS {\n  \"event_type\": \"LINK_HIT\",\n  \"timestamp\": \"2021-07-20T23:14:04Z\",\n  \"link_hit\": {\n    \"hits\": 1,\n    \"url\": \"https://www.example.com/abc\",\n    \"source_message\": {\n      \"type\": \"SMS\",\n      \"id\": \"faf68308-16cd-4cf9-aef7-47342bd405be\",\n      \"message\": \"Hey, Check this out! http://clckme.info/KYhSsuIH for Opt-out reply STOP or hit opt out link - http://nsub.me/vqHTcCsh \",\n      \"message_ref\": \"D301\",\n      \"recipient\": \"61435795809\",\n      \"sender\": \"61481074185\"\n    }\n  }\n} ```\n## Opt Out\n\nThe `OPT_OUT` event is triggered when a recipient has visited an opt-out link in a message they have received or by sending a message with the text \"STOP\".\n\nUsing parameter \\[opt-out-link\\] in message body, inserts the opt-out link.\n\nThe source field will be set according to the method a recipient has used to opt-out and contain a value of either link or SMS.\n  \n\n###### Example Payloads\n\n```json Opt out via link {\n  \"event_type\": \"OPT_OUT\",\n  \"timestamp\": \"2021-05-06T05:16:20Z\",\n  \"opt_out\": {\n    \"source\": \"LINK_HIT\",\n    \"source_message\": {\n      \"type\": \"SMS\",\n      \"id\": \"a51ebe4e-a412-440e-a8d9-464e68a521cc\",\n      \"message\": \"Hey, Check this out! http://clckme.info/KYhSsuIH for Opt-out reply STOP or hit opt out link - http://nsub.me/vqHTcCsh\",\n      \"message_ref\": \"ncc5009d\",\n      \"recipient\": \"61435790000\",\n      \"sender\": \"61481074190\"  \n    }\n  }\n} ``` ```json Opt out via message {\n  \"event_type\": \"OPT_OUT\",\n  \"timestamp\": \"2021-05-06T05:16:20Z\",\n  \"opt_out\": {\n    \"source\": \"SMS_INBOUND\",\n    \"source_message\": {\n      \"type\": \"SMS\",\n      \"id\": \"a51ebe4e-a412-440e-a8d9-464e68a521cc\",\n      \"message\": \"Hey, Check this out! http://clckme.info/KYhSsuIH for Opt-out reply STOP or hit opt out link - http://nsub.me/vqHTcCsh\",\n      \"message_ref\": \"ncc5009d\",\n      \"recipient\": \"61435790000\",\n      \"sender\": \"61481074190\"\n    }\n  }\n} ```\n## MMS Status\n\nThe `MMS_STATUS` event data is posted to you for changes to an MMS message status. These are currently only comprised of internal statuses (SENT, FAILED).\n\n###### Example Payload\n\n```json {\n  \"event_type\": \"MMS_STATUS\",\n  \"timestamp\": \"2021-05-06T05:19:33Z\",\n  \"status\": {\n    \"type\": \"MMS\",\n    \"id\": \"b50e4dc1-e57f-459c-a15c-526bee00a4c4\",\n    \"message_ref\": \"D7001\",\n    \"recipient\": \"61435790000\",\n    \"sender\": \"61481074191\",\n    \"status\": \"SENT\"\n  }\n} ```\n## SMS Inbound\n\nThe `SMS_INBOUND` event is posted to you on receipt of an SMS sent from a recipient to one of the senders listed on your account. For convenience we will try and find a message that you have sent to this recipient from that sender and supply it as the `last_message` field. This is useful for determining if an inbound message is potentially a reply. The `routed_via` field will display when a shared local number has been used to deliver your message.\n\n###### Example Payload\n\n```json {\n  \"event_type\": \"SMS_INBOUND\",\n  \"timestamp\": \"2021-05-06T05:16:33Z\",\n  \"mo\": {\n    \"type\":\"SMS\",\n    \"id\": \"alss-2way-605b31c7-d2c49104\",\n    \"message\": \"Stop\",\n    \"recipient\": \"61481074190\",\n    \"routed_via\": \"447507333300\",\n    \"sender\": \"447507222200\",\n    \"last_message\": {\n      \"type\":\"SMS\",\n      \"id\": \"a51ebe4e-a412-440e-a8d9-464e68a521cc\",     \n      \"message\": \"Hey, check this out!\",\n      \"message_ref\": \"ncc5009d\",\n      \"recipient\": \"447507222200\",\n      \"routed_via\": \"447507333300\",\n      \"sender\": \"61481074190\"\n    }\n  }\n} ```\n## SMS Status\n\nThe `SMS_STATUS` event data is posted to you for changes to a SMS message status. Multiple status events can be triggered for a single message.\n\nThe `routed_via` field will display when a shared local number has been used to deliver your message.\n\n###### Example Payload\n\n```json {\n  \"event_type\": \"SMS_STATUS\",\n  \"timestamp\": \"2021-05-06T05:16:07Z\",\n  \"status\": {\n    \"type\": \"SMS\",\n    \"id\": \"a51ebe4e-a412-440e-a8d9-464e68a521cc\",\n    \"message_ref\": \"ncc5009d\",\n    \"recipient\": \"447507222200\",\n    \"routed_via\": \"447507333300\",\n    \"sender\": \"61481074190\",\n    \"status\": \"SENT\"\n  }\n} ```\n## RCS Status\n\nThe `RCS_STATUS` event data is posted to you for changes to an RCS message status. RCS supports enhanced status tracking including read receipts.\n\nRCS-specific statuses include:\n\n- SENT: Submitted to the carrier.\n- DELIVERED: Delivered to handset.\n- FAILED: Failed because of an error from the carrier or handset.\n- READ: Message was read by the recipient (RCS-specific feature).\n\n###### Example Payload\n\n```json {\n  \"event_type\": \"RCS_STATUS\",\n  \"timestamp\": \"2025-01-07T05:16:07Z\",\n  \"webhook_id\": \"fd0e6485-b905-44c1-bd55-fee1d0d6d864\",\n  \"webhook_name\": \"RCS Status Webhook\",\n  \"status\": {\n    \"type\": \"RCS\",\n    \"id\": \"6fdae71c-dad7-4c36-9734-a69693ecf3b4\",\n    \"message_ref\": \"order-12345\",\n    \"recipient\": \"+447903749662\",\n    \"sender\": \"DemoSender\",\n    \"status\": \"READ\"\n  }\n} ```"
+paths:
+  /v2/webhook:
+    post:
+      tags:
+      - Webhook
+      summary: Create Webhook
+      security:
+      - ApiKeyAuth: []
+      description: We use webhooks to let your application know when events happen, such as receiving an SMS message. When the event occurs, the system makes an HTTP request (usually a POST) to the URL you configured for the webhook. The request will include details of the event such as the incoming phone number or the body of an incoming message.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookRequest'
+      responses:
+        '201':
+          description: Webhook created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'Validation Error: rate_limit: greater than the maximum value of 10000'
+    get:
+      tags:
+      - Webhook
+      summary: Retrieve all webhooks
+      security:
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: A list of webhooks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookListResponse'
+  /v2/webhook/{id}:
+    get:
+      tags:
+      - Webhook
+      summary: Get a webhook by ID
+      security:
+      - ApiKeyAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Unique ID of the webhook
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: A single webhook
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookResponse'
+        '404':
+          description: Webhook not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Webhook not found
+    put:
+      tags:
+      - Webhook
+      summary: Update Webhook
+      description: Updates the webhook. Any fields not provided in the request body will reset to their default values.
+      security:
+      - ApiKeyAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Unique identifier for the webhook
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookRequest'
+      responses:
+        '200':
+          description: Webhook updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'Validation Error: event_type: required'
+    delete:
+      tags:
+      - Webhook
+      summary: Delete Webhook
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        required: true
+        description: Unique ID of the webhook
+      responses:
+        '200':
+          description: Webhook deletion confirmation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookDeleteResponse'
+        '400':
+          description: Invalid webhook ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: invalid webhook ID
+        '404':
+          description: Webhook not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Webhook not found
+components:
+  schemas:
+    WebhookDeleteResponse:
+      type: object
+      description: Webhook deletion confirmation response.
+      properties:
+        message:
+          type: string
+          description: Confirmation message
+          example: deleted
+      required:
+      - message
+    EventType:
+      type: string
+      enum:
+      - LINK_HIT
+      - OPT_OUT
+      - MMS_STATUS
+      - SMS_INBOUND
+      - SMS_STATUS
+      - MMS_INBOUND
+      - WHATSAPP_STATUS
+      - WHATSAPP_INBOUND
+      - RCS_STATUS
+      - RCS_INBOUND
+      description: 'Event type string values:
+
+        - LINK_HIT: Link hit event when a recipient visits a tracked link
+
+        - OPT_OUT: Opt out event when a recipient visits an opt-out link or by sending a message with the text "STOP"
+
+        - MMS_STATUS: Status change for a MMS messages. Currently only comprised of internal statuses (sent, failed)
+
+        - SMS_INBOUND: Inbound SMS sent from a recipient back to the sender
+
+        - SMS_STATUS: Status change for a SMS message. Includes internal statuses (sent, failed) and delivery receipts (soft_bounce, hard_bounce, delivered, undelivered). Multiple status events can be triggered for a single message
+
+        - MMS_INBOUND: Inbound MMS sent from a recipient back to the sender
+
+        - WHATSAPP_STATUS: Status change for Whatsapp messages
+
+        - WHATSAPP_INBOUND: Inbound Whatsapp sent from a recipient back to the sender
+
+        - RCS_STATUS: Status change for RCS messages
+
+        - RCS_INBOUND: Inbound RCS sent from a recipient back to the sender
+
+        '
+    Filter:
+      type:
+      - object
+      - 'null'
+      description: Filter applied to webhook events
+      properties:
+        event_type:
+          type: array
+          description: Types of events to subscribe to
+          items:
+            $ref: '#/components/schemas/EventType'
+          example:
+          - SMS_STATUS
+          - SMS_INBOUND
+        sender:
+          type: array
+          description: Filter by sender
+          items:
+            type: string
+          example:
+          - '+61412345678'
+          - '+61487654321'
+        status:
+          type: array
+          description: Filter by message status (only applicable for status events)
+          items:
+            type: string
+          example:
+          - DELIVERED
+          - FAILED
+        message_ref:
+          type: array
+          description: Filter by message ref
+          items:
+            type: string
+          example:
+          - ref123
+          - ref456
+        campaign_id:
+          type: array
+          description: Filter by campaign ID
+          items:
+            type: string
+          example:
+          - campaign_123
+          - campaign_456
+    WebhookResponse:
+      type: object
+      description: Webhook details.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the webhook.
+          example: 67e3e4af-62e8-4515-8b67-6f20d0c51ffb
+        filter:
+          $ref: '#/components/schemas/Filter'
+        name:
+          type: string
+          description: Name of the webhook.
+          example: Hook
+        url:
+          type: string
+          description: URL (https) that accepts JSON encoded POST requests.
+          format: uri
+          example: https://webhook.site/uuid
+        rate_limit:
+          type: integer
+          description: Rate limit for the webhook in requests per second.
+          example: 10
+        is_sandbox:
+          type: boolean
+          deprecated: true
+          description: Deprecated. Will be removed in a future version.
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the webhook was created.
+          example: '2025-04-14T00:59:32.75819Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp when the webhook was last updated.
+          example: '2025-04-14T00:59:32.75819Z'
+      required:
+      - id
+      - name
+      - url
+      - rate_limit
+      - is_sandbox
+      - created_at
+      - updated_at
+    WebhookListResponse:
+      type: object
+      description: List of webhooks response.
+      properties:
+        webhooks:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookResponse'
+    WebhookRequest:
+      type: object
+      properties:
+        event_type:
+          allOf:
+          - $ref: '#/components/schemas/EventType'
+          description: Type of event to subscribe to. Deprecated - use filter.event_type instead.
+          example: SMS_STATUS
+          deprecated: true
+        filter:
+          type: object
+          description: "Filter to apply to webhook events. The filters are applied differently based on the event type:\n- For status events (`SMS_STATUS`, `MMS_STATUS`, etc.): `sender`, `status`,\n  `message_ref`, and `campaign_id` filters are applied to the **status** payload.\n- For `LINK_HIT` events: `sender` and `message_ref` filters are applied to\n  the `source_message` in the link-hit payload.\n- For `OPT_OUT` events: `sender` and `message_ref` filters are applied to\n  the `source_message` in the opt-out payload.\n- For inbound events (`SMS_INBOUND`, `MMS_INBOUND`, etc.): `sender` filter is\n  applied to the `recipient` field (the sender address that received the inbound message),\n  while `message_ref` and `campaign_id` filters are applied to `last_message` if available.\n\nWithin each filter array (e.g., sender, status, message_ref), the conditions are combined using an OR logic. For example, if multiple senders are specified, the webhook will trigger if the event matches any of the specified senders. Between different filters (e.g., sender and status), the conditions are combined using an AND logic. For example, the webhook will trigger only if the event matches both the specified sender and the specified status."
+          properties:
+            event_type:
+              type: array
+              description: Types of events to subscribe to
+              items:
+                $ref: '#/components/schemas/EventType'
+              example:
+              - SMS_STATUS
+              - SMS_INBOUND
+            sender:
+              type: array
+              description: Filter by sender. For outbound events (status, link-hit, opt-out), this filters by the sender of the outbound message. For inbound events, this filters by the recipient of the inbound message (the sender address that received it).
+              items:
+                type: string
+              example:
+              - '+61412345678'
+              - '+61487654321'
+            status:
+              type: array
+              description: Filter by message status (only applicable for status events)
+              items:
+                type: string
+              example:
+              - DELIVERED
+              - FAILED
+            message_ref:
+              type: array
+              description: Filter by message ref
+              items:
+                type: string
+              example:
+              - ref123
+              - ref456
+            campaign_id:
+              type: array
+              description: Filter by campaign ID
+              items:
+                type: string
+              example:
+              - campaign_123
+              - campaign_456
+        name:
+          type: string
+          description: Name of the webhook
+          minLength: 2
+          maxLength: 100
+          example: My Webhook
+          x-oapi-codegen-extra-tags:
+            valid: length(2|100)
+        url:
+          type: string
+          description: URL (https) that accepts JSON encoded POST requests
+          format: uri
+          example: https://example.com/webhook
+          x-oapi-codegen-extra-tags:
+            valid: required,webhook_url
+        rate_limit:
+          type: integer
+          description: Rate limit for your URL in requests per second. Max 10,000/sec. If set to 0 or not specified, the default system limit will be applied.
+          x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            valid: range(0|10000)
+        is_sandbox:
+          type: boolean
+          deprecated: true
+          description: Deprecated. Will be removed in a future version.
+          x-go-type-skip-optional-pointer: true
+      required:
+      - name
+      - url
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: 'All API requests require your API credentials, you will find them once logged into your account on the SETTINGS page. Scroll down to API Settings to find your API key.
+
+        '

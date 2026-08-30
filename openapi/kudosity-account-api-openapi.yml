@@ -1,0 +1,67 @@
+openapi: 3.2.0
+info:
+  title: Transmit SMS Account API
+  description: '<p>With so many SMS APIs on the market today, you might think that they all do the same thing: send text messages. But with our flexible and powerful suite of APIs, you can do more than that.</p>'
+  version: 1.0.0
+servers:
+- url: https://api.transmitsms.com
+tags:
+- name: Account
+paths:
+  /get-balance.json:
+    get:
+      tags:
+      - Account
+      summary: Get Balance
+      description: 'Account information.
+
+        '
+      security:
+      - basicAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    type: number
+                    description: Current balance.
+                    example: 73.954
+                  currency:
+                    type: string
+                    description: Currency of the balance.
+                    example: AUD
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        description: Error code if applicable.
+                      description:
+                        type: string
+                        description: Description of the error if applicable.
+              example:
+                balance: 73.954
+                currency: AUD
+                error:
+                  code: SUCCESS
+                  description: OK
+            text/plain:
+              schema:
+                type: string
+              example: "<?xml version=\"1.0\"?>\n<response>\n    <balance>73.954</balance>\n    <currency>AUD</currency>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: 'Use the `Authorization` header with the value `Basic {base64(api_key:api_secret)}`.
+
+        - `api_key`: Your API key
+
+        - `api_secret`: Your API secret
+
+        '

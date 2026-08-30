@@ -1,0 +1,982 @@
+openapi: 3.2.0
+info:
+  title: Transmit Message Senders API
+  description: Transmit APIs
+  version: '20250101'
+  x-go-package: github.com/oapi-codegen/runtime
+servers:
+- url: https://api.transmitmessage.com
+security:
+- ApiKeyAuth: []
+tags:
+- name: Senders
+paths:
+  /v2/senders/registrations:
+    get:
+      tags:
+      - Senders
+      summary: List sender registrations
+      security:
+      - ApiKeyAuth: []
+      description: "Returns a paginated list of sender registrations for the authenticated account.\n\n  - If the account does not use parent/child accounts, the API returns registrations for the authenticated account.\n  - If the account is a parent account, the API returns registrations for the parent account and all child accounts.\n"
+      parameters:
+      - name: page
+        in: query
+        required: false
+        description: Page number to return (1-based). Default 1.
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          x-go-type-skip-optional-pointer: true
+        example: 1
+      - name: limit
+        in: query
+        required: false
+        description: Maximum number of results per page. Default 25, maximum 100.
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 25
+          x-go-type-skip-optional-pointer: true
+        example: 25
+      - name: child_account_id
+        in: query
+        required: false
+        description: Filter registrations by child account ID. Returns only registrations belonging to the specified child account.
+        schema:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        example: '1234'
+      - name: sender
+        in: query
+        required: false
+        description: Filter registrations by sender phone number in E.164 format (e.g., 61412312312).
+        schema:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        example: '61412312312'
+      - name: status
+        in: query
+        required: false
+        description: 'Filter registrations by status. Accepts one or more comma-separated values. Valid values: PENDING_APPROVAL, VERIFIED, REJECTED, CANCELLED.
+
+          '
+        schema:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        example: VERIFIED
+      responses:
+        '200':
+          $ref: '#/components/responses/ListSenderRegistrationsSuccessResponse'
+        '400':
+          $ref: '#/components/responses/InputValidationResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+    post:
+      tags:
+      - Senders
+      summary: Create a sender registration
+      security:
+      - ApiKeyAuth: []
+      description: "Creates a sender registration and sets `status` to `PENDING_APPROVAL`.\n\n  - If the account does not use parent/child accounts, the API ignores `child_account_id` and registers the sender for the authenticated account.\n  - If the account is a parent account and you omit `child_account_id`, the API registers the sender for the parent account.\n  - If you provide `child_account_id`, the API registers the sender for that child account.\n  - If a registration for the same sender was already created within the last 30 minutes (for the same account or child account), the API returns `429 Too Many Requests`. This prevents abuse of the verification retry limit.\n  - Any existing `PENDING_APPROVAL` registration for the same sender (for the same account or child account) is automatically cancelled before the new one is created.\n"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SenderRegistrationRequest'
+            example:
+              sender: '61412312312'
+              country: AU
+              type: PERSONAL_MOBILE_NUMBER
+              child_account_id: '1234'
+      responses:
+        '201':
+          $ref: '#/components/responses/SenderRegistrationSuccessResponse'
+        '400':
+          $ref: '#/components/responses/InputValidationResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        '409':
+          $ref: '#/components/responses/ConflictErrorResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /v2/senders/phone-numbers/{phone_number}:
+    delete:
+      tags:
+      - Senders
+      summary: Delete a sender by phone number
+      security:
+      - ApiKeyAuth: []
+      description: "Deletes a sender phone number from the account.\n\n  - If the account does not use parent/child accounts, the API ignores `child_account_id` and deletes the sender from the authenticated account.\n  - If the account is a parent account and you omit `child_account_id`, the API deletes the sender from the parent account.\n  - If you provide `child_account_id`, the API deletes the sender from that child account.\n"
+      parameters:
+      - name: phone_number
+        in: path
+        required: true
+        description: The phone number to delete in E.164 international format, for example 61412312312.
+        schema:
+          type: string
+        example: '61412312312'
+      - name: child_account_id
+        in: query
+        required: false
+        description: Child account ID to delete the sender from. Ignored for accounts without parent/child accounts. If omitted for a parent account, the API deletes the sender from the parent account.
+        schema:
+          type: string
+        example: '456'
+      responses:
+        '204':
+          $ref: '#/components/responses/SenderDeleteNoContentResponse'
+        '400':
+          $ref: '#/components/responses/InputValidationResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /v2/senders/registrations/{registration_id}/verifications:
+    post:
+      tags:
+      - Senders
+      summary: Request a verification code
+      security:
+      - ApiKeyAuth: []
+      description: "Requests a verification code for a sender registration. This endpoint supports registrations with `type` = `PERSONAL_MOBILE_NUMBER` only.\n\n  - The API delivers the code to the registered sender number using the selected `method`, such as `SMS`.\n  - Codes expire after 30 minutes.\n  - You have a maximum of 5 attempts to confirm the code.\n"
+      parameters:
+      - name: registration_id
+        in: path
+        required: true
+        description: Unique identifier for the sender registration.
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerificationRequest'
+            example:
+              method: SMS
+              originating_sender: '61400000000'
+      responses:
+        '201':
+          $ref: '#/components/responses/VerificationSuccessResponse'
+        '400':
+          $ref: '#/components/responses/InputValidationResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundErrorResponse'
+        '409':
+          description: A verification already exists for this registration. Create a new sender registration to request a new code.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/CommonErrorResponse'
+                - type: object
+                  properties:
+                    error:
+                      $ref: '#/components/schemas/ConflictProblem'
+              example:
+                error:
+                  detail: a verification code has already been sent for this registration; wait 30 minutes and create a new sender registration to request a new code
+                  status: 409
+                  title: Conflict
+                  type: https://developers.kudosity.com/reference/errors#conflict
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /v2/senders/registrations/{registration_id}/verifications/confirmation:
+    post:
+      tags:
+      - Senders
+      summary: Confirm a verification code
+      security:
+      - ApiKeyAuth: []
+      description: 'Confirms a sender registration by submitting the verification code.
+
+        On success, the verification `status` becomes `CONFIRMED` and the sender registration `status` becomes `VERIFIED`.
+
+        If you exceed the allowed attempts, the verification becomes `FAILED`. Request a new verification code to try again.
+
+        '
+      parameters:
+      - name: registration_id
+        in: path
+        required: true
+        description: Unique identifier of the sender registration.
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerificationConfirmRequest'
+            example:
+              code: '123456'
+      responses:
+        '200':
+          $ref: '#/components/responses/VerificationConfirmationSuccessResponse'
+        '400':
+          $ref: '#/components/responses/VerificationConfirmationInputValidationResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundErrorResponse'
+        '409':
+          $ref: '#/components/responses/ConflictErrorResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+components:
+  responses:
+    ConflictErrorResponse:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonErrorResponse'
+            - type: object
+              properties:
+                error:
+                  $ref: '#/components/schemas/ConflictProblem'
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonErrorResponse'
+            - type: object
+              properties:
+                error:
+                  $ref: '#/components/schemas/InternalServerErrorProblem'
+    SenderDeleteNoContentResponse:
+      description: Sender deleted successfully. No content is returned.
+    NotFoundErrorResponse:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonErrorResponse'
+            - type: object
+              properties:
+                error:
+                  $ref: '#/components/schemas/NotFoundProblem'
+    ListSenderRegistrationsSuccessResponse:
+      description: Successful response containing a paginated list of sender registrations.
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonSuccessResponse'
+            - type: object
+              required:
+              - data
+              - meta
+              properties:
+                data:
+                  $ref: '#/components/schemas/ListSenderRegistrationsResponse'
+                meta:
+                  type: object
+                  required:
+                  - pagination
+                  properties:
+                    pagination:
+                      $ref: '#/components/schemas/PagePaginationMeta'
+          example:
+            data:
+              registrations:
+              - registration_id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                sender: '61412312312'
+                country: AU
+                type: PERSONAL_MOBILE_NUMBER
+                status: VERIFIED
+                created_at: '2025-08-26T10:30:00Z'
+                updated_at: '2025-08-26T10:32:00Z'
+              - registration_id: b2c3d4e5-f6a7-8901-bcde-f12345678901
+                sender: '61498765432'
+                country: AU
+                type: PERSONAL_MOBILE_NUMBER
+                status: PENDING_APPROVAL
+                child_account_id: '1234'
+                created_at: '2025-09-01T14:00:00Z'
+                updated_at: '2025-09-01T14:00:00Z'
+            meta:
+              pagination:
+                type: page
+                page: 1
+                limit: 25
+                total_count: 2
+    TooManyRequestsErrorResponse:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonErrorResponse'
+            - type: object
+              properties:
+                error:
+                  $ref: '#/components/schemas/TooManyRequestsProblem'
+    InputValidationResponse:
+      description: Input Validation Error
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonErrorResponse'
+            - type: object
+              properties:
+                error:
+                  $ref: '#/components/schemas/InputValidationProblem'
+    VerificationConfirmationSuccessResponse:
+      description: Successful response containing the verification confirmation details.
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonSuccessResponse'
+            - type: object
+              properties:
+                data:
+                  $ref: '#/components/schemas/VerificationConfirmation'
+          example:
+            data:
+              registration_id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+              status: CONFIRMED
+              verified_at: '2025-08-26T10:32:00Z'
+    UnauthorizedErrorResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonErrorResponse'
+            - type: object
+              properties:
+                error:
+                  $ref: '#/components/schemas/UnauthorizedProblem'
+    VerificationSuccessResponse:
+      description: Successful response containing the verification details.
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonSuccessResponse'
+            - type: object
+              properties:
+                data:
+                  $ref: '#/components/schemas/Verification'
+          example:
+            data:
+              registration_id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+              method: SMS
+              originating_sender: '61400000000'
+              status: SENT
+              expires_at: '2025-08-26T10:35:00Z'
+              attempts_remaining: 5
+    VerificationConfirmationInputValidationResponse:
+      description: '400 response specific to the verification confirmation endpoint. The response includes
+
+        `attempts_remaining` as a structured integer field alongside the standard `detail` and
+
+        `issues` fields, so clients can display the remaining attempt count without string parsing.
+
+        '
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                $ref: '#/components/schemas/VerificationConfirmationInputValidationProblem'
+          example:
+            error:
+              type: https://developers.kudosity.com/reference/errors#input-validation
+              title: Invalid Request
+              detail: Request validation failed
+              status: 400
+              issues:
+              - name: code
+                message: invalid verification code, you have 4 attempts remaining
+              attempts_remaining: 4
+    SenderRegistrationSuccessResponse:
+      description: Successful response containing the new sender registration details.
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonSuccessResponse'
+            - type: object
+              properties:
+                data:
+                  $ref: '#/components/schemas/SenderRegistration'
+          example:
+            data:
+              registration_id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+              sender: '61412312312'
+              country: AU
+              type: PERSONAL_MOBILE_NUMBER
+              status: PENDING_APPROVAL
+              created_at: '2025-08-26T10:30:00Z'
+              updated_at: '2025-08-26T10:30:00Z'
+  schemas:
+    SenderRegistrationStatus:
+      type: string
+      description: "Status of a sender registration. The same coarse set of statuses applies to every\nregistration `type`:\n- `PERSONAL_MOBILE_NUMBER` — `PENDING_APPROVAL`, `VERIFIED`, `REJECTED`, `CANCELLED`.\n- `ALPHANUMERIC` — `PENDING_APPROVAL`, `VERIFIED`, `REJECTED`. The finer alpha\n  registry lifecycle is surfaced separately and is not part of this coarse enum.\n"
+      enum:
+      - PENDING_APPROVAL
+      - VERIFIED
+      - REJECTED
+      - CANCELLED
+    CommonErrorResponse:
+      allOf:
+      - type: object
+        properties:
+          error:
+            $ref: '#/components/schemas/ProblemDetails'
+        required:
+        - error
+      - $ref: '#/components/schemas/CommonResponseMeta'
+    VerificationStatus:
+      type: string
+      description: Status of a sender registration verification.
+      enum:
+      - SENT
+      - CONFIRMED
+      - EXPIRED
+      - FAILED
+    ProblemDetails:
+      description: 'A Problem Details object (RFC 9457).
+
+
+        Additional properties specific to the problem type may be present.
+
+        '
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/Uri'
+        title:
+          type: string
+          description: A short summary of the problem type. Written in English and readable for engineers (usually not suited for non technical stakeholders and not localized).
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        status:
+          type: integer
+          description: The HTTP status code corresponding to this error.
+      required:
+      - type
+      - title
+      - detail
+      - status
+      example:
+        type: https://developers.kudosity.com/reference/errors
+        title: Description of the type of problem that occurred
+        detail: Description of specific occurrence of the problem
+        status: 400
+    Uri:
+      type: string
+      description: string providing an URI formatted according to IETF RFC 3986.
+      format: uri
+    SenderRegistrationDetails:
+      type: object
+      description: 'Type-specific details for a sender registration. The populated sub-object matches the
+
+        registration `type` — for an `ALPHANUMERIC` registration, `alphanumeric` is present.
+
+        '
+      properties:
+        alphanumeric:
+          $ref: '#/components/schemas/AlphanumericDetails'
+    SenderRegistration:
+      type: object
+      description: A sender registration record.
+      properties:
+        registration_id:
+          type: string
+          format: uuid
+          description: Unique identifier for the registration.
+        sender:
+          type: string
+          description: The registered sender number.
+        country:
+          type: string
+          description: ISO 3166-1 alpha-2 country code for the sender.
+        type:
+          $ref: '#/components/schemas/SenderRegistrationType'
+        status:
+          $ref: '#/components/schemas/SenderRegistrationStatus'
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp in RFC3339 format (e.g., 2025-08-26T10:30:00Z) when the registration was created.
+        child_account_id:
+          type: string
+          description: Child account ID the sender is registered for. Only present for registrations created under a child account.
+          x-oapi-codegen-extra-tags:
+            json: child_account_id,omitempty
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp in RFC3339 format (e.g., 2025-08-26T10:32:00Z) when the registration was last updated.
+        details:
+          allOf:
+          - $ref: '#/components/schemas/SenderRegistrationDetails'
+          description: 'Type-specific details for the registration. Present only for registration types
+
+            that carry extra fields — for an `ALPHANUMERIC` registration, `details.alphanumeric`
+
+            is populated. Omitted for `PERSONAL_MOBILE_NUMBER`.
+
+            '
+          x-oapi-codegen-extra-tags:
+            json: details,omitempty
+      required:
+      - registration_id
+      - sender
+      - country
+      - type
+      - status
+      - created_at
+      - updated_at
+    VerificationConfirmationInputValidationProblem:
+      description: 'Input-validation problem (RFC 9457) specific to the verification confirmation endpoint.
+
+        Extends the standard `InputValidationProblem` with a structured `attempts_remaining` field,
+
+        so clients can display the remaining attempt count without string parsing.
+
+        '
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI that identifies the problem type.
+        title:
+          type: string
+          description: A short summary of the problem type.
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        status:
+          type: integer
+          description: The HTTP status code.
+        issues:
+          type: array
+          description: An array of issues detected during input validation.
+          x-go-type-skip-optional-pointer: true
+          items:
+            $ref: '#/components/schemas/InputValidationIssue'
+        attempts_remaining:
+          type: integer
+          description: Number of remaining attempts after this failed attempt.
+      required:
+      - type
+      - title
+      - detail
+      - status
+      - attempts_remaining
+    SenderRegistrationRequest:
+      type: object
+      description: Request body for creating a sender registration.
+      properties:
+        sender:
+          type: string
+          description: The sender number to register, for example a phone number.
+        country:
+          type: string
+          description: ISO 3166-1 alpha-2 country code for the sender, for example AU.
+          minLength: 2
+          maxLength: 2
+          pattern: ^[A-Z]{2}$
+        type:
+          $ref: '#/components/schemas/SenderRegistrationRequestType'
+        child_account_id:
+          type: string
+          description: 'Child account ID to register the sender for. Ignored for accounts without parent/child accounts. If omitted for a parent account, the API registers the sender for the parent account.
+
+            '
+      required:
+      - sender
+      - country
+      - type
+    TooManyRequestsProblem:
+      description: 'HTTP 429 Too Many Requests - Rate limit exceeded.
+
+
+        Your client application has sent too many requests in a given amount of time and should retry later.
+
+        '
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProblemDetails'
+      example:
+        type: https://developers.kudosity.com/reference/errors#too-many-requests
+        title: Too Many Requests
+        detail: Rate limit exceeded
+        status: 429
+    AlphanumericDetails:
+      type: object
+      description: Details specific to an alphanumeric (alpha) sender registration.
+      properties:
+        registry:
+          $ref: '#/components/schemas/Registry'
+        status:
+          $ref: '#/components/schemas/AlphanumericStatus'
+        status_reason:
+          type: string
+          description: 'Optional human-readable reason for the current `status` (verbatim registry status
+
+            description), suitable for tooltips. May be absent or blank.
+
+            '
+          example: Customer has not taken any actions
+      required:
+      - registry
+    VerificationConfirmation:
+      type: object
+      description: The result of a successful verification code confirmation.
+      properties:
+        registration_id:
+          type: string
+          format: uuid
+          description: The registration this verification belongs to.
+        status:
+          $ref: '#/components/schemas/VerificationStatus'
+        verified_at:
+          type: string
+          format: date-time
+          description: Timestamp in RFC3339 format (e.g., 2025-08-26T10:32:00Z) when the verification was confirmed.
+      required:
+      - registration_id
+      - status
+      - verified_at
+    AlphanumericStatus:
+      type: string
+      description: 'Fine-grained registry lifecycle status for an alphanumeric registration — the state the
+
+        customer sees on screen, distinct from the coarse root `status`.
+
+
+        This enum is **expected to grow** as a registry (e.g. ACMA) introduces new states. The
+
+        server only ever returns a value it has explicitly mapped, and new values are added here
+
+        additively — so **clients must render a graceful fallback for any value they don''t yet
+
+        recognise** rather than treating the set as fixed.
+
+
+        Value → display label:
+
+        - `NEW` — Initial Review
+
+        - `SUBMITTED_TO_REGISTRY` — Submitted
+
+        - `PENDING_CUSTOMER` — Awaiting Confirmation
+
+        - `PENDING_APPROVAL` — In ACMA Review
+
+        - `VERIFIED` — Provisioning
+
+        - `READY_TO_USE` — Ready to Use
+
+        - `FAILED` — Failed
+
+        - `REVOKED` — Revoked
+
+        - `CANCELLED` — Cancelled
+
+        '
+      enum:
+      - NEW
+      - SUBMITTED_TO_REGISTRY
+      - PENDING_CUSTOMER
+      - PENDING_APPROVAL
+      - VERIFIED
+      - READY_TO_USE
+      - FAILED
+      - REVOKED
+      - CANCELLED
+      example: PENDING_CUSTOMER
+    SenderRegistrationRequestType:
+      type: string
+      description: 'Type of sender registration that can be created through the public API. Only
+
+        `PERSONAL_MOBILE_NUMBER` is supported here; alpha (`ALPHANUMERIC`) registrations are
+
+        created through the registration backoffice and are read-only on this API.
+
+        '
+      enum:
+      - PERSONAL_MOBILE_NUMBER
+    Registry:
+      type: string
+      description: 'The registry body an alphanumeric sender registration is submitted to.
+
+        - `ACMA` — Australian Communications and Media Authority.
+
+        '
+      enum:
+      - ACMA
+    InternalServerErrorProblem:
+      description: 'This problem occurs when the server encounters an unexpected condition that prevents it from fulfilling the request.
+
+
+        Your client application did everything correct. Unfortunately our API encountered a condition that resulted in this problem.
+
+        '
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProblemDetails'
+      example:
+        type: https://developers.kudosity.com/reference/errors#server-error
+        title: Server Error
+        detail: The server encountered an unexpected error
+        status: 500
+    SenderRegistrationType:
+      type: string
+      description: "Type of a sender registration record (as returned by the API).\n- `PERSONAL_MOBILE_NUMBER` — a personal mobile number registered as a sender.\n- `ALPHANUMERIC` — an alphanumeric (alpha) sender ID. Type-specific fields are\n  returned under `details.alphanumeric`. Alpha registrations are created through\n  the registration backoffice, not this public API.\n"
+      enum:
+      - PERSONAL_MOBILE_NUMBER
+      - ALPHANUMERIC
+    InputValidationProblem:
+      description: 'This problem occurs when the request is deemed unprocessable.
+
+
+        Your client issued a request that failed validation. Certain validation libraries return multi-errors and cannot be easily parsed into discreet types. This problem type, afforded the provider with the ability to surface all validation errors and negate the need for a trial and error workflow on your side.
+
+        '
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProblemDetails'
+      - properties:
+          issues:
+            description: An array of issues detected during input validation.
+            type: array
+            x-go-type-skip-optional-pointer: true
+            items:
+              $ref: '#/components/schemas/InputValidationIssue'
+      example:
+        type: https://developers.kudosity.com/reference/errors#input-validation
+        title: Invalid Request
+        detail: Request validation failed
+        status: 400
+        issues:
+        - name: field_name
+          message: field_name is required
+    InputValidationIssue:
+      type: object
+      description: 'An issue detected during input validation.
+
+        '
+      properties:
+        name:
+          type: string
+          description: The name of the param or field that failed validation.
+          x-go-type-skip-optional-pointer: true
+        code:
+          type: integer
+          description: The internal api specific error code.
+          x-go-type-skip-optional-pointer: true
+        message:
+          description: The error message
+          type: string
+          x-go-type-skip-optional-pointer: true
+    PagePaginationMeta:
+      title: Page Pagination Metadata
+      description: 'Pagination metadata for page-based pagination.
+
+        Reusable across all paginated API endpoints that use page/limit pagination.
+
+        '
+      type: object
+      required:
+      - type
+      - page
+      - limit
+      - total_count
+      properties:
+        type:
+          type: string
+          description: The pagination strategy being used.
+          enum:
+          - page
+          example: page
+          x-oapi-codegen-extra-tags:
+            valid: required
+        page:
+          type: integer
+          description: The current page number (1-based).
+          example: 1
+          x-oapi-codegen-extra-tags:
+            valid: required
+        limit:
+          type: integer
+          description: The maximum number of results per page.
+          example: 25
+          x-oapi-codegen-extra-tags:
+            valid: required
+        total_count:
+          type: integer
+          description: The total number of results across all pages.
+          example: 123
+          x-oapi-codegen-extra-tags:
+            valid: required
+    Verification:
+      type: object
+      description: A verification record for a sender registration.
+      properties:
+        registration_id:
+          type: string
+          format: uuid
+          description: The registration this verification belongs to.
+        method:
+          $ref: '#/components/schemas/VerificationMethod'
+        originating_sender:
+          type: string
+          description: The sender number used to deliver the verification code.
+        status:
+          $ref: '#/components/schemas/VerificationStatus'
+        expires_at:
+          type: string
+          format: date-time
+          description: Timestamp in RFC3339 format (e.g., 2025-08-26T10:35:00Z) when the verification code expires.
+        attempts_remaining:
+          type: integer
+          description: Number of remaining attempts to submit the verification code.
+      required:
+      - registration_id
+      - method
+      - originating_sender
+      - status
+      - expires_at
+      - attempts_remaining
+    VerificationRequest:
+      type: object
+      description: Request body for requesting a verification code.
+      properties:
+        method:
+          $ref: '#/components/schemas/VerificationMethod'
+        originating_sender:
+          type: string
+          description: Verified sender owned by the account that the API uses to send the verification code.
+      required:
+      - method
+      - originating_sender
+    CommonResponseMeta:
+      type: object
+      properties:
+        request:
+          type: object
+          description: Optional metadata (e.g. requestId, traceId)
+        meta:
+          type: object
+          description: Optional pagination, feature flags, etc.
+    VerificationConfirmRequest:
+      type: object
+      description: Request body for confirming a verification code.
+      properties:
+        code:
+          type: string
+          description: The verification code received via the selected verification method.
+          minLength: 6
+          maxLength: 6
+          pattern: ^[0-9]{6}$
+      required:
+      - code
+    UnauthorizedProblem:
+      description: 'HTTP 401 Unauthorized - API authentication failed.
+
+
+        The request was rejected because the API key is missing, invalid, expired, or lacks sufficient permissions for this resource. Check your Authorization header and API key configuration.
+
+        '
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProblemDetails'
+      example:
+        type: https://developers.kudosity.com/reference/errors#unauthorized
+        title: API Authentication Failed
+        detail: Missing or invalid API key in Authorization header. Verify your API key is correct and has the required permissions
+        status: 401
+    ConflictProblem:
+      description: 'HTTP 409 Conflict - The request conflicts with the current state of the resource.
+
+
+        Your client application attempted an operation that conflicts with an existing resource or an operation already in progress. Review the current state of the resource before retrying.
+
+        '
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProblemDetails'
+      example:
+        type: https://developers.kudosity.com/reference/errors#conflict
+        title: Conflict
+        detail: The request conflicts with the current state of the resource
+        status: 409
+    VerificationMethod:
+      type: string
+      description: Method used to deliver the verification code.
+      enum:
+      - SMS
+    NotFoundProblem:
+      description: 'This problem occurs when the requested resource could not be found.
+
+
+        Your client application tried to access a resource that does not exist (or could not be found). Please review how your users initiated such a request.
+
+        '
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProblemDetails'
+      example:
+        type: https://developers.kudosity.com/reference/errors#not-found
+        title: Not Found
+        detail: The requested resource was not found
+        status: 404
+    ListSenderRegistrationsResponse:
+      type: object
+      description: Paginated list of sender registrations.
+      properties:
+        registrations:
+          type: array
+          description: Array of sender registrations.
+          items:
+            $ref: '#/components/schemas/SenderRegistration'
+      required:
+      - registrations
+    CommonSuccessResponse:
+      allOf:
+      - type: object
+        properties:
+          data:
+            type: object
+            description: Success response payload
+        required:
+        - data
+      - $ref: '#/components/schemas/CommonResponseMeta'
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: 'All API requests require your API credentials, you will find them once logged into your account on the SETTINGS page. Scroll down to API Settings to find your API key.
+
+        '

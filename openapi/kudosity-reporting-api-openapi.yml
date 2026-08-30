@@ -1,0 +1,1639 @@
+openapi: 3.2.0
+info:
+  title: Transmit SMS Reporting API
+  description: '<p>With so many SMS APIs on the market today, you might think that they all do the same thing: send text messages. But with our flexible and powerful suite of APIs, you can do more than that.</p>'
+  version: 1.0.0
+servers:
+- url: https://api.transmitsms.com
+tags:
+- name: Reporting
+paths:
+  /get-sms.json:
+    post:
+      tags:
+      - Reporting
+      summary: Get Message/Campaign Information
+      description: '
+
+        This will return information about the campaign, including the message, list etc. It will not however return individual messages with populated variables or tracking links. To retrieve final individual messages use **get-sms-delivery-status.**'
+      security:
+      - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                message_id:
+                  type: integer
+                  description: 'Numeric ID assigned to the message sent.
+
+                    This ID was returned in the send-sms response.
+
+                    '
+              required:
+              - message_id
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message_id:
+                    type: integer
+                    description: Numeric ID assigned to the message that was sent
+                  send_at:
+                    type: string
+                    format: date-time
+                    description: Date and time that message was sent from your account. Returned in ISO8601 format YYYY-MM-DD HH:MM:SS in UTC Timezone.
+                  recipients:
+                    type: integer
+                    description: Number of recipients message was sent to
+                  cost:
+                    type: number
+                    format: double
+                    description: Total cost of all messages. Returned as value per account currency to 3 decimal places 0.000
+                  sms:
+                    type: integer
+                    description: Total number of message parts delivered. If the message is longer than 160 characters this will return count of all parts. Eg. if a 180 character message is delivered to 2 recipients. Value returned will be 4.
+                  message:
+                    type: string
+                    description: Content of message sent
+                  list:
+                    type: string
+                    description: ID and name of list delivered to
+                  delivery_stats:
+                    type: object
+                    description: Report of messages delivered Count of different reporting stats we collect. Delivery reports are marked using a DLR (Delivery Receipt) or Acknowledgement (ACK) returned from the carrier, a DLR is a handset level report and an ACK is simply a response from the carrier that the request was received. Global carriers have different functionality available. See our <a href=\"https://support.transmitsms.com/support/solutions/articles/44001940675-global-sms-delivery-list">Global Delivery List</a> for details.
+                    properties:
+                      delivered:
+                        type: integer
+                        description: Messages delivered
+                      pending:
+                        type: integer
+                        description: No delivery report received from carrier. Allow up to 72hrs or use validity in send-sms call to process.
+                      bounced:
+                        type: integer
+                        description: Handset was disconnected, hard-bounce, or message was undeliverable due to handset switched off, out of range or other temporary deliverability issue, soft-bounce. For a specific bounced status use get-sms-sent.
+                      responses:
+                        type: integer
+                        description: Replies received
+                      optouts:
+                        type: integer
+                        description: Recipients opted out, either by reply or unsub link.
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        description: Error code
+                      description:
+                        type: string
+                        description: Description of the error
+              example:
+                message_id: 339814842
+                send_at: '2020-06-18 11:17:44'
+                recipients: 1
+                cost: 0.087
+                sms: 1
+                message: This is my message, click on my link [tracked-link]
+                delivery_stats:
+                  delivered: 1
+                  pending: 0
+                  bounced: 0
+                  responses: 1
+                  optouts: 0
+                error:
+                  code: SUCCESS
+                  description: OK
+            text/plain:
+              schema:
+                type: string
+              example: "<?xml version=\"1.0\"?>\n<response>\n    <message_id>339814842</message_id>\n    <send_at>2020-06-18 11:17:44</send_at>\n    <recipients>1</recipients>\n    <cost>0.087</cost>\n    <sms>1</sms>\n    <message>This is my message, click on my link [tracked-link]</message>\n    <delivery_stats>\n        <delivered>1</delivered>\n        <pending>0</pending>\n        <bounced>0</bounced>\n        <responses>1</responses>\n        <optouts>0</optouts>\n    </delivery_stats>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+  /get-sms-delivery-status.json:
+    post:
+      tags:
+      - Reporting
+      summary: Get SMS Delivery Status
+      description: '
+
+        Retrieves detailed information about messages sent to a specific recipient. This included full message content including populated variables.'
+      security:
+      - basicAuth: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                message_id:
+                  type: integer
+                  description: Numeric ID assigned to the message sent. This ID was returned in the send-sms response.
+                msisdn:
+                  type: integer
+                  description: Mobile number of recipient
+              required:
+              - message_id
+              - msisdn
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message_id:
+                    type: string
+                    description: Numeric ID assigned to the message that was sent
+                  sender_id:
+                    type: string
+                    description: Sender ID that message was sent from
+                  mobile:
+                    type: string
+                    description: Mobile number of recipient
+                  send_at:
+                    type: string
+                    format: date-time
+                    description: Date and time that message was sent from your account. Returned in ISO8601 format YYYY-MM-DD HH:MM:SS in UTC Timezone.
+                  datetime:
+                    type: string
+                    format: date-time
+                    description: Date and time that message was delivered. This is the date returned in the DLR in ISO8601 format YYYY-MM-DD HH:MM:SS in UTC Timezone.
+                  message:
+                    type: string
+                    description: Content of message sent. Includes populated variables
+                  status:
+                    type: object
+                    description: Report of message status Delivery reports are marked using a DLR (Delivery Receipt) or Acknowledgement (ACK) returned from the carrier, a DLR is a handset level report and an ACK is simply a response from the carrier that the request was received. Global carriers have different functionality available. See our Global Delivery List for details.
+                    properties:
+                      delivered:
+                        type: string
+                        description: Messages delivered
+                      failed:
+                        type: string
+                        description: Message bounced. For detailed bounce report use get-sms-sent
+              example:
+                stats:
+                  message_id: 339814842
+                  sender_id: 61429720235
+                  mobile: 61478038915
+                  send_at: '2020-06-18 11:17:44'
+                  datetime: '2020-06-18 11:17:00'
+                  status: delivered
+                  message: This is my message, click on my link TapTh.is/hO2HL7b0
+                error:
+                  code: SUCCESS
+                  description: OK
+            text/plain:
+              schema:
+                type: string
+              example: "<?xml version=\"1.0\"?>\n<response>\n    <stats>\n        <message_id>339814842</message_id>\n        <sender_id>61429720235</sender_id>\n        <mobile>61478038915</mobile>\n        <send_at>2020-06-18 11:17:44</send_at>\n        <datetime>2020-06-18 11:17:00</datetime>\n        <status>delivered</status>\n        <message>This is my message, click on my link TapTh.is/hO2HL7b0</message>\n    </stats>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+  /get-sms-sent-count.json:
+    post:
+      tags:
+      - Reporting
+      summary: Get SMS Sent Count
+      description: Retrieves total number of SMS sent in a given timeframe
+      security:
+      - basicAuth: []
+      requestBody:
+        required: false
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                start:
+                  type: string
+                  format: date-time
+                  description: A date to start the report from. Must be in ISO8601 format YYYY-MM-DD HH:MM:SS utilizing UTC Timezone. Start and end date must be within 7 days. If start and end date are not supplied, the report will cover the last 24 hours only.
+                end:
+                  type: string
+                  format: date-time
+                  description: A date to end the report at. Must be in ISO8601 format YYYY-MM-DD HH:MM:SS utilizing UTC Timezone. Start and end date must be within 7 days. If start and end date are not supplied, the report will cover the last 24 hours only.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    description: The count of something
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        description: The error code
+                      description:
+                        type: string
+                        description: Description of the error
+              examples:
+                example-0:
+                  summary: Example 1
+                  value:
+                    count: 6
+                    error:
+                      code: SUCCESS
+                      description: OK
+                example-1:
+                  summary: Example 2
+                  value:
+                    count: 2
+                    error:
+                      code: SUCCESS
+                      description: OK
+  /get-user-sms-sent.json:
+    post:
+      tags:
+      - Reporting
+      summary: Get Activity Report
+      description: Retrieve information on messages sent during a period of time
+      security:
+      - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - start
+              - end
+              properties:
+                start:
+                  type: string
+                  format: date-time
+                  description: A date to start the report from. Must be in ISO8601 format YYYY-MM-DD HH:MM:SS utilizing UTC Timezone. Eg. 2020-04-27 06:00:00
+                end:
+                  type: string
+                  format: date-time
+                  description: A date to end the report at. Must be in ISO8601 format YYYY-MM-DD HH:MM:SS utilizing UTC Timezone. Eg. 2020-04-27 06:00:00
+                msisdn:
+                  type: integer
+                  description: Mobile number of contact being queried
+                page:
+                  type: integer
+                  description: Page number, for pagination
+                max:
+                  type: integer
+                  description: Maximum results returned per page
+                response_style:
+                  type: string
+                  description: response_style = 'array' returns custom field lists as an array
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: object
+                    properties:
+                      count:
+                        type: integer
+                        description: The number of pages
+                      number:
+                        type: integer
+                        description: The current page number
+                  total:
+                    type: integer
+                    description: The total number of messages
+                  messages:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the message
+                        message_id:
+                          type: integer
+                          description: The ID of the message sent
+                        message:
+                          type: string
+                          description: The content of the message
+                        sent_at:
+                          type: string
+                          format: date-time
+                          description: The date and time the message was sent
+                        msisdn:
+                          type: integer
+                          description: The mobile number of the recipient
+                        caller_id:
+                          type: integer
+                          description: The caller ID
+                        status:
+                          type: string
+                          description: The status of the message
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        description: The error code
+                      description:
+                        type: string
+                        description: A description of the error
+              examples:
+                example-0:
+                  summary: Example 1
+                  value:
+                    page:
+                      count: 1
+                      number: 1
+                    total: 3
+                    messages:
+                    - id: 937885838
+                      message_id: 373181398
+                      message: 'Hi there
+
+
+                        This is a test message
+
+
+                        Have a great day
+
+
+                        Opt-out reply STOP'
+                      sent_at: '2020-10-09 00:49:21'
+                      msisdn: 61478038915
+                      caller_id: 61438123456
+                      status: delivered
+                    - id: 937885264
+                      message_id: 373180891
+                      message: Hello SMS
+                      sent_at: '2020-10-09 00:48:18'
+                      msisdn: 61478038915
+                      caller_id: 61428330912
+                      status: delivered
+                    - id: 937884682
+                      message_id: 373180707
+                      message: 'This is a test message
+
+                        Opt-out reply STOP'
+                      sent_at: '2020-10-09 00:47:55'
+                      msisdn: 61478038915
+                      caller_id: 61438123456
+                      status: delivered
+                    error:
+                      code: SUCCESS
+                      description: OK
+                example-1:
+                  summary: Example 2
+                  value:
+                    page:
+                      count: 1
+                      number: 1
+                    total: 3
+                    messages:
+                    - id: 937885838
+                      message_id: 373181398
+                      message: 'Hi there
+
+
+                        This is a test message
+
+
+                        Have a great day
+
+
+                        Opt-out reply STOP'
+                      sent_at: '2020-10-09 00:49:21'
+                      msisdn: 61478038915
+                      caller_id: 61438123456
+                      status: delivered
+                    - id: 937885264
+                      message_id: 373180891
+                      message: Hello SMS
+                      sent_at: '2020-10-09 00:48:18'
+                      msisdn: 61478038915
+                      caller_id: 61428330912
+                      status: delivered
+                    - id: 937884682
+                      message_id: 373180707
+                      message: 'This is a test message
+
+                        Opt-out reply STOP'
+                      sent_at: '2020-10-09 00:47:55'
+                      msisdn: 61478038915
+                      caller_id: 61438123456
+                      status: delivered
+                    error:
+                      code: SUCCESS
+                      description: OK
+  /get-contact-sms-stats.json:
+    get:
+      tags:
+      - Reporting
+      summary: Get SMS Sent to Account
+      description: This will return paginated information regarding individual messages sent to provided mobile number.
+      security:
+      - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - mobile
+              properties:
+                mobile:
+                  type: integer
+                  description: The mobile number of the recipient. Number must be defined in E.164 international format. You can use countrycode parameter to format numbers that are in local format.
+                  example: 61478038915
+                countrycode:
+                  type: string
+                  description: 'Format the mobile number to international format using 2-letter ISO 3166 country code or country name. 2 letter ISO 3166 format country code or country name. Automatically formats numbers to international format required for reliable SMS delivery. eg. In Australia 0422222222 will become 6142222222 when set to AU or Australia. If not set to numbers must be defined in E.164 international format.
+
+
+                    | COUNTRY        | COUNTRY CODE | LOCAL      | INTERNATIONAL |
+
+                    |----------------|--------------|------------|---------------|
+
+                    | Australia      | au           | 0491570156 | 61491570156   |
+
+                    | New Zealand    | nz           | 0212670129 | 64212670129   |
+
+                    | United Kingdom | gb           | 0750017696 | 44750017696   |
+
+                    | United States  | us           | 2513551145 | 12513551145   |
+
+                    '
+                  example: au
+                start:
+                  type: string
+                  format: date-time
+                  description: The start date and time to filter messages. Must be in ISO8601 format YYYY-MM-DD HH:MM:SS utilizing UTC Timezone. If start and end date not supplied, will get everything from the account registration to current date.
+                  example: '2020-04-27 06:00:00'
+                end:
+                  type: string
+                  format: date-time
+                  description: The end date and time to filter messages. Must be in ISO8601 format YYYY-MM-DD HH:MM:SS utilizing UTC Timezone. If start and end date not supplied, will get everything from the account registration to current date.
+                  example: '2020-04-27 06:00:00'
+                sort_field:
+                  type: string
+                  description: Sort by one of the following fields\":"" delivery_status, message_id, datetime_send.
+                  example: delivery_status
+                order:
+                  type: string
+                  description: Order by either ascending (asc) or descending (desc).
+                  example: asc
+                page:
+                  type: integer
+                  description: Page number for pagination.
+                  example: 1
+                max:
+                  type: integer
+                  description: Maximum results returned per page.
+                  example: 10
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: object
+                    properties:
+                      count:
+                        type: integer
+                      number:
+                        type: integer
+                  total:
+                    type: integer
+                  records:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message_id:
+                          type: integer
+                        datetime_send:
+                          type: string
+                          format: date-time
+                        delivery_status:
+                          type: string
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      description:
+                        type: string
+              examples:
+                example-0:
+                  summary: Example 1
+                  value:
+                    page:
+                      count: 7
+                      number: 1
+                    total: 61
+                    records:
+                    - message_id: 331201546
+                      datetime_send: '2020-05-14T14:33:25Z'
+                      delivery_status: delivered
+                    - message_id: 332010765
+                      datetime_send: '2020-05-18T20:58:56Z'
+                      delivery_status: delivered
+                    - message_id: 332013360
+                      datetime_send: '2020-05-18T21:18:46Z'
+                      delivery_status: delivered
+                    - message_id: 332014798
+                      datetime_send: '2020-05-18T21:29:47Z'
+                      delivery_status: delivered
+                    - message_id: 332015344
+                      datetime_send: '2020-05-18T21:32:40Z'
+                      delivery_status: delivered
+                    - message_id: 332015379
+                      datetime_send: '2020-05-18T21:33:08Z'
+                      delivery_status: delivered
+                    - message_id: 332015395
+                      datetime_send: '2020-05-18T21:33:20Z'
+                      delivery_status: delivered
+                    - message_id: 332015893
+                      datetime_send: '2020-05-18T21:39:24Z'
+                      delivery_status: delivered
+                    - message_id: 332016596
+                      datetime_send: '2020-05-18T21:54:48Z'
+                      delivery_status: delivered
+                    - message_id: 332018705
+                      datetime_send: '2020-05-18T22:44:17Z'
+                      delivery_status: delivered
+                    error:
+                      code: SUCCESS
+                      description: OK
+                example-1:
+                  summary: Example 2
+                  value:
+                    page:
+                      count: 7
+                      number: 1
+                    total: 61
+                    records:
+                    - message_id: 331201546
+                      datetime_send: '2020-05-14T14:33:25Z'
+                      delivery_status: delivered
+                    - message_id: 332010765
+                      datetime_send: '2020-05-18T20:58:56Z'
+                      delivery_status: delivered
+                    - message_id: 332013360
+                      datetime_send: '2020-05-18T21:18:46Z'
+                      delivery_status: delivered
+                    - message_id: 332014798
+                      datetime_send: '2020-05-18T21:29:47Z'
+                      delivery_status: delivered
+                    - message_id: 332015344
+                      datetime_send: '2020-05-18T21:32:40Z'
+                      delivery_status: delivered
+                    - message_id: 332015379
+                      datetime_send: '2020-05-18T21:33:08Z'
+                      delivery_status: delivered
+                    - message_id: 332015395
+                      datetime_send: '2020-05-18T21:33:20Z'
+                      delivery_status: delivered
+                    - message_id: 332015893
+                      datetime_send: '2020-05-18T21:39:24Z'
+                      delivery_status: delivered
+                    - message_id: 332016596
+                      datetime_send: '2020-05-18T21:54:48Z'
+                      delivery_status: delivered
+                    - message_id: 332018705
+                      datetime_send: '2020-05-18T22:44:17Z'
+                      delivery_status: delivered
+                    error:
+                      code: SUCCESS
+                      description: OK
+  /get-sms-stats.json:
+    post:
+      tags:
+      - Reporting
+      summary: Get Message/Campaign Report
+      description: 'Get the delivery status of a message or campaign that you have sent.
+
+        Count of different reporting stats we collect. Delivery reports are marked using a DLR (Delivery Receipt) or Acknowledgement (ACK) returned from the carrier, a DLR is a handset level report and an ACK is simply a response from the carrier that the request was received. Global carriers have different functionality available. See our Global Delivery List for details.'
+      security:
+      - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                message_id:
+                  type: integer
+                  description: Numeric ID assigned to the message sent.
+              required:
+              - message_id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stats:
+                    type: object
+                    properties:
+                      hard_bounced:
+                        type: integer
+                        description: Handset was disconnected.
+                      soft_bounced:
+                        type: integer
+                        description: Message was undeliverable. Handset switched off, out of range or other temporary deliverability issue.
+                      total:
+                        type: integer
+                        description: Number of messages sent.
+                      recipientCount:
+                        type: integer
+                        description: Number of recipients message was sent to.
+                      delivered:
+                        type: integer
+                        description: Messages delivered.
+                      pending:
+                        type: integer
+                        description: No delivery report received from carrier. Allow up to 72hrs or use validity in send-sms call to process.
+                      bounced:
+                        type: integer
+                        description: Total number of soft and hard bounces recorded.
+                      responses:
+                        type: integer
+                        description: Replies received.
+                      opt-outs:
+                        type: integer
+                        description: Recipients opted out. Either by reply or unsub link.
+                      link_hits:
+                        type: integer
+                        description: Number of link hits recorded.
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        description: Code indicating the status of the operation.
+                      description:
+                        type: string
+                        description: Description of the operation status.
+              example:
+                stats:
+                  hard_bounced: 0
+                  soft_bounced: 0
+                  total: 1
+                  recipientCount: 1
+                  delivered: 1
+                  pending: 0
+                  bounced: 0
+                  responses: 1
+                  opt-outs: 0
+                  link_hits: 0
+                error:
+                  code: SUCCESS
+                  description: OK
+            text/plain:
+              schema:
+                type: string
+              example: "<?xml version=\"1.0\"?>\n<response>\n    <stats>\n        <hard_bounced>0</hard_bounced>\n        <soft_bounced>0</soft_bounced>\n        <total>1</total>\n        <recipientCount>1</recipientCount>\n        <delivered>1</delivered>\n        <pending>0</pending>\n        <bounced>0</bounced>\n        <responses>1</responses>\n        <opt-outs>0</opt-outs>\n        <link_hits>0</link_hits>\n    </stats>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>\n"
+  /get-sms-sent.json:
+    post:
+      tags:
+      - Reporting
+      summary: Get Message/Campaign Recipients
+      description: 'Get information about a message send and it''s recipients
+
+        This will return paginated information regarding individual recipients on a campaign or message send.'
+      security:
+      - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - message_id
+              properties:
+                message_id:
+                  type: integer
+                  description: 'Numeric ID assigned to the message sent. This ID was returned in the send-sms response.
+
+                    '
+                  example: 123456
+                list_id:
+                  type: integer
+                  description: 'Recipient list ID. Provide list_id if contact is not associated with a campaign send. It will look up custom data on this list for the contact and return it in the response.
+
+                    '
+                  example: 789
+                page:
+                  type: integer
+                  description: 'Page number, for pagination.
+
+                    '
+                  example: 1
+                max:
+                  type: integer
+                  description: 'Maximum results returned per page.
+
+                    '
+                  example: 10
+                delivery:
+                  type: boolean
+                  description: 'Only show messages with specific delivery status.
+
+
+                    | VALUE   | DESCRIPTION                     |
+
+                    |---------|---------------------------------|
+
+                    | delivered    | Only return delivered messages  |
+
+                    | failed   | Only return failed messages     |
+
+                    | pending | Only return pending messages    |
+
+                    '
+                  example: true
+                optouts:
+                  type: boolean
+                  description: 'Whether to include opt outs.
+
+
+                    | VALUE | DESCRIPTION             |
+
+                    |-------|-------------------------|
+
+                    | true  | Only return opt outs    |
+
+                    | false | Do not include opt outs |
+
+                    '
+                  example: false
+      responses:
+        '200':
+          description: Successful response containing information about the sent message or campaign.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: object
+                    description: 'Information about a message or campaign that you have sent.
+
+                      '
+                    properties:
+                      message_id:
+                        type: integer
+                        description: Numeric ID assigned to the message that was sent.
+                      send_at:
+                        type: string
+                        format: date-time
+                        description: Date and time that message was sent from your account. Returned in ISO8601 format YYYY-MM-DD HH:MM:SS in UTC Timezone.
+                      recipients:
+                        type: integer
+                        description: Number of recipients message was sent to.
+                      cost:
+                        type: number
+                        description: Total cost of all messages. Returned as value per account currency to 3 decimal places 0.000.
+                      sms:
+                        type: integer
+                        description: Total number of message parts delivered. If the message is longer than 160 characters this will return count of all parts. Eg. if a 180 character message is delivered to 2 recipients. Value returned will be 4.
+                      message_content:
+                        type: string
+                        description: Content of message sent.
+                      list:
+                        type: object
+                        description: ID and name of list delivered to.
+                      delivery_stats:
+                        type: object
+                        description: 'Report of messages delivered. Count of different reporting stats we collect. Delivery reports are marked using a DLR (Delivery Receipt) or Acknowledgement (ACK) returned from the carrier, a DLR is a handset level report and an ACK is simply a response from the carrier that the request was received. Global carriers have different functionality available. See our Global Delivery List for details.
+
+                          '
+                        properties:
+                          delivered:
+                            type: integer
+                            description: Messages delivered.
+                          pending:
+                            type: integer
+                            description: No delivery report received from carrier. Allow upto 72hrs or use validity in send-sms call to process.
+                          bounced:
+                            type: integer
+                            description: Handset was disconnected, hard-bounce, or message was undeliverable due to handset switched off, out of range or other temporary deliverability issue, soft-bounce. For a specific bounced status use get-sms-sent.
+                          responses:
+                            type: integer
+                            description: Replies received.
+                          optouts:
+                            type: integer
+                            description: Recipients opted out, either by reply or unsub link.
+                  recipients:
+                    type: object
+                    description: 'A paginated report of all the recipients delivered to in your message/campaign
+
+                      '
+                    properties:
+                      msisdn:
+                        type: integer
+                        description: The mobile number of the recipient
+                      first_name:
+                        type: string
+                        description: First name of recipient as stored in contacts
+                      last_name:
+                        type: string
+                        description: Last name of the recipient as stored in contacts
+                      delivery_status:
+                        type: object
+                        description: ''
+                        properties:
+                          delivered:
+                            type: integer
+                            description: Message delivered to handset.
+                          pending:
+                            type: integer
+                            description: No delivery report received from carrier. Allow upto 72hrs or use validity in send-sms call to process.
+                          bounced:
+                            type: integer
+                            description: Handset was disconnected, hard-bounce, or message was undeliverable due to handset switched off, out of range or other temporary deliverability issue, soft-bounce. For a specific bounced status use get-sms-sent.
+                          responses:
+                            type: integer
+                            description: Replies received.
+                      optout:
+                        type: integer
+                        description: Set to true if recipient opted out.
+                  error:
+                    type: object
+                    description: 'Error code and description.
+
+                      '
+                    properties:
+                      code:
+                        type: string
+                        description: Error code.
+                      description:
+                        type: string
+                        description: Description of the error.
+            text/plain:
+              schema:
+                type: string
+              example: "<?xml version=\"1.0\"?>\n<response>\n    <page>\n        <count>1</count>\n        <number>1</number>\n    </page>\n    <total>1</total>\n    <message>\n        <message_id>339814842</message_id>\n        <send_at>2020-06-18 11:17:44</send_at>\n        <recipients>1</recipients>\n        <cost>0.087</cost>\n        <sms>1</sms>\n        <delivery_stats>\n            <delivered>1</delivered>\n            <pending>0</pending>\n            <bounced>0</bounced>\n            <responses>1</responses>\n            <optouts>0</optouts>\n        </delivery_stats>\n    </message>\n    <recipients>\n        <item>\n            <msisdn>61478038915</msisdn>\n            <first_name></first_name>\n            <last_name></last_name>\n            <delivery_status>delivered</delivery_status>\n            <optout>false</optout>\n        </item>\n    </recipients>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+  /get-message-report.json:
+    post:
+      tags:
+      - Reporting
+      summary: Get Message Report
+      description: 'Retrieve information on messages sent during a period of time
+
+        It will also return all custom data fields associated to contacts in the list'
+      security:
+      - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                start:
+                  type: string
+                  format: date-time
+                  description: 'A date to start the report from. Must be in ISO8601 format YYYY-MM-DD HH:MM:SS utilizing UTC Timezone. Eg. 2020-04-27 06:00:00. Start and end date must be within 30 days. If start and end date not supplied will get everything from last 24 hrs only.
+
+                    '
+                end:
+                  type: string
+                  format: date-time
+                  description: 'A date to end the report at. Must be in ISO8601 format YYYY-MM-DD HH:MM:SS utilizing UTC Timezone. Eg. 2020-04-27 06:00:00. Start and end date must be within 30 days. If start and end date not supplied will get everything from last 24 hrs only.
+
+                    '
+                list_id:
+                  type: integer
+                  description: 'Recipient list. Provide list_id to look up custom data on this list for the contact and return it in the response.
+
+                    '
+                number:
+                  type: integer
+                  description: Virtual mobile number assigned to your account.
+                type:
+                  type: integer
+                  description: 'Message type, available options:
+
+
+                    - all
+
+                    - api
+
+                    - campaign
+
+                    - quick_sms
+
+                    - email_sms
+
+                    - keyword
+
+                    - test_sms
+
+                    '
+                page:
+                  type: integer
+                  description: Page number, for pagination.
+                max:
+                  type: integer
+                  description: Maximum results returned per page.
+                response_style:
+                  type: string
+                  description: 'response_style = ''array'' returns custom field lists as an array.
+
+                    '
+      responses:
+        '200':
+          description: Successful response containing information about the sent messages.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: object
+                    properties:
+                      count:
+                        type: integer
+                      number:
+                        type: integer
+                  messages_total:
+                    type: integer
+                  sms_total:
+                    type: integer
+                  messages:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                        id:
+                          type: integer
+                        sms:
+                          type: integer
+                        cost:
+                          type: number
+                        sent_at:
+                          type: string
+                          format: date-time
+                        status:
+                          type: string
+                        message:
+                          type: string
+                        pending:
+                          type: integer
+                        delivered:
+                          type: integer
+                        soft_bounced:
+                          type: integer
+                        hard_bounced:
+                          type: integer
+                        optouts:
+                          type: integer
+                        responses:
+                          type: integer
+                        msisdn:
+                          type: integer
+                        first_name:
+                          type: string
+                        last_name:
+                          type: string
+                        fields:
+                          type: object
+                          additionalProperties:
+                            type: string
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      description:
+                        type: string
+              examples:
+                example-0:
+                  summary: Example 1
+                  value:
+                    page:
+                      count: 1
+                      number: 1
+                    messages_total: 2
+                    sms_total: 2
+                    messages:
+                    - type: campaign
+                      id: 368774873
+                      sms: 1
+                      cost: -0.087
+                      sent_at: '2020-09-25 07:45:08'
+                      status: completed
+                      message: 'test keyword
+
+                        Opt-out reply STOP'
+                      pending: 0
+                      delivered: 1
+                      soft_bounced: 0
+                      hard_bounced: 0
+                      optouts: 0
+                      responses: 1
+                    - type: quick_sms
+                      id: 368772813
+                      sms: 1
+                      cost: -0.087
+                      sent_at: '2020-09-25 07:36:06'
+                      status: completed
+                      message: test
+                      pending: 0
+                      delivered: 1
+                      soft_bounced: 0
+                      hard_bounced: 0
+                      optouts: 0
+                      responses: 0
+                      msisdn: 61478038915
+                    error:
+                      code: SUCCESS
+                      description: OK
+                example-1:
+                  summary: Example 2
+                  value:
+                    page:
+                      count: 1
+                      number: 1
+                    messages_total: 2
+                    sms_total: 2
+                    messages:
+                    - type: campaign
+                      id: 368774873
+                      sms: 1
+                      cost: -0.087
+                      sent_at: '2020-09-25 07:45:08'
+                      status: completed
+                      message: 'test keyword
+
+                        Opt-out reply STOP'
+                      pending: 0
+                      delivered: 1
+                      soft_bounced: 0
+                      hard_bounced: 0
+                      optouts: 0
+                      responses: 1
+                    - type: quick_sms
+                      id: 368772813
+                      sms: 1
+                      cost: -0.087
+                      sent_at: '2020-09-25 07:36:06'
+                      status: completed
+                      message: test
+                      pending: 0
+                      delivered: 1
+                      soft_bounced: 0
+                      hard_bounced: 0
+                      optouts: 0
+                      responses: 0
+                      msisdn: 61478038915
+                      first_name: Ella
+                      last_name: ''
+                      fields:
+                        City: Sydney
+                        Postcode: 2000
+                    error:
+                      code: SUCCESS
+                      description: OK
+                example-2:
+                  summary: Example 3
+                  value:
+                    page:
+                      count: 1
+                      number: 1
+                    messages_total: 1
+                    sms_total: 1
+                    messages:
+                    - type: campaign
+                      id: 368774873
+                      sms: 1
+                      cost: -0.087
+                      sent_at: '2020-09-25 07:45:08'
+                      status: completed
+                      message: 'test keyword
+
+                        Opt-out reply STOP'
+                      pending: 0
+                      delivered: 1
+                      soft_bounced: 0
+                      hard_bounced: 0
+                      optouts: 0
+                      responses: 1
+                    error:
+                      code: SUCCESS
+                      description: OK
+  /get-list.json:
+    post:
+      tags:
+      - Reporting
+      summary: Get Information About A List
+      description: "Get detailed information about a list, return custom fields and its contacts. \nThis will return paginated information regarding individual contacts on a list and their data."
+      security:
+      - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - list_id
+              properties:
+                list_id:
+                  type: integer
+                  description: Numeric ID assigned to the list being queried. List ID's can be retrieved using get-lists.
+                page:
+                  type: integer
+                  description: Page number, for pagination.
+                max:
+                  type: integer
+                  description: Maximum results returned per page.
+                members:
+                  type: boolean
+                  description: 'Only show contacts with specific status. Returns all contacts if not specified.
+
+
+                    | VALUE   | DESCRIPTION                                            |
+
+                    |---------|--------------------------------------------------------|
+
+                    | active  | Only return active contacts                             |
+
+                    | inactive| Only return deleted contacts                            |
+
+                    | none    | Do not get contacts, just list metadata                |
+
+                    '
+                response_style:
+                  type: string
+                  description: '''array'' returns custom field lists as an array.'
+      responses:
+        '200':
+          description: Successful response containing information about the list and its members.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  members_total:
+                    type: integer
+                    description: Count of number of contacts on list. This will include deleted contacts.
+                  id:
+                    type: integer
+                    description: Numeric ID of the list.
+                  name:
+                    type: string
+                    description: Name of the list.
+                  created:
+                    type: string
+                    format: date-time
+                    description: Date list was first created. Returned in ISO8601 format YYYY-MM-DD HH:MM:SS in UTC Timezone.
+                  members_active:
+                    type: integer
+                    description: Count of active contacts on list.
+                  fields:
+                    type: array
+                    items:
+                      type: string
+                    description: List of custom field names.
+                  members:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        list_id:
+                          type: integer
+                          description: Numeric ID of the list contact is on.
+                        msisdn:
+                          type: integer
+                          description: Mobile number of contact.
+                        first_name:
+                          type: string
+                          description: First name of contact.
+                        last_name:
+                          type: string
+                          description: Last name of contact.
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: Date and time that contact was first added to list. Returned in ISO8601 format YYYY-MM-DD HH:MM:SS in UTC Timezone.
+                        status:
+                          type: string
+                          description: Status of contact.
+                          enum:
+                          - active
+                          - inactive
+                        fields:
+                          type: object
+                          additionalProperties:
+                            type: string
+                    description: Information about contacts on the list.
+              examples:
+                example-0:
+                  summary: Example 2
+                  value:
+                    page:
+                      count: 1
+                      number: 1
+                    members_total: 5
+                    id: 4070887
+                    name: My Test List
+                    created: '2020-05-14 03:42:31'
+                    members_active: 3
+                    fields: []
+                    members:
+                    - list_id: 4070887
+                      msisdn: 61429625067
+                      first_name: Ella
+                      last_name: B
+                      created_at: '2020-06-23 23:23:01'
+                      status: active
+                    - list_id: 4070887
+                      msisdn: 61429703715
+                      first_name: Brad
+                      last_name: Down
+                      created_at: '2020-06-23 23:23:33'
+                      status: active
+                    - list_id: 4070887
+                      msisdn: 61429720235
+                      first_name: Paul
+                      last_name: Krajewski
+                      created_at: '2020-06-23 23:21:54'
+                      status: active
+                    error:
+                      code: SUCCESS
+                      description: OK
+                example-1:
+                  summary: Example 3
+                  value:
+                    page:
+                      count: 1
+                      number: 1
+                    members_total: 2
+                    id: 4213644
+                    name: Customer List
+                    created: '2020-06-24 05:25:48'
+                    members_active: 0
+                    fields:
+                    - name: field_1
+                      value: Email
+                    - name: field_2
+                      value: Postcode
+                    - name: field_3
+                      value: ID
+                    - name: field_4
+                      value: Handset
+                    error:
+                      code: SUCCESS
+                      description: OK
+  /get-lists.json:
+    get:
+      tags:
+      - Reporting
+      summary: Get Information About All Lists
+      description: 'Get information about all lists in your account
+
+        This will return metadata on all your lists
+
+
+        ## Pagination
+
+
+        This endpoint supports pagination using the page/max pattern:
+
+
+        **Parameters:**
+
+        - `page`: Page number starting from 1 (default: 1)
+
+        - `max`: Maximum results per page (default: varies, recommended: 10-50)
+
+
+        **Response Structure:**
+
+        The response includes pagination metadata:
+
+        - `page.count`: Total number of pages available
+
+        - `page.number`: Current page number
+
+        - `lists_total`: Total count of lists in your account
+
+
+        **Navigation Examples:**
+
+        ```
+
+        # First page of lists (default)
+
+        GET /get-lists.json
+
+
+        # Second page with 20 results per page
+
+        GET /get-lists.json?page=2&max=20
+
+
+        # Get all lists with larger page size
+
+        GET /get-lists.json?max=50
+
+
+        # Navigate through all pages
+
+        GET /get-lists.json?page=1&max=25
+
+        GET /get-lists.json?page=2&max=25
+
+        # Continue until page.number >= page.count
+
+        ```
+
+
+        **Best Practices:**
+
+        - Use max=10-25 for UI display purposes
+
+        - Use max=50 for administrative tasks or bulk operations
+
+        - Check page.count to determine if more pages exist
+
+        - For accounts with many lists, use appropriate page sizes to balance performance and usability
+
+        - Consider filtering or searching if you need specific lists rather than paginating through all'
+      security:
+      - basicAuth: []
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Page number for pagination.
+      - in: query
+        name: max
+        schema:
+          type: integer
+        description: Maximum results returned per page.
+      - in: query
+        name: response_style
+        schema:
+          type: string
+          enum:
+          - array
+        description: 'Response style. Set to ''array'' to return custom field lists as an array.
+
+          '
+      responses:
+        '200':
+          description: Successful response containing information about the lists in your account.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  lists_total:
+                    type: integer
+                    description: Count of the number of lists in your account
+                  lists:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Numeric ID of the list
+                        name:
+                          type: string
+                          description: Name of the list
+                        created:
+                          type: string
+                          format: date-time
+                          description: 'Date and time that the list was first created. Returned in ISO8601 format YYYY-MM-DD HH:MM:SS in UTC Timezone.
+
+                            '
+                        members_active:
+                          type: integer
+                          description: Count of active members on the list
+                        fields:
+                          type: array
+                          items:
+                            type: string
+                          description: 'Custom field name. List of custom field names by field_n where n is an integer between 1 and 10.
+
+                            '
+                        members_total:
+                          type: integer
+                          description: Total number of contacts on the list
+              examples:
+                example-0:
+                  summary: Example 1
+                  value:
+                    page:
+                      count: 1
+                      number: 1
+                    lists_total: 2
+                    lists:
+                    - id: 4070887
+                      name: My Test List
+                      created: '2020-05-14 03:42:31'
+                      members_active: 3
+                      fields: []
+                      members_total: 5
+                    - id: 4086208
+                      name: Quick SMS Favourites List
+                      created: '2020-05-19 07:43:28'
+                      members_active: 0
+                      fields: []
+                      members_total: 0
+                    error:
+                      code: SUCCESS
+                      description: OK
+                example-1:
+                  summary: Example 3
+                  value:
+                    page:
+                      count: 1
+                      number: 1
+                    lists_total: 6
+                    lists:
+                    - id: 4086208
+                      name: Quick SMS Favourites List
+                      created: '2020-05-19 07:43:28'
+                      members_active: 0
+                      fields: []
+                      members_total: 0
+                    - id: 4213644
+                      name: Customer List
+                      created: '2020-06-24 05:25:48'
+                      members_active: 0
+                      fields:
+                      - name: field_1
+                        value: Email
+                      - name: field_2
+                        value: Postcode
+                      - name: field_3
+                        value: ID
+                      - name: field_4
+                        value: Handset
+                      members_total: 2
+                    - id: 4213652
+                      name: User List
+                      created: '2020-06-24 05:26:59'
+                      members_active: 0
+                      fields:
+                      - name: field_1
+                        value: Email
+                      - name: field_2
+                        value: Postcode
+                      - name: field_3
+                        value: ID
+                      members_total: 0
+                    - id: 4214121
+                      name: My Test List
+                      created: '2020-06-24 07:06:42'
+                      members_active: 3
+                      fields: []
+                      members_total: 4
+                    - id: 4214634
+                      name: auto list for keyword NEWS
+                      created: null
+                      members_active: 0
+                      fields: []
+                      members_total: 0
+                    - id: 4214637
+                      name: auto list for keyword GYM
+                      created: null
+                      members_active: 0
+                      fields: []
+                      members_total: 0
+                    error:
+                      code: SUCCESS
+                      description: OK
+  /get-contact.json:
+    post:
+      tags:
+      - Reporting
+      summary: Get Contact Information
+      description: Get information about a contact on a list
+      security:
+      - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - list_id
+              - msisdn
+              properties:
+                list_id:
+                  type: integer
+                  description: Numeric ID of the list contact is on.
+                msisdn:
+                  type: integer
+                  description: Mobile number of contact being queried.
+                response_style:
+                  type: string
+                  description: 'Indicates the response style. Use ''array'' to return custom field lists as an array.
+
+                    '
+      responses:
+        '200':
+          description: Successful response containing information about the contact.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  list_id:
+                    type: integer
+                    description: Numeric ID of the list contact is on.
+                  msisdn:
+                    type: integer
+                    description: Mobile number of contact.
+                  first_name:
+                    type: string
+                    description: First name of contact.
+                  last_name:
+                    type: string
+                    description: Last name of contact.
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: Date and time that contact was first added to list. Returned in ISO8601 format YYYY-MM-DD HH:MM:SS in UTC Timezone.
+                  status:
+                    type: string
+                    description: Status of contact.
+                    enum:
+                    - active
+                    - inactive
+                  fields:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    description: Custom field value. List of custom field values by field name.
+              examples:
+                example-0:
+                  summary: Example 1
+                  value:
+                    list_id: 4070887
+                    msisdn: 61429625067
+                    first_name: Ella
+                    last_name: B
+                    created_at: '2020-06-23 23:23:01'
+                    status: active
+                    error:
+                      code: SUCCESS
+                      description: OK
+                example-1:
+                  summary: Example 3
+                  value:
+                    list_id: 4213652
+                    msisdn: 61423093477
+                    first_name: Charlie
+                    last_name: Green
+                    created_at: '2020-06-30 04:27:19'
+                    status: active
+                    fields:
+                    - name: Email
+                      value: CharlieGreen@gmail.com
+                    - name: Postcode
+                      value: 2758
+                    - name: ID
+                      value: ''
+                    - name: Address
+                      value: ''
+                    error:
+                      code: SUCCESS
+                      description: OK
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: 'Use the `Authorization` header with the value `Basic {base64(api_key:api_secret)}`.
+
+        - `api_key`: Your API key
+
+        - `api_secret`: Your API secret
+
+        '
