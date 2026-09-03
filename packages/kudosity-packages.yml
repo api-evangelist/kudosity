@@ -1,61 +1,124 @@
-generated: '2026-07-27'
+generated: '2026-09-03'
 method: searched
-source: https://github.com/kudosity + npmjs.com + GitHub Marketplace + ClawHub
+source: registry.npmjs.org + github.com/kudosity + GitHub Marketplace + geminicli.com (probed 2026-09-03)
 first_party_sdk: false
 sdk_note: Kudosity publishes NO general-purpose server SDK in any language — no npm, PyPI, Packagist,
-  RubyGems, Maven or NuGet client library. What it publishes instead is a set of agent-host plugins. Integration
-  is raw HTTP, or through one of the agent surfaces below.
+  RubyGems, Maven or NuGet client library. What it publishes instead is a set of agent-host plugins plus
+  an npm-distributed MCP server. Integration is raw HTTP, or through one of the agent surfaces below.
 packages:
+- language: javascript
+  registry: npm
+  name: kudosity-mcp
+  version: 0.5.0
+  published: '2026-07-27'
+  url: https://www.npmjs.com/package/kudosity-mcp
+  install: npx kudosity-mcp
+  kind: MCP server (stdio distribution of the hosted server)
+  official: true
+  source: https://github.com/kudosity/mcp
+  note: author Kudosity, repository github.com/kudosity/mcp, ships a kudosity-mcp bin — the local-stdio
+    twin of the hosted https://developers.kudosity.com/mcp endpoint.
 - language: javascript
   registry: npm
   name: kudosity-openclaw-sms
   version: 1.0.0
+  published: '2026-04-28'
   url: https://www.npmjs.com/package/kudosity-openclaw-sms
   install: openclaw plugins install kudosity-openclaw-sms
   kind: agent channel plugin
   official: true
   source: https://github.com/kudosity/openclaw-sms
+- language: javascript
+  registry: npm
+  name: n8n-nodes-kudosity
+  version: 0.1.6
+  published: '2025-02-27'
+  url: https://www.npmjs.com/package/n8n-nodes-kudosity
+  kind: n8n community node
+  official: true
+  source: https://github.com/burstsms/n8n-nodes-kudosity
+  note: first-party — npm maintainer is the kudosity account (sre+npm@kudosity.com); repository sits in
+    the burstsms GitHub org, Kudosity's former name.
 - language: yaml
   registry: GitHub Marketplace
   name: kudosity/kudosity-sms-action
+  version: v1.0.1
+  published: '2026-05-22'
   url: https://github.com/marketplace/actions/kudosity-sms
   install: 'uses: kudosity/kudosity-sms-action@v1'
   kind: composite GitHub Action
   official: true
   source: https://github.com/kudosity/kudosity-sms-action
+  note: version read from the repo's git tags (v1.0.1, repo pushed 2026-05-22); GitHub Marketplace has
+    no anonymous metadata endpoint.
 - language: n/a
   registry: Claude Code marketplace
   name: kudosity-sms
+  version: v1.0.0
+  published: '2026-05-04'
   install: /plugin install kudosity-sms
   kind: agent plugin
   official: true
   source: https://github.com/kudosity/kudosity-claude-sms-plugin
+  note: version read from the repo's git tag; the plugin marketplace has no anonymous metadata endpoint.
 - language: n/a
   registry: Gemini CLI Extension Gallery
   name: kudosity-gemini-sms-extension
+  version: v1.0.0
+  published: '2026-05-04'
   url: https://geminicli.com/extensions/?name=kudositygemini-kudosity-sms-extension
   kind: agent extension
   official: true
   source: https://github.com/kudosity/gemini-kudosity-sms-extension
+  note: version read from the repo's git tag; the gallery has no anonymous metadata endpoint.
 - language: n/a
   registry: VS Code / GitHub Copilot
   name: kudosity-copilot-extension
+  version: v1.0.0
+  published: '2026-05-21'
   kind: agent extension
   official: true
   source: https://github.com/kudosity/kudosity-copilot-extension
+  note: version read from the repo's git tag (repo pushed 2026-05-21).
 - language: javascript
   registry: GitHub
   name: ai-agent-examples
+  version: null
+  published: null
   url: https://github.com/kudosity/ai-agent-examples
   kind: examples (dependency-free Node.js, all four channels)
   official: true
+  note: untagged example repo, not a released package — last pushed 2026-08-02.
 - language: javascript
   registry: GitHub
   name: mcp
+  version: null
+  published: null
   url: https://github.com/kudosity/mcp
   kind: MCP server source
   official: true
+  note: source repo for the kudosity-mcp npm package above; untagged, last pushed 2026-07-27.
+third_party:
+- name: '@pipedream/kudosity'
+  registry: npm
+  version: 0.0.1
+  published: '2025-10-02'
+- name: '@activepieces/piece-kudosity'
+  registry: npm
+  version: 0.1.7
+  published: '2026-08-04'
+- name: '@scopieflows/app-kudosity'
+  registry: npm
+  version: 0.1.4
+  published: '2026-05-14'
+- name: '@agnocon/piece-kudosity'
+  registry: npm
+  version: 0.1.7
+  published: '2026-09-01'
+third_party_note: connector packages published by integration platforms, not by Kudosity — recorded as
+  ecosystem evidence only.
 github_organization:
   url: https://github.com/kudosity
   public_repos: 9
-  created: '2023-11-24'
+currency_note: 'Freshest first-party release is kudosity-mcp 0.5.0 (2026-07-27); the agent plugins date
+  from April–May 2026. Nothing here predates the API it wraps — no abandonment signal.'

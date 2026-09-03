@@ -1,7 +1,7 @@
 ---
 name: Choose between the v1 and v2 Kudosity APIs
 description: Decide which Kudosity API to call for a given task, and which credential to present, before writing any integration code.
-api: openapi/kudosity-transmit-message-openapi-original.yml
+api: openapi/_original/kudosity-transmit-message-openapi-original.yml
 operations: []
 ---
 

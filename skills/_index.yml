@@ -1,6 +1,6 @@
 generated: '2026-07-27'
 method: generated
-source: openapi/kudosity-transmit-message-openapi-original.yml, openapi/kudosity-transmit-sms-openapi-original.yml,
+source: openapi/_original/kudosity-transmit-message-openapi-original.yml, openapi/_original/kudosity-transmit-sms-openapi-original.yml,
   developers.kudosity.com
 grounding_note: Neither Kudosity OpenAPI declares operationIds on any of its 57 operations, so every skill
   step is grounded on METHOD + path instead. Adding operationIds is the single highest-value contract
@@ -8,14 +8,14 @@ grounding_note: Neither Kudosity OpenAPI declares operationIds on any of its 57 
 skills:
 - file: kudosity-send-sms-and-track-delivery.md
   name: Send an SMS and track its delivery
-  api: openapi/kudosity-transmit-message-openapi-original.yml
+  api: openapi/_original/kudosity-transmit-message-openapi-original.yml
   operations:
   - POST /v2/sms
   - GET /v2/sms/{id}
   - POST /v2/webhook
 - file: kudosity-register-and-verify-a-sender.md
   name: Register and verify a sender number
-  api: openapi/kudosity-transmit-message-openapi-original.yml
+  api: openapi/_original/kudosity-transmit-message-openapi-original.yml
   operations:
   - POST /v2/senders/registrations
   - POST /v2/senders/registrations/{registration_id}/verifications
@@ -23,14 +23,14 @@ skills:
   - DELETE /v2/senders/phone-numbers/{phone_number}
 - file: kudosity-send-whatsapp-with-sms-fallback.md
   name: Send a WhatsApp message with SMS fallback
-  api: openapi/kudosity-transmit-message-openapi-original.yml
+  api: openapi/_original/kudosity-transmit-message-openapi-original.yml
   operations:
   - POST /v2/whatsapp/messages
   - GET /v2/whatsapp/messages/{id}
   - POST /v2/rcs/capabilities
 - file: kudosity-manage-contact-lists.md
   name: Manage contact lists and bulk imports
-  api: openapi/kudosity-transmit-sms-openapi-original.yml
+  api: openapi/_original/kudosity-transmit-sms-openapi-original.yml
   operations:
   - POST /add-list.json
   - POST /add-to-list.json
@@ -39,5 +39,5 @@ skills:
   - POST /add-contacts-bulk-progress.json
 - file: kudosity-choose-v1-or-v2.md
   name: Choose between the v1 and v2 Kudosity APIs
-  api: openapi/kudosity-transmit-message-openapi-original.yml
+  api: openapi/_original/kudosity-transmit-message-openapi-original.yml
   operations: []

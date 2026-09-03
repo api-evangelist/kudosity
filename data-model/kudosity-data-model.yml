@@ -1,6 +1,6 @@
 generated: '2026-07-27'
 method: derived
-source: openapi/kudosity-transmit-message-openapi-original.yml
+source: openapi/_original/kudosity-transmit-message-openapi-original.yml
 note: Entity graph derived from the 127 component schemas of the Transmit Message (v2) OpenAPI. The v1
   spec declares no components at all, so its objects are documented only in prose and cannot be graphed.
 entities:

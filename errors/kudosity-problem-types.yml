@@ -38,15 +38,15 @@ problems:
   detail: The server encountered an unexpected error
 - name: ForbiddenProblem
   status: 403
-  source: openapi/kudosity-transmit-message-openapi-original.yml
+  source: openapi/_original/kudosity-transmit-message-openapi-original.yml
   note: Declared in the OpenAPI components; not yet written up in the public Error Registry.
 - name: ConflictProblem
   status: 409
-  source: openapi/kudosity-transmit-message-openapi-original.yml
+  source: openapi/_original/kudosity-transmit-message-openapi-original.yml
   note: Declared in the OpenAPI components; not yet written up in the public Error Registry.
 - name: TooManyRequestsProblem
   status: 429
-  source: openapi/kudosity-transmit-message-openapi-original.yml
+  source: openapi/_original/kudosity-transmit-message-openapi-original.yml
   note: Declared in the OpenAPI components; not yet written up in the public Error Registry.
 gaps:
 - The published Error Registry documents 4 of the 10 problem schemas the v2 OpenAPI declares.

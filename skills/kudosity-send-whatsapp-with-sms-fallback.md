@@ -1,7 +1,7 @@
 ---
 name: Send a WhatsApp message with SMS fallback
 description: Send a templated or free-form WhatsApp message through the Kudosity v2 API and fall back to SMS when WhatsApp cannot deliver.
-api: openapi/kudosity-transmit-message-openapi-original.yml
+api: openapi/_original/kudosity-transmit-message-openapi-original.yml
 operations:
   - POST /v2/whatsapp/messages
   - GET /v2/whatsapp/messages

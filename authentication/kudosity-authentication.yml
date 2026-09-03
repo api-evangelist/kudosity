@@ -1,6 +1,6 @@
 generated: '2026-07-27'
 method: derived
-source: openapi/kudosity-transmit-message-openapi-original.yml, openapi/kudosity-transmit-sms-openapi-original.yml
+source: openapi/_original/kudosity-transmit-message-openapi-original.yml, openapi/_original/kudosity-transmit-sms-openapi-original.yml
 summary:
   types:
   - apiKey
@@ -15,7 +15,7 @@ schemes:
   description: All API requests require your API credentials, you will find them once logged
     into your account on the SETTINGS page. Scroll down to API Settings to find your API key.
   sources:
-  - openapi/kudosity-transmit-message-openapi-original.yml
+  - openapi/_original/kudosity-transmit-message-openapi-original.yml
 - name: basicAuth
   type: http
   scheme: basic
@@ -24,4 +24,4 @@ schemes:
     - `api_key`: Your API key
     - `api_secret`: Your API secret
   sources:
-  - openapi/kudosity-transmit-sms-openapi-original.yml
+  - openapi/_original/kudosity-transmit-sms-openapi-original.yml

@@ -1,4 +1,4 @@
-generated: '2026-07-27'
+generated: '2026-09-03'
 method: searched
 source: https://developers.kudosity.com/reference/ (api-overview section) + both OpenAPI documents
 authentication:
@@ -13,6 +13,7 @@ authentication:
   note: API secret is a user-chosen value set on the account SETTINGS page, not issued by Kudosity.
 idempotency:
   supported: false
+  coverage: none
   evidence: No idempotency key header, parameter or documentation in either OpenAPI or the docs.
   note: 'For a messaging API this is a real agent-safety gap: a retried send is a second billable message.
     v2 offers message_ref for reconciliation after the fact, but it is not a de-duplication key.'
@@ -64,3 +65,36 @@ message_reference:
   field: message_ref
   api: v2
   purpose: caller-supplied reference returned alongside the Kudosity message id
+reversibility:
+  generated: '2026-09-03'
+  method: derived
+  source: openapi/kudosity-sms-api-openapi.yml + openapi/kudosity-webhook-api-openapi.yml + https://developers.kudosity.com/reference/post_cancel-sms-json
+  grade: documented
+  summary: 'Partial. The one consequential action with a real reversal path is a SCHEDULED v1 SMS send:
+    POST /cancel-sms.json cancels it by message ID, and the docs state the window — scheduled messages
+    only, before the send time. An immediate send on either API (SMS, MMS, WhatsApp, RCS) has no reversal:
+    once accepted by the carrier a message cannot be recalled, and each send is billable. Configuration
+    writes (webhooks, lists, contacts, keywords, leased numbers) are undoable via their own delete
+    operations with no window limit.'
+  write_surfaces:
+  - action: v1 scheduled SMS send (POST /send-sms.json with send_at)
+    reversal: POST /cancel-sms.json
+    window: before the scheduled send time — the docs state scheduled messages can be cancelled using
+      the message ID; an immediate or already-sent message cannot
+    docs: https://developers.kudosity.com/reference/post_cancel-sms-json
+    grade: documented
+  - action: immediate message send — v2 POST /v2/sms, /v2/mms, /v2/whatsapp/messages, /v2/rcs/messages
+      and v1 POST /send-sms.json without send_at
+    reversal: none
+    window: null
+    grade: none
+    note: 'irreversible and billable: no recall, void or refund operation exists on either API.'
+  - action: webhook subscription (POST /v2/webhook)
+    reversal: DELETE /v2/webhook/{id}
+    window: none stated — deletable at any time
+    grade: documented
+  - action: list / contact / keyword / email-address / number configuration writes (v1 add-* operations)
+    reversal: matching v1 remove/delete operations (remove-list.json, delete-from-list.json, delete-email.json,
+      edit-number-options.json)
+    window: none stated — deletable at any time
+    grade: documented

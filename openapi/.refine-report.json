@@ -1,0 +1,44 @@
+{
+  "provider": "kudosity",
+  "sources": [
+    "kudosity-transmit-message-openapi-original.yml",
+    "kudosity-transmit-sms-openapi-original.yml"
+  ],
+  "outputs": [
+    "kudosity-mms-api-openapi.yml",
+    "kudosity-rcs-api-openapi.yml",
+    "kudosity-sms-api-openapi.yml",
+    "kudosity-senders-api-openapi.yml",
+    "kudosity-webhook-api-openapi.yml",
+    "kudosity-whatsapp-api-openapi.yml",
+    "kudosity-account-api-openapi.yml",
+    "kudosity-contacts-lists-api-openapi.yml",
+    "kudosity-email-sms-api-openapi.yml",
+    "kudosity-keywords-api-openapi.yml",
+    "kudosity-numbers-api-openapi.yml",
+    "kudosity-reporting-api-openapi.yml"
+  ],
+  "archived": [
+    "archived openapi/kudosity-transmit-message-openapi-original.yml",
+    "archived openapi/kudosity-transmit-sms-openapi-original.yml"
+  ],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "kudosity-transmit-message-openapi-original.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "kudosity-transmit-message-openapi-original.yml: declared missing tag: RCS",
+    "kudosity-transmit-message-openapi-original.yml: declared missing tag: Senders",
+    "kudosity-transmit-message-openapi-original.yml: declared missing tag: WhatsApp",
+    "kudosity-transmit-sms-openapi-original.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "kudosity-transmit-sms-openapi-original.yml: declared missing tag: Account",
+    "kudosity-transmit-sms-openapi-original.yml: declared missing tag: Contacts & Lists",
+    "kudosity-transmit-sms-openapi-original.yml: declared missing tag: Email SMS",
+    "kudosity-transmit-sms-openapi-original.yml: declared missing tag: Keywords",
+    "kudosity-transmit-sms-openapi-original.yml: declared missing tag: Numbers",
+    "kudosity-transmit-sms-openapi-original.yml: declared missing tag: Reporting",
+    "kudosity-transmit-sms-openapi-original.yml: declared missing tag: SMS",
+    "tag 'SMS' spans 2 source specs (kudosity-transmit-message-openapi-original.yml, kudosity-transmit-sms-openapi-original.yml): per-path servers applied",
+    "apis.yml register: written (+12 apis, 12 total)"
+  ],
+  "skipped": []
+}

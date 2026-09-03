@@ -3,8 +3,8 @@ method: derived
 source: mcp/kudosity-mcp.yml (live tools/list) + both OpenAPI documents
 surfaces:
   openapi:
-  - openapi/kudosity-transmit-message-openapi-original.yml
-  - openapi/kudosity-transmit-sms-openapi-original.yml
+  - openapi/_original/kudosity-transmit-message-openapi-original.yml
+  - openapi/_original/kudosity-transmit-sms-openapi-original.yml
   mcp:
     url: https://developers.kudosity.com/mcp
     tools_list: anonymous (not gated)

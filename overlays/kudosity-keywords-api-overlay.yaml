@@ -1,0 +1,30 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Transmit SMS Keywords API
+  version: 1.0.0
+extends: openapi/kudosity-keywords-api-openapi.yml
+x-generated: '2026-09-03'
+x-method: generated
+x-source: openapi/kudosity-keywords-api-openapi.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist:
+      catalog: https://apis.io/kudosity
+      provider: Kudosity
+      maintainer: Kin Lane <kin@apievangelist.com>
+      artifacts:
+      - apis.yml
+      - conformance/kudosity-conformance.yml
+      - errors/kudosity-problem-types.yml
+      - errors/kudosity-error-codes.yml
+      - lifecycle/kudosity-lifecycle.yml
+      - packages/kudosity-packages.yml
+      - mcp/kudosity-mcp.yml
+      - mcp/kudosity-tool-crosswalk.yml
+      - conventions/kudosity-conventions.yml
+      - authentication/kudosity-authentication.yml
+      - rate-limits/kudosity-rate-limits.yml
+      - data-model/kudosity-data-model.yml
+      - asyncapi/kudosity-webhooks.yml
+      - skills/_index.yml

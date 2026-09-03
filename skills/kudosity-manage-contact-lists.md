@@ -1,7 +1,7 @@
 ---
 name: Manage contact lists and bulk imports
 description: Create lists, add and update contacts, handle opt-outs, and run a bulk CSV import through the Kudosity Transmit SMS (v1) API.
-api: openapi/kudosity-transmit-sms-openapi-original.yml
+api: openapi/_original/kudosity-transmit-sms-openapi-original.yml
 operations:
   - POST /add-list.json
   - POST /add-field-to-list.json

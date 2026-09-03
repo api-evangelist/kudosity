@@ -15,7 +15,7 @@ rate_limits:
   limit_count: 10
   limit_unit: second
   applies_to: outbound webhook POSTs (per-webhook rate_limit field, v2)
-  source: openapi/kudosity-transmit-message-openapi-original.yml
+  source: openapi/_original/kudosity-transmit-message-openapi-original.yml
   note: Configurable per webhook; 10 rps is the documented example value.
 gaps:
 - No RateLimit / X-RateLimit response headers are documented or present in either spec, so a client (or

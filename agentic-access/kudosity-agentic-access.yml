@@ -1,6 +1,6 @@
 generated: '2026-07-27'
 method: generated
-source: openapi/kudosity-transmit-message-openapi-original.yml, openapi/kudosity-transmit-sms-openapi-original.yml
+source: openapi/_original/kudosity-transmit-message-openapi-original.yml, openapi/_original/kudosity-transmit-sms-openapi-original.yml
 description: Recommended x-agentic-access execution contracts, classified heuristically from
   the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
   audience per deployment. See research/curity/agentic-governance/.

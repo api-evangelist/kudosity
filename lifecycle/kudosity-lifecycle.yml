@@ -15,11 +15,11 @@ deprecation:
     "no rush to migrate", but no dated end-of-life commitment exists. Field-level deprecations do appear
     in the v2 spec (WebhookResponse.is_sandbox, WebhookRequest.event_type superseded by filter.event_type).
 deprecated_fields:
-- spec: openapi/kudosity-transmit-message-openapi-original.yml
+- spec: openapi/_original/kudosity-transmit-message-openapi-original.yml
   schema: WebhookResponse
   field: is_sandbox
   note: Deprecated. Will be removed in a future version.
-- spec: openapi/kudosity-transmit-message-openapi-original.yml
+- spec: openapi/_original/kudosity-transmit-message-openapi-original.yml
   schema: WebhookRequest
   field: event_type
   note: Deprecated — use filter.event_type instead.

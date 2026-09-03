@@ -1,7 +1,18 @@
-generated: '2026-07-27'
+generated: '2026-09-03'
 method: searched
 status: published
 source: https://developers.kudosity.com/docs/mcp
+deployment:
+  mode: both
+  endpoint: https://developers.kudosity.com/mcp
+  install: npx kudosity-mcp
+  package: https://www.npmjs.com/package/kudosity-mcp
+  auth: api-key
+  verified: probed
+  note: 'tools/list on the hosted endpoint answers anonymously (probed 2026-09-03 — full tool list with
+    inputSchema returned, no credentials); execute-request needs account credentials at call time. The
+    stdio twin is the first-party kudosity-mcp npm package (0.5.0, published 2026-07-27, bin kudosity-mcp),
+    from the same github.com/kudosity/mcp source.'
 server:
   name: Kudosity
   version: '1.0'

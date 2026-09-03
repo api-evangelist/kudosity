@@ -1,7 +1,7 @@
 ---
 name: Send an SMS and track its delivery
 description: Send a single SMS through the Kudosity Transmit Message (v2) API and follow it to a delivery outcome, either by polling or by subscribing to a webhook.
-api: openapi/kudosity-transmit-message-openapi-original.yml
+api: openapi/_original/kudosity-transmit-message-openapi-original.yml
 operations:
   - POST /v2/sms
   - GET /v2/sms/{id}

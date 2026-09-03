@@ -1,6 +1,6 @@
 generated: '2026-07-27'
 method: searched
-source: https://developers.kudosity.com/reference/webhooks-1 + openapi/kudosity-transmit-message-openapi-original.yml
+source: https://developers.kudosity.com/reference/webhooks-1 + openapi/_original/kudosity-transmit-message-openapi-original.yml
 spec_type: null
 asyncapi_published: false
 note: 'Kudosity publishes no AsyncAPI document. It does publish a real, API-managed webhook surface, captured

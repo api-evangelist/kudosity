@@ -1,13 +1,91 @@
-generated: '2026-07-27'
-method: searched
-hosts_probed:
-- https://kudosity.com
-- https://developers.kudosity.com
-- https://api.transmitmessage.com
-- https://api.transmitsms.com
-documents: []
-result: none
-note: 'No /.well-known surface on any host: security.txt, openid-configuration, oauth-authorization-server,
-  api-catalog and ai-plugin.json all return 404 (the API hosts return 401 for every path, including unauthenticated
-  discovery paths). RFC 9116 security.txt and an /.well-known/api-catalog are the two cheapest wins available
-  here.'
+generated: '2026-09-03'
+method: probed
+source: /.well-known/* probed on kudosity.com, developers.kudosity.com, api.transmitmessage.com, api.transmitsms.com (2026-09-03)
+result: hit
+note: 'One real hit, new since the 2026-07-27 probe: developers.kudosity.com now serves /.well-known/api-catalog
+  as an RFC 9727 linkset (application/linkset+json) naming both live OpenAPI documents — api_documentation.yml
+  (Transmit Message API v2) and public-openapi.yaml (Transmit SMS API v1) — each with service-desc and
+  service-doc links. Saved verbatim to well-known/kudosity-api-catalog.json. Everything else still misses:
+  security.txt, openid-configuration, oauth-authorization-server, oauth-protected-resource, agent-card.json,
+  agent.json and ai-plugin.json 404 on the web hosts; the two API hosts answer 401 for every path including
+  anonymous discovery paths. RFC 9116 security.txt remains the cheapest win available.'
+hosts:
+- host: kudosity.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: developers.kudosity.com
+  documents:
+  - path: /.well-known/api-catalog
+    status: 200
+    file: well-known/kudosity-api-catalog.json
+    content_type: application/linkset+json
+    format: RFC 9727 api-catalog linkset
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: api.transmitmessage.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 401
+  - path: /.well-known/openid-configuration
+    status: 401
+  - path: /.well-known/oauth-authorization-server
+    status: 401
+  - path: /.well-known/oauth-protected-resource
+    status: 401
+  - path: /.well-known/api-catalog
+    status: 401
+  - path: /.well-known/ai-plugin.json
+    status: 401
+  - path: /.well-known/agent-card.json
+    status: 401
+  - path: /.well-known/agent.json
+    status: 401
+  note: host answers 401 for every path, including anonymous discovery paths
+- host: api.transmitsms.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+a2a_agent_card: 'none found — /.well-known/agent-card.json and the legacy /.well-known/agent.json miss
+  on every host (404 on web hosts, 401 catch-all on API hosts); no a2a/ artifact written, per search-only
+  rule.'

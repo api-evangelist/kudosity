@@ -1,6 +1,6 @@
 generated: '2026-07-27'
 method: derived
-source: openapi/kudosity-transmit-message-openapi-original.yml, openapi/kudosity-transmit-sms-openapi-original.yml
+source: openapi/_original/kudosity-transmit-message-openapi-original.yml, openapi/_original/kudosity-transmit-sms-openapi-original.yml
 count: 48
 note: 'In-spec examples are sparse: 48 operation-level example blocks across 57 operations. Schema-level
   examples are far more common in v2 (most properties carry one), which is what makes the generated code

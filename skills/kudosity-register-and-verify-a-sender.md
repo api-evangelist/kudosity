@@ -1,7 +1,7 @@
 ---
 name: Register and verify a sender number
 description: Register a personal sender with Kudosity and complete the verification-code round trip before sending from it.
-api: openapi/kudosity-transmit-message-openapi-original.yml
+api: openapi/_original/kudosity-transmit-message-openapi-original.yml
 operations:
   - POST /v2/senders/registrations
   - GET /v2/senders/registrations
