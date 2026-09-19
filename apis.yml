@@ -474,6 +474,8 @@ apis:
   humanURL: https://developers.kudosity.com/reference/about-mms
   baseURL: https://api.transmitsms.com
   tags:
+  - WhatsApp
+  tags_raw:
   - Whats App
   properties:
   - type: OpenAPI
