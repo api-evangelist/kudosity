@@ -1,6 +1,7 @@
 generated: '2026-09-03'
 method: probed
-source: /.well-known/* probed on kudosity.com, developers.kudosity.com, api.transmitmessage.com, api.transmitsms.com (2026-09-03)
+source: /.well-known/* probed on kudosity.com, developers.kudosity.com, api.transmitmessage.com, api.transmitsms.com
+  (2026-09-03)
 result: hit
 note: 'One real hit, new since the 2026-07-27 probe: developers.kudosity.com now serves /.well-known/api-catalog
   as an RFC 9727 linkset (application/linkset+json) naming both live OpenAPI documents — api_documentation.yml
@@ -32,7 +33,7 @@ hosts:
   documents:
   - path: /.well-known/api-catalog
     status: 200
-    file: well-known/kudosity-api-catalog.json
+    file: kudosity-api-catalog.json
     content_type: application/linkset+json
     format: RFC 9727 api-catalog linkset
   - path: /.well-known/security.txt
@@ -86,6 +87,6 @@ hosts:
     status: 404
   - path: /.well-known/agent.json
     status: 404
-a2a_agent_card: 'none found — /.well-known/agent-card.json and the legacy /.well-known/agent.json miss
+a2a_agent_card: none found — /.well-known/agent-card.json and the legacy /.well-known/agent.json miss
   on every host (404 on web hosts, 401 catch-all on API hosts); no a2a/ artifact written, per search-only
-  rule.'
+  rule.

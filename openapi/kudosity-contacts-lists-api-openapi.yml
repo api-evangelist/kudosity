@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Transmit SMS Contacts & Lists API
-  description: '<p>With so many SMS APIs on the market today, you might think that they all do the same thing: send text messages. But with our flexible and powerful suite of APIs, you can do more than that.</p>'
+  description: 'With so many SMS APIs on the market today, you might think that they all do the same thing: send text messages. But with our flexible and powerful suite of APIs, you can do more than that.'
   version: 1.0.0
 servers:
 - url: https://api.transmitsms.com
@@ -13,7 +13,32 @@ paths:
       tags:
       - Contacts & Lists
       summary: Bulk Add Contacts from CSV File
-      description: "Add bulk contacts to a list from a file\n\nThe add-contacts-bulk request can be used to add a CSV file of contacts to an existing list. It can also be used to create a new list and upload a CSV file of contacts to it. If a contact is added that already exists in a list, any existing data will be updated.\n\n**The return code 200 is only used to indicate that the API call has successfully hit our server. It in no way indicates if the contacts have been added\\updated successfully.\nTo find the status of an upload, including error messages, you must use the add-contacts-bulk-progress endpoint.**\n\n```\nCSV File Format and Example:\n        Firstname,Lastname,Mobile,\"Custom Field 1\"\n        Jane,Doe,61412345678,10.44\n\nThe minimum required for successful import is Mobile.\n\nThe order above must be followed.\n```"
+      description: 'Add bulk contacts to a list from a file
+
+
+        The add-contacts-bulk request can be used to add a CSV file of contacts to an existing list. It can also be used to create a new list and upload a CSV file of contacts to it. If a contact is added that already exists in a list, any existing data will be updated.
+
+
+        **The return code 200 is only used to indicate that the API call has successfully hit our server. It in no way indicates if the contacts have been added\updated successfully.
+
+        To find the status of an upload, including error messages, you must use the add-contacts-bulk-progress endpoint.**
+
+
+        ```
+
+        CSV File Format and Example:
+
+        Firstname,Lastname,Mobile,"Custom Field 1"
+
+        Jane,Doe,61412345678,10.44
+
+
+        The minimum required for successful import is Mobile.
+
+
+        The order above must be followed.
+
+        ```'
       security:
       - basicAuth: []
       requestBody:
@@ -72,6 +97,8 @@ paths:
                       description:
                         type: string
                         description: Description of the error status.
+      operationId: postAddContactsBulkJson
+      x-operation-id-source: derived
   /add-list.json:
     post:
       tags:
@@ -187,6 +214,8 @@ paths:
               schema:
                 type: string
               example: "<?xml version=\"1.0\"?>\n<response>\n    <id>4213652</id>\n    <name>User List</name>\n    <created>2020-06-24 05:26:59</created>\n    <members_active>0</members_active>\n    <fields>\n        <field_1>Email</field_1>\n        <field_2>Postcode</field_2>\n        <field_3>ID</field_3>\n    </fields>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+      operationId: postAddListJson
+      x-operation-id-source: derived
   /add-field-to-list.json:
     post:
       tags:
@@ -274,6 +303,8 @@ paths:
                     error:
                       code: SUCCESS
                       description: OK
+      operationId: postAddFieldToListJson
+      x-operation-id-source: derived
   /remove-list.json:
     post:
       tags:
@@ -315,6 +346,8 @@ paths:
               schema:
                 type: string
               example: "<?xml version=\"1.0\"?>\n<response>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+      operationId: postRemoveListJson
+      x-operation-id-source: derived
   /add-to-list.json:
     post:
       tags:
@@ -471,6 +504,8 @@ paths:
               schema:
                 type: string
               example: "<?xml version=\"1.0\"?>\n<response>\n    <list_id>4213644</list_id>\n    <msisdn>61429720235</msisdn>\n    <first_name/>\n    <last_name/>\n    <created_at>2020-06-24 07:09:03</created_at>\n    <status>active</status>\n    <fields>\n        <Email>Telstra</Email>\n        <Postcode/>\n        <ID/>\n        <Handset/>\n    </fields>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+      operationId: postAddToListJson
+      x-operation-id-source: derived
   /edit-list-member.json:
     post:
       tags:
@@ -575,6 +610,8 @@ paths:
               schema:
                 type: string
               example: "<?xml version=\"1.0\"?>\n<response>\n    <list_id>4213644</list_id>\n    <msisdn>61429720235</msisdn>\n    <first_name/>\n    <last_name/>\n    <created_at>2020-06-24 07:09:03</created_at>\n    <status>active</status>\n    <fields>\n        <Email>Optus</Email>\n        <Postcode/>\n        <ID/>\n        <Handset/>\n    </fields>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+      operationId: postEditListMemberJson
+      x-operation-id-source: derived
   /delete-from-list.json:
     post:
       tags:
@@ -657,12 +694,19 @@ paths:
               schema:
                 type: string
               example: "<?xml version=\"1.0\"?>\n<response>\n    <list_ids>\n        <item>4213644</item>\n    </list_ids>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+      operationId: postDeleteFromListJson
+      x-operation-id-source: derived
   /optout-list-member.json:
     post:
       tags:
       - Contacts & Lists
       summary: Opt Out/Unsubscribe Contact
-      description: "Opt Out List Member\n\nUnsubscribe contact from one or all lists  \nIf sending marketing by law you must enable an unsubscribe method. [Anti-Spam Policy](https://help.kudosity.com/s/article/44001077041-anti-spam-policy)"
+      description: 'Opt Out List Member
+
+
+        Unsubscribe contact from one or all lists
+
+        If sending marketing by law you must enable an unsubscribe method. Anti-Spam Policy'
       security:
       - basicAuth: []
       requestBody:
@@ -729,6 +773,8 @@ paths:
               schema:
                 type: string
               example: "<?xml version=\"1.0\"?>\n<response>\n    <list_ids>\n        <item>4214121</item>\n    </list_ids>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+      operationId: postOptoutListMemberJson
+      x-operation-id-source: derived
   /add-contacts-bulk-progress.json:
     post:
       tags:
@@ -800,6 +846,8 @@ paths:
               schema:
                 type: string
               example: "<?xml version=\"1.0\"?>\n<response>\n    <list_id>4214121</list_id>\n    <status>completed</status>\n    <importlength>2</importlength>\n    <completed>2</completed>\n    <duplicates>0</duplicates>\n    <skipped>0</skipped>\n    <optout>0</optout>\n    <imported>2</imported>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+      operationId: postAddContactsBulkProgressJson
+      x-operation-id-source: derived
 components:
   securitySchemes:
     basicAuth:

@@ -1,0 +1,31 @@
+# Front Door AI Index — kudosity — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: kudosity
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: kudosity.com
+  final_host: kudosity.com
+  ownership: own
+  owner: kudosity
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 18
+  host_score: 18
+  density: 10.46
+  words: 1721
+  tiers:
+    agentic: 8
+    core: 9
+    model: 1
+  ambiguous: 2
+  top_terms:
+    AI: 9
+    conversational AI: 4
+    MCP: 3
+    Claude: 1
+    agent: 1
+    automation: 1
+    model context protocol: 1

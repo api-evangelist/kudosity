@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Transmit SMS Account API
-  description: '<p>With so many SMS APIs on the market today, you might think that they all do the same thing: send text messages. But with our flexible and powerful suite of APIs, you can do more than that.</p>'
+  description: 'With so many SMS APIs on the market today, you might think that they all do the same thing: send text messages. But with our flexible and powerful suite of APIs, you can do more than that.'
   version: 1.0.0
 servers:
 - url: https://api.transmitsms.com
@@ -13,9 +13,7 @@ paths:
       tags:
       - Account
       summary: Get Balance
-      description: 'Account information.
-
-        '
+      description: Account information.
       security:
       - basicAuth: []
       responses:
@@ -53,6 +51,8 @@ paths:
               schema:
                 type: string
               example: "<?xml version=\"1.0\"?>\n<response>\n    <balance>73.954</balance>\n    <currency>AUD</currency>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+      operationId: getGetBalanceJson
+      x-operation-id-source: derived
 components:
   securitySchemes:
     basicAuth:

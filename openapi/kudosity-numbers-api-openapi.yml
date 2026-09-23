@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Transmit SMS Numbers API
-  description: '<p>With so many SMS APIs on the market today, you might think that they all do the same thing: send text messages. But with our flexible and powerful suite of APIs, you can do more than that.</p>'
+  description: 'With so many SMS APIs on the market today, you might think that they all do the same thing: send text messages. But with our flexible and powerful suite of APIs, you can do more than that.'
   version: 1.0.0
 servers:
 - url: https://api.transmitsms.com
@@ -16,7 +16,7 @@ paths:
       description: 'Lease Number
 
 
-        Dedicated virtual numbers are used to receive MO (Mobile Originated) messages. They also make sure that all of your messages are sent from a number that is always the same. Dedicated Virtual Number availability is limited to certain countries. Check [Global Sender ID Information](https://portal.transmitsms.com/s/article/Global-Sender-ID-Information) for availability for your destination coutry.'
+        Dedicated virtual numbers are used to receive MO (Mobile Originated) messages. They also make sure that all of your messages are sent from a number that is always the same. Dedicated Virtual Number availability is limited to certain countries. Check Global Sender ID Information for availability for your destination coutry.'
       security:
       - basicAuth: []
       requestBody:
@@ -77,6 +77,8 @@ paths:
                     error:
                       code: SUCCESS
                       description: OK
+      operationId: postLeaseNumberJson
+      x-operation-id-source: derived
   /get-numbers.json:
     get:
       tags:
@@ -88,7 +90,7 @@ paths:
         **Get a list of numbers leased by you or available to be leased.**
 
 
-        Dedicated virtual numbers are used to receive MO (Mobile Originated) messages. They also make sure that all of your messages are sent from a number that is always the same. Dedicated Virtual Number availability is limited to certain countries. Check [Global SMS delivery list](https://support.transmitsms.com/support/solutions/articles/44001940675-global-sms-delivery-list) for availability for your destination country.
+        Dedicated virtual numbers are used to receive MO (Mobile Originated) messages. They also make sure that all of your messages are sent from a number that is always the same. Dedicated Virtual Number availability is limited to certain countries. Check Global SMS delivery list for availability for your destination country.
 
 
         ## Pagination
@@ -236,14 +238,14 @@ paths:
               schema:
                 type: string
               example: "<?xml version=\"1.0\"?>\n<response>\n    <page>\n        <count>1</count>\n        <number>1</number>\n    </page>\n    <numbers_total>1</numbers_total>\n    <filter>owned</filter>\n    <numbers>\n        <item>\n            <number>61436446702</number>\n            <price>25</price>\n            <auto_renew>true</auto_renew>\n            <next_charge>2020-07-15</next_charge>\n            <status>active</status>\n        </item>\n    </numbers>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+      operationId: getGetNumbersJson
+      x-operation-id-source: derived
   /get-number.json:
     post:
       tags:
       - Numbers
       summary: Get Number Information
-      description: 'Get detailed information about a number you have leased.
-
-        '
+      description: Get detailed information about a number you have leased.
       security:
       - basicAuth: []
       requestBody:
@@ -307,6 +309,8 @@ paths:
               schema:
                 type: string
               example: "<?xml version=\"1.0\"?>\n<response>\n    <number>61418279031</number>\n    <price>25</price>\n    <auto_renew>true</auto_renew>\n    <next_charge>2020-07-24</next_charge>\n    <status>active</status>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+      operationId: postGetNumberJson
+      x-operation-id-source: derived
   /edit-number-options.json:
     post:
       tags:
@@ -381,6 +385,8 @@ paths:
               schema:
                 type: string
               example: "<?xml version=\"1.0\"?>\n<response>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+      operationId: postEditNumberOptionsJson
+      x-operation-id-source: derived
 components:
   securitySchemes:
     basicAuth:

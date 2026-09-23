@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Transmit SMS Reporting API
-  description: '<p>With so many SMS APIs on the market today, you might think that they all do the same thing: send text messages. But with our flexible and powerful suite of APIs, you can do more than that.</p>'
+  description: 'With so many SMS APIs on the market today, you might think that they all do the same thing: send text messages. But with our flexible and powerful suite of APIs, you can do more than that.'
   version: 1.0.0
 servers:
 - url: https://api.transmitsms.com
@@ -13,9 +13,7 @@ paths:
       tags:
       - Reporting
       summary: Get Message/Campaign Information
-      description: '
-
-        This will return information about the campaign, including the message, list etc. It will not however return individual messages with populated variables or tracking links. To retrieve final individual messages use **get-sms-delivery-status.**'
+      description: This will return information about the campaign, including the message, list etc. It will not however return individual messages with populated variables or tracking links. To retrieve final individual messages use **get-sms-delivery-status.**
       security:
       - basicAuth: []
       requestBody:
@@ -113,14 +111,14 @@ paths:
               schema:
                 type: string
               example: "<?xml version=\"1.0\"?>\n<response>\n    <message_id>339814842</message_id>\n    <send_at>2020-06-18 11:17:44</send_at>\n    <recipients>1</recipients>\n    <cost>0.087</cost>\n    <sms>1</sms>\n    <message>This is my message, click on my link [tracked-link]</message>\n    <delivery_stats>\n        <delivered>1</delivered>\n        <pending>0</pending>\n        <bounced>0</bounced>\n        <responses>1</responses>\n        <optouts>0</optouts>\n    </delivery_stats>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+      operationId: postGetSmsJson
+      x-operation-id-source: derived
   /get-sms-delivery-status.json:
     post:
       tags:
       - Reporting
       summary: Get SMS Delivery Status
-      description: '
-
-        Retrieves detailed information about messages sent to a specific recipient. This included full message content including populated variables.'
+      description: Retrieves detailed information about messages sent to a specific recipient. This included full message content including populated variables.
       security:
       - basicAuth: []
       requestBody:
@@ -192,6 +190,8 @@ paths:
               schema:
                 type: string
               example: "<?xml version=\"1.0\"?>\n<response>\n    <stats>\n        <message_id>339814842</message_id>\n        <sender_id>61429720235</sender_id>\n        <mobile>61478038915</mobile>\n        <send_at>2020-06-18 11:17:44</send_at>\n        <datetime>2020-06-18 11:17:00</datetime>\n        <status>delivered</status>\n        <message>This is my message, click on my link TapTh.is/hO2HL7b0</message>\n    </stats>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+      operationId: postGetSmsDeliveryStatusJson
+      x-operation-id-source: derived
   /get-sms-sent-count.json:
     post:
       tags:
@@ -250,6 +250,8 @@ paths:
                     error:
                       code: SUCCESS
                       description: OK
+      operationId: postGetSmsSentCountJson
+      x-operation-id-source: derived
   /get-user-sms-sent.json:
     post:
       tags:
@@ -431,6 +433,8 @@ paths:
                     error:
                       code: SUCCESS
                       description: OK
+      operationId: postGetUserSmsSentJson
+      x-operation-id-source: derived
   /get-contact-sms-stats.json:
     get:
       tags:
@@ -616,6 +620,8 @@ paths:
                     error:
                       code: SUCCESS
                       description: OK
+      operationId: getGetContactSmsStatsJson
+      x-operation-id-source: derived
   /get-sms-stats.json:
     post:
       tags:
@@ -707,6 +713,8 @@ paths:
               schema:
                 type: string
               example: "<?xml version=\"1.0\"?>\n<response>\n    <stats>\n        <hard_bounced>0</hard_bounced>\n        <soft_bounced>0</soft_bounced>\n        <total>1</total>\n        <recipientCount>1</recipientCount>\n        <delivered>1</delivered>\n        <pending>0</pending>\n        <bounced>0</bounced>\n        <responses>1</responses>\n        <opt-outs>0</opt-outs>\n        <link_hits>0</link_hits>\n    </stats>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>\n"
+      operationId: postGetSmsStatsJson
+      x-operation-id-source: derived
   /get-sms-sent.json:
     post:
       tags:
@@ -889,6 +897,8 @@ paths:
               schema:
                 type: string
               example: "<?xml version=\"1.0\"?>\n<response>\n    <page>\n        <count>1</count>\n        <number>1</number>\n    </page>\n    <total>1</total>\n    <message>\n        <message_id>339814842</message_id>\n        <send_at>2020-06-18 11:17:44</send_at>\n        <recipients>1</recipients>\n        <cost>0.087</cost>\n        <sms>1</sms>\n        <delivery_stats>\n            <delivered>1</delivered>\n            <pending>0</pending>\n            <bounced>0</bounced>\n            <responses>1</responses>\n            <optouts>0</optouts>\n        </delivery_stats>\n    </message>\n    <recipients>\n        <item>\n            <msisdn>61478038915</msisdn>\n            <first_name></first_name>\n            <last_name></last_name>\n            <delivery_status>delivered</delivery_status>\n            <optout>false</optout>\n        </item>\n    </recipients>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+      operationId: postGetSmsSentJson
+      x-operation-id-source: derived
   /get-message-report.json:
     post:
       tags:
@@ -1140,12 +1150,16 @@ paths:
                     error:
                       code: SUCCESS
                       description: OK
+      operationId: postGetMessageReportJson
+      x-operation-id-source: derived
   /get-list.json:
     post:
       tags:
       - Reporting
       summary: Get Information About A List
-      description: "Get detailed information about a list, return custom fields and its contacts. \nThis will return paginated information regarding individual contacts on a list and their data."
+      description: 'Get detailed information about a list, return custom fields and its contacts.
+
+        This will return paginated information regarding individual contacts on a list and their data.'
       security:
       - basicAuth: []
       requestBody:
@@ -1304,6 +1318,8 @@ paths:
                     error:
                       code: SUCCESS
                       description: OK
+      operationId: postGetListJson
+      x-operation-id-source: derived
   /get-lists.json:
     get:
       tags:
@@ -1527,6 +1543,8 @@ paths:
                     error:
                       code: SUCCESS
                       description: OK
+      operationId: getGetListsJson
+      x-operation-id-source: derived
   /get-contact.json:
     post:
       tags:
@@ -1625,6 +1643,8 @@ paths:
                     error:
                       code: SUCCESS
                       description: OK
+      operationId: postGetContactJson
+      x-operation-id-source: derived
 components:
   securitySchemes:
     basicAuth:

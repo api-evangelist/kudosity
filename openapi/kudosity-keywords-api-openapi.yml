@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Transmit SMS Keywords API
-  description: '<p>With so many SMS APIs on the market today, you might think that they all do the same thing: send text messages. But with our flexible and powerful suite of APIs, you can do more than that.</p>'
+  description: 'With so many SMS APIs on the market today, you might think that they all do the same thing: send text messages. But with our flexible and powerful suite of APIs, you can do more than that.'
   version: 1.0.0
 servers:
 - url: https://api.transmitsms.com
@@ -135,6 +135,8 @@ paths:
               schema:
                 type: string
               example: "<?xml version=\"1.0\"?>\n<response>\n    <keyword>GYM</keyword>\n    <reference>Gym news</reference>\n    <number>61418279031</number>\n    <list_id>4214637</list_id>\n    <welcome_message>Welcome to Mike's gym news</welcome_message>\n    <member_message>Thanks for your continued support</member_message>\n    <forward_url>http://example.com/gym-promo</forward_url>\n    <forward_sms>61491570157,61491570158</forward_sms>\n    <forward_email>news@example.com,mike@example.com</forward_email>\n    <status>open</status>\n    <billing_date>2020-07-24</billing_date>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+      operationId: postAddKeywordJson
+      x-operation-id-source: derived
   /edit-keyword.json:
     post:
       tags:
@@ -291,6 +293,8 @@ paths:
               schema:
                 type: string
               example: "<?xml version=\"1.0\"?>\n<response>\n    <keyword>NEWS</keyword>\n    <reference>Gym news</reference>\n    <number>61418279031</number>\n    <list_id>4214634</list_id>\n    <welcome_message>Welcome to Fitness gym news</welcome_message>\n    <member_message>Thanks for your continued support</member_message>\n    <forward_url>http://example.com/gym-promo</forward_url>\n    <forward_sms>61491570157,61491570158</forward_sms>\n    <forward_email>news@example.com,mike@example.com</forward_email>\n    <status>open</status>\n    <billing_date>2020-07-24</billing_date>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+      operationId: postEditKeywordJson
+      x-operation-id-source: derived
   /get-keywords.json:
     post:
       tags:
@@ -422,6 +426,8 @@ paths:
               schema:
                 type: string
               example: "<?xml version=\"1.0\"?>\n<response>\n    <page>\n        <count>1</count>\n        <number>1</number>\n    </page>\n    <keywords_total>2</keywords_total>\n    <keywords>\n        <item>\n            <keyword>GYM</keyword>\n            <reference>Gym news</reference>\n            <number>61418279031</number>\n            <list_id>4214637</list_id>\n            <welcome_message>Welcome to Mike's gym news</welcome_message>\n            <member_message>Thanks for your continued support</member_message>\n            <forward_url>http://example.com/gym-promo</forward_url>\n            <forward_sms>61491570157,61491570158</forward_sms>\n            <forward_email>news@example.com,mike@example.com</forward_email>\n            <status>open</status>\n            <billing_date>2020-07-24</billing_date>\n        </item>\n        <item>\n            <keyword>NEWS</keyword>\n            <reference>Gym news</reference>\n            <number>61418279031</number>\n            <list_id>4214634</list_id>\n            <welcome_message>Welcome to Mike's gym news</welcome_message>\n            <member_message>Thanks for your continued support</member_message>\n            <forward_url>http://example.com/gym-promo</forward_url>\n            <forward_sms>61491570157,61491570158</forward_sms>\n            <forward_email>news@example.com,mike@example.com</forward_email>\n            <status>open</status>\n            <billing_date>2020-07-24</billing_date>\n        </item>\n    </keywords>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+      operationId: postGetKeywordsJson
+      x-operation-id-source: derived
 components:
   securitySchemes:
     basicAuth:

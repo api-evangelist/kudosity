@@ -17,7 +17,7 @@ paths:
       tags:
       - MMS
       summary: Send MMS
-      description: 'The Send MMS endpoint allows you to send multimedia messages (MMS) to recipients. '
+      description: The Send MMS endpoint allows you to send multimedia messages (MMS) to recipients.
       security:
       - ApiKeyAuth: []
       requestBody:
@@ -47,6 +47,8 @@ paths:
                 track_links: true
                 created_at: '2022-03-29T04:42:01.631708761Z'
                 updated_at: '2022-03-29T04:42:01.631708761Z'
+      operationId: postV2Mms
+      x-operation-id-source: derived
   /v2/mms/{id}:
     get:
       tags:
@@ -104,6 +106,8 @@ paths:
                   error:
                     type: string
                     example: MMS not found
+      operationId: getV2MmsById
+      x-operation-id-source: derived
 components:
   schemas:
     MMSResponse:

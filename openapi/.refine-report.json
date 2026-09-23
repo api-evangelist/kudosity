@@ -1,8 +1,8 @@
 {
   "provider": "kudosity",
   "sources": [
-    "kudosity-transmit-message-openapi-original.yml",
-    "kudosity-transmit-sms-openapi-original.yml"
+    "_original/kudosity-transmit-message-openapi-original.yml",
+    "_original/kudosity-transmit-sms-openapi-original.yml"
   ],
   "outputs": [
     "kudosity-mms-api-openapi.yml",
@@ -19,12 +19,12 @@
     "kudosity-reporting-api-openapi.yml"
   ],
   "archived": [
-    "archived openapi/kudosity-transmit-message-openapi-original.yml",
-    "archived openapi/kudosity-transmit-sms-openapi-original.yml"
+    "deleted 1 superseded output(s) from the previous generation"
   ],
   "errors": [],
   "warnings": [],
   "notes": [
+    "sourced from openapi/_original/ (2 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "kudosity-transmit-message-openapi-original.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
     "kudosity-transmit-message-openapi-original.yml: declared missing tag: RCS",
     "kudosity-transmit-message-openapi-original.yml: declared missing tag: Senders",
@@ -38,7 +38,21 @@
     "kudosity-transmit-sms-openapi-original.yml: declared missing tag: Reporting",
     "kudosity-transmit-sms-openapi-original.yml: declared missing tag: SMS",
     "tag 'SMS' spans 2 source specs (kudosity-transmit-message-openapi-original.yml, kudosity-transmit-sms-openapi-original.yml): per-path servers applied",
-    "apis.yml register: written (+12 apis, 12 total)"
+    "superseded outputs removed: kudosity-whats-app-api-openapi.yml",
+    "apis.yml register: written (+1 apis, 12 total)"
   ],
-  "skipped": []
+  "skipped": [
+    "kudosity-account-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "kudosity-contacts-lists-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "kudosity-email-sms-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "kudosity-keywords-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "kudosity-mms-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "kudosity-numbers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "kudosity-rcs-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "kudosity-reporting-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "kudosity-senders-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "kudosity-sms-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "kudosity-webhook-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "kudosity-whats-app-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

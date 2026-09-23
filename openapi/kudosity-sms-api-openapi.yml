@@ -10,22 +10,7 @@ servers:
 - url: https://api.transmitsms.com
 tags:
 - name: SMS
-  description: 'The primary method of sending SMS.
-
-
-    You can elect to pass us the recipient numbers from your database each time you make an API call.
-
-
-    In order to send to a local number for a recipient the Sender virtual number needs to be in the same country.
-
-
-    You can pass us the recipient number in international format and we will deliver your message with the Sender virtual number on your account for the same country.
-
-
-    If you do not have a Sender virtual number for the same country we will use a local number for the country you are sending to in order to deliver your message.
-
-
-    List of countries we currently deliver to: [Global Delivery List](https://help.kudosity.com/support/solutions/articles/44001077065-global-sms-delivery-list)'
+  description: The primary method of sending SMS.
 paths:
   /v2/sms/{id}:
     get:
@@ -60,6 +45,8 @@ paths:
                   error:
                     type: string
                     example: SMS not found
+      operationId: getV2SmsById
+      x-operation-id-source: derived
     servers:
     - url: https://api.transmitmessage.com
   /v2/sms:
@@ -87,6 +74,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListSMSResponse'
+      operationId: getV2Sms
+      x-operation-id-source: derived
     post:
       tags:
       - SMS
@@ -107,6 +96,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SMSResponse'
+      operationId: postV2Sms
+      x-operation-id-source: derived
     servers:
     - url: https://api.transmitmessage.com
   /send-sms.json:
@@ -287,6 +278,8 @@ paths:
                         type: string
                         description: Description of the error.
                         example: OK
+      operationId: postSendSmsJson
+      x-operation-id-source: derived
     servers:
     - url: https://api.transmitsms.com
   /cancel-sms.json:
@@ -370,6 +363,8 @@ paths:
                 error:
                   code: SUCCESS
                   description: OK
+      operationId: postCancelSmsJson
+      x-operation-id-source: derived
     servers:
     - url: https://api.transmitsms.com
   /format-number.json:
@@ -468,6 +463,8 @@ paths:
                 error:
                   code: SUCCESS
                   description: OK
+      operationId: postFormatNumberJson
+      x-operation-id-source: derived
     servers:
     - url: https://api.transmitsms.com
   /get-sms-responses.json:
@@ -552,13 +549,15 @@ paths:
                 error:
                   code: SUCCESS
                   description: OK
+      operationId: postGetSmsResponsesJson
+      x-operation-id-source: derived
     servers:
     - url: https://api.transmitsms.com
   /get-user-sms-responses.json:
     get:
       tags:
       - SMS
-      summary: Get Responses by  Time Frame
+      summary: Get Responses by Time Frame
       description: 'Gets the messsages from a defined timeframe.
 
 
@@ -763,98 +762,12 @@ paths:
               schema:
                 type: string
               example: "<?xml version=\"1.0\"?>\n<response>\n    <page>\n        <count>1</count>\n        <number>1</number>\n    </page>\n    <total>4</total>\n    <responses>\n        <item>\n            <id>36573149</id>\n            <message_id>339814842</message_id>\n            <list_id>4070947</list_id>\n            <received_at>2020-06-23 10:03:44</received_at>\n            <first_name/>\n            <last_name/>\n            <msisdn>61478038915</msisdn>\n            <response>Hi There, this is a sample response</response>\n            <longcode>61429720235</longcode>\n        </item>\n        <item>\n            <id>36573132</id>\n            <message_id>340267059</message_id>\n            <list_id>4070887</list_id>\n            <received_at>2020-06-23 10:03:05</received_at>\n            <first_name>Ella</first_name>\n            <last_name>B</last_name>\n            <msisdn>61478038915</msisdn>\n            <response>I there, this is a sample response</response>\n            <longcode>61429625067</longcode>\n        </item>\n        <item>\n            <id>36283700</id>\n            <message_id>338808275</message_id>\n            <list_id>4070947</list_id>\n            <received_at>2020-06-15 01:15:49</received_at>\n            <first_name/>\n            <last_name/>\n            <msisdn>61478038915</msisdn>\n            <response>Received response</response>\n            <longcode>61436446702</longcode>\n        </item>\n        <item>\n            <id>36230542</id>\n            <message_id>338116740</message_id>\n            <list_id>4070947</list_id>\n            <received_at>2020-06-12 00:06:10</received_at>\n            <first_name/>\n            <last_name/>\n            <msisdn>61478038915</msisdn>\n            <response>Testing email sms</response>\n            <longcode>61429238797</longcode>\n        </item>\n    </responses>\n    <error>\n        <code>SUCCESS</code>\n        <description>OK</description>\n    </error>\n</response>"
+      operationId: getGetUserSmsResponsesJson
+      x-operation-id-source: derived
     servers:
     - url: https://api.transmitsms.com
 components:
   schemas:
-    SendSMSRequest:
-      type: object
-      properties:
-        message:
-          type: string
-          description: 'Body text of the message.
-
-            The message will be split into multiple parts if required. A part is 160 characters for a single SMS or 153 characters per part for multi-part SMS. If the message contains Unicode UTF8 encoded characters such as emoji’s or non latin character sets, then a single part is 70 characters or 67 characters for multiple parts.
-
-
-            More information on message length and encoding: https://support.transmitsms.com/s/article/44001076957-how-many-characters-can-i-have-in-my-text-message
-
-
-            If opt-out is required, insert parameter [opt-out-link] into the message and a link will be generated.
-
-            '
-          x-oapi-codegen-extra-tags:
-            valid: required
-        message_ref:
-          type: string
-          maxLength: 500
-          description: 'A reference supplied by your system. This reference will be passed back in webhooks so that you can relate events to messages you sent. For example, being able to relate a Link Hit event to a specific sent message.
-
-            '
-          x-go-type-skip-optional-pointer: true
-          x-oapi-codegen-extra-tags:
-            valid: length(0|500)
-        sender:
-          type: string
-          description: 'Sender is the number (or alphanumeric) that the message appears from on the handset.
-
-            Sender number must be assigned to your account for the country you are sending to. Contact us to get sender number(s) registered to your account.
-
-            Sender number functionality varies by country. You can send from an alphanumeric sender if it is available for the destination country.
-
-            Global SMS delivery list: https://support.transmitsms.com/s/article/page-products-connectivity-global-delivery-list
-
-
-            Alphanumeric senders (which cannot be replied to) have a maximum of 11 characters. Only letters, numbers, underscore, hyphen or space are allowed and they are included in the total character count. (Consecutive underscore, hyphen, space is not allowed.)
-
-            '
-          x-oapi-codegen-extra-tags:
-            valid: required
-        recipient:
-          type: string
-          description: "The destination number for delivery.\nCan be either in local format or in international format. Must be in the same country as the sender.\nFor international format, it should follow E.164 standard. http://en.wikipedia.org/wiki/E.164\n\nExamples of conversions to E.164 format:\n  Australia 0438 333 061 => 61438333061\n  New Zealand 0212172782 => 64212172782\n  USA (281) 869-1226 => 12818691226\n"
-          x-oapi-codegen-extra-tags:
-            valid: required
-        track_links:
-          type: boolean
-          description: 'Enable the link tracking feature which replaces links in outbound messages with shortened links. This allows us to track when recipients view links.
-
-            '
-          x-go-type-skip-optional-pointer: true
-      required:
-      - message
-      - sender
-      - recipient
-    Direction:
-      type:
-      - string
-      - 'null'
-      description: 'Message direction.
-
-        - OUT: Sent to the provider.
-
-        - IN: Sent from the provider.
-
-        '
-      enum:
-      - OUT
-      - IN
-    ListSMSResponse:
-      type: object
-      description: List of SMS messages.
-      properties:
-        smses:
-          type: array
-          items:
-            $ref: '#/components/schemas/SMSResponse'
-        total_records:
-          type: string
-        total_segments:
-          type: string
-      required:
-      - smses
-      - total_records
-      - total_segments
     OrderByField:
       type: string
       description: 'Sort order. Default is CREATED_AT_ASC.
@@ -867,6 +780,55 @@ components:
       enum:
       - CREATED_AT_ASC
       - CREATED_AT_DESC
+    ListSMSRequest:
+      type: object
+      properties:
+        limit:
+          type: string
+          description: Limit the number of SMS. Defaults to 100 for JSON.
+          x-go-type-skip-optional-pointer: true
+        page:
+          type: string
+          description: Page number in combination with limit. Defaults to 1 for JSON.
+          x-go-type-skip-optional-pointer: true
+        start_date:
+          type: string
+          format: string
+          description: Start date for SMS created, in RFC3339 format.
+          x-go-type-skip-optional-pointer: true
+        end_date:
+          type: string
+          format: string
+          description: End date for SMS created date, in RFC3339 format.
+          x-go-type-skip-optional-pointer: true
+        recipient:
+          type: string
+          description: Recipient filter.
+          x-go-type-skip-optional-pointer: true
+        sender:
+          type: string
+          description: Sender filter.
+          x-go-type-skip-optional-pointer: true
+        message_ref:
+          type: string
+          description: Message reference filter.
+          x-go-type-skip-optional-pointer: true
+        status:
+          $ref: '#/components/schemas/Status'
+        format:
+          $ref: '#/components/schemas/Format'
+        recipient_countries:
+          type: array
+          items:
+            type: string
+          description: ISO 3166 country codes. https://www.iso.org/iso-3166-country-codes.html
+        direction:
+          $ref: '#/components/schemas/Direction'
+        order_by:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderByField'
+          description: Sort order. Default is CREATED_AT_ASC.
     Status:
       type:
       - string
@@ -922,6 +884,36 @@ components:
       enum:
       - JSON
       - CSV
+    ListSMSResponse:
+      type: object
+      description: List of SMS messages.
+      properties:
+        smses:
+          type: array
+          items:
+            $ref: '#/components/schemas/SMSResponse'
+        total_records:
+          type: string
+        total_segments:
+          type: string
+      required:
+      - smses
+      - total_records
+      - total_segments
+    Direction:
+      type:
+      - string
+      - 'null'
+      description: 'Message direction.
+
+        - OUT: Sent to the provider.
+
+        - IN: Sent from the provider.
+
+        '
+      enum:
+      - OUT
+      - IN
     SMSResponse:
       type: object
       description: SMS message details.
@@ -1024,55 +1016,64 @@ components:
         direction: OUT
         created_at: '2022-03-28T06:12:52.450674000Z'
         updated_at: '2022-03-28T06:12:52.450674000Z'
-    ListSMSRequest:
+    SendSMSRequest:
       type: object
       properties:
-        limit:
+        message:
           type: string
-          description: Limit the number of SMS. Defaults to 100 for JSON.
-          x-go-type-skip-optional-pointer: true
-        page:
-          type: string
-          description: Page number in combination with limit. Defaults to 1 for JSON.
-          x-go-type-skip-optional-pointer: true
-        start_date:
-          type: string
-          format: string
-          description: Start date for SMS created, in RFC3339 format.
-          x-go-type-skip-optional-pointer: true
-        end_date:
-          type: string
-          format: string
-          description: End date for SMS created date, in RFC3339 format.
-          x-go-type-skip-optional-pointer: true
-        recipient:
-          type: string
-          description: Recipient filter.
-          x-go-type-skip-optional-pointer: true
-        sender:
-          type: string
-          description: Sender filter.
-          x-go-type-skip-optional-pointer: true
+          description: 'Body text of the message.
+
+            The message will be split into multiple parts if required. A part is 160 characters for a single SMS or 153 characters per part for multi-part SMS. If the message contains Unicode UTF8 encoded characters such as emoji’s or non latin character sets, then a single part is 70 characters or 67 characters for multiple parts.
+
+
+            More information on message length and encoding: https://support.transmitsms.com/s/article/44001076957-how-many-characters-can-i-have-in-my-text-message
+
+
+            If opt-out is required, insert parameter [opt-out-link] into the message and a link will be generated.
+
+            '
+          x-oapi-codegen-extra-tags:
+            valid: required
         message_ref:
           type: string
-          description: Message reference filter.
+          maxLength: 500
+          description: 'A reference supplied by your system. This reference will be passed back in webhooks so that you can relate events to messages you sent. For example, being able to relate a Link Hit event to a specific sent message.
+
+            '
           x-go-type-skip-optional-pointer: true
-        status:
-          $ref: '#/components/schemas/Status'
-        format:
-          $ref: '#/components/schemas/Format'
-        recipient_countries:
-          type: array
-          items:
-            type: string
-          description: ISO 3166 country codes. https://www.iso.org/iso-3166-country-codes.html
-        direction:
-          $ref: '#/components/schemas/Direction'
-        order_by:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrderByField'
-          description: Sort order. Default is CREATED_AT_ASC.
+          x-oapi-codegen-extra-tags:
+            valid: length(0|500)
+        sender:
+          type: string
+          description: 'Sender is the number (or alphanumeric) that the message appears from on the handset.
+
+            Sender number must be assigned to your account for the country you are sending to. Contact us to get sender number(s) registered to your account.
+
+            Sender number functionality varies by country. You can send from an alphanumeric sender if it is available for the destination country.
+
+            Global SMS delivery list: https://support.transmitsms.com/s/article/page-products-connectivity-global-delivery-list
+
+
+            Alphanumeric senders (which cannot be replied to) have a maximum of 11 characters. Only letters, numbers, underscore, hyphen or space are allowed and they are included in the total character count. (Consecutive underscore, hyphen, space is not allowed.)
+
+            '
+          x-oapi-codegen-extra-tags:
+            valid: required
+        recipient:
+          type: string
+          description: "The destination number for delivery.\nCan be either in local format or in international format. Must be in the same country as the sender.\nFor international format, it should follow E.164 standard. http://en.wikipedia.org/wiki/E.164\n\nExamples of conversions to E.164 format:\n  Australia 0438 333 061 => 61438333061\n  New Zealand 0212172782 => 64212172782\n  USA (281) 869-1226 => 12818691226\n"
+          x-oapi-codegen-extra-tags:
+            valid: required
+        track_links:
+          type: boolean
+          description: 'Enable the link tracking feature which replaces links in outbound messages with shortened links. This allows us to track when recipients view links.
+
+            '
+          x-go-type-skip-optional-pointer: true
+      required:
+      - message
+      - sender
+      - recipient
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
