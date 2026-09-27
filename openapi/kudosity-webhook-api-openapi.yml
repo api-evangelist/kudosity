@@ -177,6 +177,60 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    WebhookListResponse:
+      type: object
+      description: List of webhooks response.
+      properties:
+        webhooks:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookResponse'
+    WebhookResponse:
+      type: object
+      description: Webhook details.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the webhook.
+          example: 67e3e4af-62e8-4515-8b67-6f20d0c51ffb
+        filter:
+          $ref: '#/components/schemas/Filter'
+        name:
+          type: string
+          description: Name of the webhook.
+          example: Hook
+        url:
+          type: string
+          description: URL (https) that accepts JSON encoded POST requests.
+          format: uri
+          example: https://webhook.site/uuid
+        rate_limit:
+          type: integer
+          description: Rate limit for the webhook in requests per second.
+          example: 10
+        is_sandbox:
+          type: boolean
+          deprecated: true
+          description: Deprecated. Will be removed in a future version.
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the webhook was created.
+          example: '2025-04-14T00:59:32.75819Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp when the webhook was last updated.
+          example: '2025-04-14T00:59:32.75819Z'
+      required:
+      - id
+      - name
+      - url
+      - rate_limit
+      - is_sandbox
+      - created_at
+      - updated_at
     EventType:
       type: string
       enum:
@@ -259,70 +313,6 @@ components:
           example:
           - campaign_123
           - campaign_456
-    WebhookResponse:
-      type: object
-      description: Webhook details.
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the webhook.
-          example: 67e3e4af-62e8-4515-8b67-6f20d0c51ffb
-        filter:
-          $ref: '#/components/schemas/Filter'
-        name:
-          type: string
-          description: Name of the webhook.
-          example: Hook
-        url:
-          type: string
-          description: URL (https) that accepts JSON encoded POST requests.
-          format: uri
-          example: https://webhook.site/uuid
-        rate_limit:
-          type: integer
-          description: Rate limit for the webhook in requests per second.
-          example: 10
-        is_sandbox:
-          type: boolean
-          deprecated: true
-          description: Deprecated. Will be removed in a future version.
-          example: false
-        created_at:
-          type: string
-          format: date-time
-          description: Timestamp when the webhook was created.
-          example: '2025-04-14T00:59:32.75819Z'
-        updated_at:
-          type: string
-          format: date-time
-          description: Timestamp when the webhook was last updated.
-          example: '2025-04-14T00:59:32.75819Z'
-      required:
-      - id
-      - name
-      - url
-      - rate_limit
-      - is_sandbox
-      - created_at
-      - updated_at
-    WebhookDeleteResponse:
-      type: object
-      description: Webhook deletion confirmation response.
-      properties:
-        message:
-          type: string
-          description: Confirmation message
-          example: deleted
-      required:
-      - message
-    WebhookListResponse:
-      type: object
-      description: List of webhooks response.
-      properties:
-        webhooks:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebhookResponse'
     WebhookRequest:
       type: object
       properties:
@@ -405,6 +395,16 @@ components:
       required:
       - name
       - url
+    WebhookDeleteResponse:
+      type: object
+      description: Webhook deletion confirmation response.
+      properties:
+        message:
+          type: string
+          description: Confirmation message
+          example: deleted
+      required:
+      - message
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

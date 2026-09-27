@@ -768,122 +768,6 @@ paths:
     - url: https://api.transmitsms.com
 components:
   schemas:
-    OrderByField:
-      type: string
-      description: 'Sort order. Default is CREATED_AT_ASC.
-
-        - CREATED_AT_ASC: Created at ascending.
-
-        - CREATED_AT_DESC: Created at descending.
-
-        '
-      enum:
-      - CREATED_AT_ASC
-      - CREATED_AT_DESC
-    ListSMSRequest:
-      type: object
-      properties:
-        limit:
-          type: string
-          description: Limit the number of SMS. Defaults to 100 for JSON.
-          x-go-type-skip-optional-pointer: true
-        page:
-          type: string
-          description: Page number in combination with limit. Defaults to 1 for JSON.
-          x-go-type-skip-optional-pointer: true
-        start_date:
-          type: string
-          format: string
-          description: Start date for SMS created, in RFC3339 format.
-          x-go-type-skip-optional-pointer: true
-        end_date:
-          type: string
-          format: string
-          description: End date for SMS created date, in RFC3339 format.
-          x-go-type-skip-optional-pointer: true
-        recipient:
-          type: string
-          description: Recipient filter.
-          x-go-type-skip-optional-pointer: true
-        sender:
-          type: string
-          description: Sender filter.
-          x-go-type-skip-optional-pointer: true
-        message_ref:
-          type: string
-          description: Message reference filter.
-          x-go-type-skip-optional-pointer: true
-        status:
-          $ref: '#/components/schemas/Status'
-        format:
-          $ref: '#/components/schemas/Format'
-        recipient_countries:
-          type: array
-          items:
-            type: string
-          description: ISO 3166 country codes. https://www.iso.org/iso-3166-country-codes.html
-        direction:
-          $ref: '#/components/schemas/Direction'
-        order_by:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrderByField'
-          description: Sort order. Default is CREATED_AT_ASC.
-    Status:
-      type:
-      - string
-      - 'null'
-      description: 'Message status.
-
-        - PENDING: Queued for processing.
-
-        - SENT: Submitted to the provider.
-
-        - FAILED: Failed because of an error from the provider, a carrier, or the handset.
-
-        - DELIVERED: Delivered to handset.
-
-        - ACCEPTED: Accepted by the provider and delivery might have been attempted (but is not confirmed).
-
-        - SOFT_BOUNCE: Undeliverable due to handset being switched off, out of range or other temporary deliverability issue.
-
-        - HARD_BOUNCE: Handset was disconnected.
-
-        - OTHER: Any other DLR status from the provider.
-
-        - REJECTED: Message pending approval was rejected by the Kudosity support team.
-
-        - PENDING_APPROVAL: Message is pending approval by the Kudosity support team.
-
-        - SUBMITTED: Message is submitted to the provider.
-
-        - UNDELIVERABLE: Message is undeliverable.
-
-        - READ: Message is read by the recipient.
-
-        '
-      enum:
-      - PENDING
-      - SENT
-      - FAILED
-      - DELIVERED
-      - ACCEPTED
-      - SOFT_BOUNCE
-      - HARD_BOUNCE
-      - OTHER
-      - REJECTED
-      - PENDING_APPROVAL
-      - SUBMITTED
-      - UNDELIVERABLE
-      - READ
-    Format:
-      type:
-      - string
-      - 'null'
-      description: Response format
-      enum:
-      - JSON
-      - CSV
     ListSMSResponse:
       type: object
       description: List of SMS messages.
@@ -1016,6 +900,63 @@ components:
         direction: OUT
         created_at: '2022-03-28T06:12:52.450674000Z'
         updated_at: '2022-03-28T06:12:52.450674000Z'
+    ListSMSRequest:
+      type: object
+      properties:
+        limit:
+          type: string
+          description: Limit the number of SMS. Defaults to 100 for JSON.
+          x-go-type-skip-optional-pointer: true
+        page:
+          type: string
+          description: Page number in combination with limit. Defaults to 1 for JSON.
+          x-go-type-skip-optional-pointer: true
+        start_date:
+          type: string
+          format: string
+          description: Start date for SMS created, in RFC3339 format.
+          x-go-type-skip-optional-pointer: true
+        end_date:
+          type: string
+          format: string
+          description: End date for SMS created date, in RFC3339 format.
+          x-go-type-skip-optional-pointer: true
+        recipient:
+          type: string
+          description: Recipient filter.
+          x-go-type-skip-optional-pointer: true
+        sender:
+          type: string
+          description: Sender filter.
+          x-go-type-skip-optional-pointer: true
+        message_ref:
+          type: string
+          description: Message reference filter.
+          x-go-type-skip-optional-pointer: true
+        status:
+          $ref: '#/components/schemas/Status'
+        format:
+          $ref: '#/components/schemas/Format'
+        recipient_countries:
+          type: array
+          items:
+            type: string
+          description: ISO 3166 country codes. https://www.iso.org/iso-3166-country-codes.html
+        direction:
+          $ref: '#/components/schemas/Direction'
+        order_by:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderByField'
+          description: Sort order. Default is CREATED_AT_ASC.
+    Format:
+      type:
+      - string
+      - 'null'
+      description: Response format
+      enum:
+      - JSON
+      - CSV
     SendSMSRequest:
       type: object
       properties:
@@ -1074,6 +1015,65 @@ components:
       - message
       - sender
       - recipient
+    Status:
+      type:
+      - string
+      - 'null'
+      description: 'Message status.
+
+        - PENDING: Queued for processing.
+
+        - SENT: Submitted to the provider.
+
+        - FAILED: Failed because of an error from the provider, a carrier, or the handset.
+
+        - DELIVERED: Delivered to handset.
+
+        - ACCEPTED: Accepted by the provider and delivery might have been attempted (but is not confirmed).
+
+        - SOFT_BOUNCE: Undeliverable due to handset being switched off, out of range or other temporary deliverability issue.
+
+        - HARD_BOUNCE: Handset was disconnected.
+
+        - OTHER: Any other DLR status from the provider.
+
+        - REJECTED: Message pending approval was rejected by the Kudosity support team.
+
+        - PENDING_APPROVAL: Message is pending approval by the Kudosity support team.
+
+        - SUBMITTED: Message is submitted to the provider.
+
+        - UNDELIVERABLE: Message is undeliverable.
+
+        - READ: Message is read by the recipient.
+
+        '
+      enum:
+      - PENDING
+      - SENT
+      - FAILED
+      - DELIVERED
+      - ACCEPTED
+      - SOFT_BOUNCE
+      - HARD_BOUNCE
+      - OTHER
+      - REJECTED
+      - PENDING_APPROVAL
+      - SUBMITTED
+      - UNDELIVERABLE
+      - READ
+    OrderByField:
+      type: string
+      description: 'Sort order. Default is CREATED_AT_ASC.
+
+        - CREATED_AT_ASC: Created at ascending.
+
+        - CREATED_AT_DESC: Created at descending.
+
+        '
+      enum:
+      - CREATED_AT_ASC
+      - CREATED_AT_DESC
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

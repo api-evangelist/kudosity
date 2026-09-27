@@ -1,14 +1,19 @@
 deliveryModel:
-  model: unknown
+  model: saas
+  license_evidence:
+    not_product:
+    - kudosity/ai-agent-examples
+    - kudosity/mcp
   open_source: unknown
   commercial: true
-  callable_host: false
-  label: Delivery model not determined — needs a product licence on record
+  callable_host: true
+  label: Hosted service · you call their endpoint
   confidence: low
   source:
+  - openapi
   - pricing
-  - repository-unlicensed
-  generated: '2026-08-28'
+  - repository-not-product
+  generated: '2026-09-25'
   method: derived
 accessModel:
   pricing: public
@@ -49,7 +54,7 @@ tags:
 - CPaaS
 - Webhook
 - MCP
-- agent-native
+- Agent-Native
 - Australia
 - Notification
 - Two-Way Messaging
@@ -69,6 +74,7 @@ tags_raw:
 - Notifications
 - Two-Way Messaging
 - Contact Management
+- agent-native
 apis:
 - aid: kudosity:kudosity-account-api
   name: Kudosity Account API
@@ -474,8 +480,6 @@ apis:
   humanURL: https://developers.kudosity.com/reference/about-mms
   baseURL: https://api.transmitsms.com
   tags:
-  - WhatsApp
-  tags_raw:
   - Whats App
   properties:
   - type: OpenAPI
