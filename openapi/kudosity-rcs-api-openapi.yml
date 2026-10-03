@@ -241,240 +241,37 @@ paths:
       operationId: getV2RcsMessagesById
       x-operation-id-source: derived
 components:
-  responses:
-    ListRcsMessagesSuccessResponse:
-      description: OK
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/CommonSuccessResponse'
-            - type: object
-              properties:
-                data:
-                  $ref: '#/components/schemas/RcsListMessagesData'
-                meta:
-                  $ref: '#/components/schemas/RcsListMessagesMeta'
-          example:
-            data:
-              messages:
-              - id: 6fdae71c-dad7-4c36-9734-a69693ecf3b4
-                message_ref: optional-ref-123
-                sender: DemoSender
-                recipient: '61411122211'
-                content_type: text
-                content:
-                  text:
-                    message: Hi Michael, just a quick reminder. You are amazing!
-                status: DELIVERED
-                created_at: '2021-01-01T00:00:00Z'
-            request: {}
-            meta:
-              pagination:
-                type: cursor
-                next_cursor: MTIzNDU2
-                prev_cursor: null
-                has_next: true
-                has_prev: false
-    InputValidationResponse:
-      description: Input Validation Error
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/CommonErrorResponse'
-            - type: object
-              properties:
-                error:
-                  $ref: '#/components/schemas/InputValidationProblem'
-    ForbiddenErrorResponse:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/CommonErrorResponse'
-            - type: object
-              properties:
-                error:
-                  $ref: '#/components/schemas/ForbiddenProblem'
-    UnauthorizedErrorResponse:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/CommonErrorResponse'
-            - type: object
-              properties:
-                error:
-                  $ref: '#/components/schemas/UnauthorizedProblem'
-    RCSSuccessResponse:
-      description: OK
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/CommonSuccessResponse'
-            - type: object
-              properties:
-                data:
-                  $ref: '#/components/schemas/RcsResponse'
-          example:
-            data:
-              id: 6fdae71c-dad7-4c36-9734-a69693ecf3b4
-              message_ref: order-12345
-              sender: DemoSender
-              recipient: '447903749662'
-              content_type: text
-              content:
-                text:
-                  message: 'Hi Michael,
-
-                    Just a quick reminder. You are amazing!!
-
-                    Reply STOP to opt out.'
-              created_at: '2021-01-01T00:00:00Z'
-            request: {}
-            meta: {}
-    InternalServerErrorResponse:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/CommonErrorResponse'
-            - type: object
-              properties:
-                error:
-                  $ref: '#/components/schemas/InternalServerErrorProblem'
-    RcsCapabilityCheckSuccessResponse:
-      description: OK
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/CommonSuccessResponse'
-            - type: object
-              properties:
-                data:
-                  $ref: '#/components/schemas/RcsCapabilityCheckData'
-          example:
-            data:
-              results:
-              - phone_number: '61400000000'
-                code: ENABLED
-              - phone_number: '61400000001'
-                code: UNREACHABLE
-            request: {}
-            meta: {}
-    NotFoundErrorResponse:
-      description: Not Found
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/CommonErrorResponse'
-            - type: object
-              properties:
-                error:
-                  $ref: '#/components/schemas/NotFoundProblem'
-    GetSuccessResponse:
-      description: OK
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/CommonSuccessResponse'
-            - type: object
-              properties:
-                data:
-                  $ref: '#/components/schemas/RcsGetResponse'
-          example:
-            data:
-              id: 6fdae71c-dad7-4c36-9734-a69693ecf3b4
-              account_id: '123123'
-              message_ref: order-12345
-              sender: DemoSender
-              recipient: '447903749662'
-              content_type: text
-              content:
-                text:
-                  message: 'Hi Michael,
-
-                    Just a quick reminder. You are amazing!!
-
-                    Reply STOP to opt out.'
-              created_at: '2021-01-01T00:00:00Z'
-              status: DELIVERED
-              events:
-              - event_type: SENT
-                created_at: '2021-01-01T00:00:30Z'
-                details: Message sent to Google RCS gateway
-              - event_type: DELIVERED
-                created_at: '2021-01-01T00:01:15Z'
-                details: Message delivered to recipient device
-            request: {}
-            meta: {}
-    TooManyRequestsErrorResponse:
-      description: Too Many Requests
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/CommonErrorResponse'
-            - type: object
-              properties:
-                error:
-                  $ref: '#/components/schemas/TooManyRequestsProblem'
   schemas:
+    NotFoundProblem:
+      description: 'This problem occurs when the requested resource could not be found.
+
+
+        Your client application tried to access a resource that does not exist (or could not be found). Please review how your users initiated such a request.
+
+        '
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProblemDetails'
+      example:
+        type: https://developers.kudosity.com/reference/errors#not-found
+        title: Not Found
+        detail: The requested resource was not found
+        status: 404
+    CommonSuccessResponse:
+      allOf:
+      - type: object
+        properties:
+          data:
+            type: object
+            description: Success response payload
+        required:
+        - data
+      - $ref: '#/components/schemas/CommonResponseMeta'
     RcsContentType:
       type: string
       description: Type of the message content.
       enum:
       - text
-    RCSMessageEvent:
-      type: object
-      description: Lifecycle event for an RCS message.
-      properties:
-        event_type:
-          type: string
-          description: 'Type of event: one of `SENT`, `DELIVERED`, `READ`, `FAILED`.'
-          enum:
-          - SENT
-          - DELIVERED
-          - READ
-          - FAILED
-        created_at:
-          type: string
-          format: date-time
-          description: Timestamp in RFC3339 format (e.g., 2025-08-26T10:30:00Z) when the event occurred.
-        details:
-          type: string
-          description: Description of the event.
-      required:
-      - event_type
-      - created_at
-      - details
-      example:
-        event_type: DELIVERED
-        created_at: '2024-01-15T14:31:42Z'
-        details: Message delivered to recipient device
-    Uri:
-      type: string
-      description: string providing an URI formatted according to IETF RFC 3986.
-      format: uri
-    RcsCapabilityCheckData:
-      type: object
-      description: Capability check results for the requested phone numbers.
-      properties:
-        results:
-          type: array
-          description: One entry per phone number from the request, in the same order.
-          items:
-            $ref: '#/components/schemas/RcsCapabilityResult'
-      required:
-      - results
     RcsCapabilityResult:
       type: object
       description: RCS capability result for a single phone number.
@@ -530,15 +327,189 @@ components:
             $ref: '#/components/schemas/RcsListMessageItem'
       required:
       - messages
-    RcsGetResponse:
+    RcsCapabilityCheckData:
+      type: object
+      description: Capability check results for the requested phone numbers.
+      properties:
+        results:
+          type: array
+          description: One entry per phone number from the request, in the same order.
+          items:
+            $ref: '#/components/schemas/RcsCapabilityResult'
+      required:
+      - results
+    TooManyRequestsProblem:
+      description: 'HTTP 429 Too Many Requests - Rate limit exceeded.
+
+
+        Your client application has sent too many requests in a given amount of time and should retry later.
+
+        '
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProblemDetails'
+      example:
+        type: https://developers.kudosity.com/reference/errors#too-many-requests
+        title: Too Many Requests
+        detail: Rate limit exceeded
+        status: 429
+    RcsRequest:
+      type: object
+      properties:
+        sender:
+          type: string
+          description: 'The RCS agent ID assigned to your registered agent.
+
+
+            Unlike SMS, WhatsApp, and MMS, RCS messages do not come from a phone number.
+
+            They are always sent through an agent.
+
+
+            - Must be a registered RCS agent identifier.
+
+            - Example: `DemoSender`
+
+            - Can be alphanumeric or numeric.
+
+            '
+        recipient:
+          type: string
+          format: phone
+          description: 'The destination number for delivery.
+
+            Can be either in local format or in international format.
+
+            For international format, it should follow the [E.164 standard](http://en.wikipedia.org/wiki/E.164).
+
+
+            Examples of conversions to E.164 format:
+
+            - Australia: 0438 333 061 → 61438333061
+
+            - UK: 07123 456 789 → 447123456789
+
+            '
+        content_type:
+          type: string
+          description: Type of the message content (currently only text supported).
+          enum:
+          - text
+        content:
+          type: object
+          description: 'The message content to be sent.
+
+
+            - Supports both Basic RCS messages (160 characters) and Simple RCS messages (3072 characters)
+
+            - UTF-8 and emoji support included
+
+            '
+          oneOf:
+          - $ref: '#/components/schemas/RCSTextContent'
+        sms_fallback:
+          $ref: '#/components/schemas/RCSSMSFallback'
+        message_ref:
+          type: string
+          x-go-type-skip-optional-pointer: true
+          description: 'A reference supplied by your system. Maximum length of 500 characters.
+
+
+            This reference is included in webhook events so you can relate events with the original message.
+
+
+            For example, being able to relate a Link Hit event to a specific sent message.
+
+            '
+      required:
+      - sender
+      - recipient
+      - content_type
+      - content
+      example:
+        sender: DemoSender
+        recipient: '447903749662'
+        content_type: text
+        content:
+          text:
+            message: 'Hi Michael,
+
+              Just a quick reminder. You are amazing!!
+
+              Reply STOP to opt out.'
+        message_ref: order-12345
+    RCSTextContent:
+      type: object
+      properties:
+        text:
+          $ref: '#/components/schemas/RCSText'
+      required:
+      - text
+    RCSText:
+      type: object
+      description: Text content for the message.
+      properties:
+        message:
+          type: string
+          minLength: 1
+          maxLength: 3072
+          description: 'The text message body.
+
+
+            **Message Types:**
+
+            - **Basic RCS Messages**: Up to 160 characters (SMS format in RCS)
+
+            - **Simple RCS Messages**: Up to 3072 characters with emoji and UTF-8 support
+
+            '
+      required:
+      - message
+    RCSSMSFallback:
+      type: object
+      description: 'Provides intelligent fallback for non-RCS capable devices and carrier delivery issues. If the RCS message fails, the SMS will send the configured message to the recipient instead.
+
+        '
+      properties:
+        sender:
+          type: string
+          description: The sender number to use for SMS fallback, which can be in [E.164](http://en.wikipedia.org/wiki/E.164) international format or an alphanumeric sender ID.
+          x-go-type-skip-optional-pointer: true
+        message:
+          type: string
+          description: The message to send through SMS. SMS messages are subject to certain character limitations, please read our SMS documentation for details.
+      required:
+      - message
+    RcsMessageStatus:
+      type: string
+      description: Current status of an RCS message.
+      enum:
+      - QUEUED
+      - SENT
+      - DELIVERED
+      - READ
+      - FAILED
+    ForbiddenProblem:
+      description: 'HTTP 403 Forbidden - Access to the requested resource is forbidden.
+
+
+        Your client application is authenticated but does not have permission to access this resource.
+
+        '
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProblemDetails'
+      example:
+        type: https://developers.kudosity.com/reference/errors#forbidden
+        title: Forbidden
+        detail: Access to this resource is forbidden
+        status: 403
+    RcsResponse:
       type: object
       properties:
         id:
           type: string
           description: Unique identifier for the message.
-        account_id:
-          type: string
-          description: Account identifier that sent the message.
         message_ref:
           type: string
           x-go-type-skip-optional-pointer: true
@@ -565,28 +536,15 @@ components:
           type: string
           format: date-time
           description: Timestamp in RFC3339 format (e.g., 2025-08-26T10:30:00Z) when the message was created on the server.
-        status:
-          $ref: '#/components/schemas/RcsMessageStatus'
-        events:
-          type: array
-          x-go-type-skip-optional-pointer: true
-          x-oapi-codegen-extra-tags:
-            json: events,omitempty
-          description: Array of lifecycle events for the message.
-          items:
-            $ref: '#/components/schemas/RCSMessageEvent'
       required:
       - id
-      - account_id
       - sender
       - recipient
       - content_type
       - content
       - created_at
-      - status
       example:
         id: 6fdae71c-dad7-4c36-9734-a69693ecf3b4
-        account_id: '123123'
         message_ref: order-12345
         sender: DemoSender
         recipient: '447903749662'
@@ -599,14 +557,153 @@ components:
 
               Reply STOP to opt out.'
         created_at: '2021-01-01T00:00:00Z'
-        status: DELIVERED
-        events:
-        - event_type: SENT
-          created_at: '2021-01-01T00:00:30Z'
-          details: Message sent to Google RCS gateway
-        - event_type: DELIVERED
-          created_at: '2021-01-01T00:01:15Z'
-          details: Message delivered to recipient device
+    InputValidationProblem:
+      description: 'This problem occurs when the request is deemed unprocessable.
+
+
+        Your client issued a request that failed validation. Certain validation libraries return multi-errors and cannot be easily parsed into discreet types. This problem type, afforded the provider with the ability to surface all validation errors and negate the need for a trial and error workflow on your side.
+
+        '
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProblemDetails'
+      - properties:
+          issues:
+            description: An array of issues detected during input validation.
+            type: array
+            x-go-type-skip-optional-pointer: true
+            items:
+              $ref: '#/components/schemas/InputValidationIssue'
+      example:
+        type: https://developers.kudosity.com/reference/errors#input-validation
+        title: Invalid Request
+        detail: Request validation failed
+        status: 400
+        issues:
+        - name: field_name
+          message: field_name is required
+    InputValidationIssue:
+      type: object
+      description: 'An issue detected during input validation.
+
+        '
+      properties:
+        name:
+          type: string
+          description: The name of the param or field that failed validation.
+          x-go-type-skip-optional-pointer: true
+        code:
+          type: integer
+          description: The internal api specific error code.
+          x-go-type-skip-optional-pointer: true
+        message:
+          description: The error message
+          type: string
+          x-go-type-skip-optional-pointer: true
+    RCSMessageEvent:
+      type: object
+      description: Lifecycle event for an RCS message.
+      properties:
+        event_type:
+          type: string
+          description: 'Type of event: one of `SENT`, `DELIVERED`, `READ`, `FAILED`.'
+          enum:
+          - SENT
+          - DELIVERED
+          - READ
+          - FAILED
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp in RFC3339 format (e.g., 2025-08-26T10:30:00Z) when the event occurred.
+        details:
+          type: string
+          description: Description of the event.
+      required:
+      - event_type
+      - created_at
+      - details
+      example:
+        event_type: DELIVERED
+        created_at: '2024-01-15T14:31:42Z'
+        details: Message delivered to recipient device
+    UnauthorizedProblem:
+      description: 'HTTP 401 Unauthorized - API authentication failed.
+
+
+        The request was rejected because the API key is missing, invalid, expired, or lacks sufficient permissions for this resource. Check your Authorization header and API key configuration.
+
+        '
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProblemDetails'
+      example:
+        type: https://developers.kudosity.com/reference/errors#unauthorized
+        title: API Authentication Failed
+        detail: Missing or invalid API key in Authorization header. Verify your API key is correct and has the required permissions
+        status: 401
+    ProblemDetails:
+      description: 'A Problem Details object (RFC 9457).
+
+
+        Additional properties specific to the problem type may be present.
+
+        '
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/Uri'
+        title:
+          type: string
+          description: A short summary of the problem type. Written in English and readable for engineers (usually not suited for non technical stakeholders and not localized).
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        status:
+          type: integer
+          description: The HTTP status code corresponding to this error.
+      required:
+      - type
+      - title
+      - detail
+      - status
+      example:
+        type: https://developers.kudosity.com/reference/errors
+        title: Description of the type of problem that occurred
+        detail: Description of specific occurrence of the problem
+        status: 400
+    InternalServerErrorProblem:
+      description: 'This problem occurs when the server encounters an unexpected condition that prevents it from fulfilling the request.
+
+
+        Your client application did everything correct. Unfortunately our API encountered a condition that resulted in this problem.
+
+        '
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProblemDetails'
+      example:
+        type: https://developers.kudosity.com/reference/errors#server-error
+        title: Server Error
+        detail: The server encountered an unexpected error
+        status: 500
+    RcsListMessagesMeta:
+      type: object
+      description: Metadata for the list messages response including pagination details.
+      properties:
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      required:
+      - pagination
+    CommonErrorResponse:
+      allOf:
+      - type: object
+        properties:
+          error:
+            $ref: '#/components/schemas/ProblemDetails'
+        required:
+        - error
+      - $ref: '#/components/schemas/CommonResponseMeta'
     RcsCapabilityCheckRequest:
       type: object
       description: Request payload for the synchronous RCS capability check.
@@ -641,31 +738,10 @@ components:
         phone_numbers:
         - '61400000000'
         - '61400000001'
-    InternalServerErrorProblem:
-      description: 'This problem occurs when the server encounters an unexpected condition that prevents it from fulfilling the request.
-
-
-        Your client application did everything correct. Unfortunately our API encountered a condition that resulted in this problem.
-
-        '
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/ProblemDetails'
-      example:
-        type: https://developers.kudosity.com/reference/errors#server-error
-        title: Server Error
-        detail: The server encountered an unexpected error
-        status: 500
-    CommonSuccessResponse:
-      allOf:
-      - type: object
-        properties:
-          data:
-            type: object
-            description: Success response payload
-        required:
-        - data
-      - $ref: '#/components/schemas/CommonResponseMeta'
+    Uri:
+      type: string
+      description: string providing an URI formatted according to IETF RFC 3986.
+      format: uri
     RcsListMessageItem:
       type: object
       description: Summary representation of an RCS message for list responses.
@@ -765,182 +841,15 @@ components:
           example: false
           x-oapi-codegen-extra-tags:
             valid: required
-    InputValidationIssue:
-      type: object
-      description: 'An issue detected during input validation.
-
-        '
-      properties:
-        name:
-          type: string
-          description: The name of the param or field that failed validation.
-          x-go-type-skip-optional-pointer: true
-        code:
-          type: integer
-          description: The internal api specific error code.
-          x-go-type-skip-optional-pointer: true
-        message:
-          description: The error message
-          type: string
-          x-go-type-skip-optional-pointer: true
-    ForbiddenProblem:
-      description: 'HTTP 403 Forbidden - Access to the requested resource is forbidden.
-
-
-        Your client application is authenticated but does not have permission to access this resource.
-
-        '
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/ProblemDetails'
-      example:
-        type: https://developers.kudosity.com/reference/errors#forbidden
-        title: Forbidden
-        detail: Access to this resource is forbidden
-        status: 403
-    RCSTextContent:
-      type: object
-      properties:
-        text:
-          $ref: '#/components/schemas/RCSText'
-      required:
-      - text
-    UnauthorizedProblem:
-      description: 'HTTP 401 Unauthorized - API authentication failed.
-
-
-        The request was rejected because the API key is missing, invalid, expired, or lacks sufficient permissions for this resource. Check your Authorization header and API key configuration.
-
-        '
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/ProblemDetails'
-      example:
-        type: https://developers.kudosity.com/reference/errors#unauthorized
-        title: API Authentication Failed
-        detail: Missing or invalid API key in Authorization header. Verify your API key is correct and has the required permissions
-        status: 401
-    RcsRequest:
-      type: object
-      properties:
-        sender:
-          type: string
-          description: 'The RCS agent ID assigned to your registered agent.
-
-
-            Unlike SMS, WhatsApp, and MMS, RCS messages do not come from a phone number.
-
-            They are always sent through an agent.
-
-
-            - Must be a registered RCS agent identifier.
-
-            - Example: `DemoSender`
-
-            - Can be alphanumeric or numeric.
-
-            '
-        recipient:
-          type: string
-          format: phone
-          description: 'The destination number for delivery.
-
-            Can be either in local format or in international format.
-
-            For international format, it should follow the [E.164 standard](http://en.wikipedia.org/wiki/E.164).
-
-
-            Examples of conversions to E.164 format:
-
-            - Australia: 0438 333 061 → 61438333061
-
-            - UK: 07123 456 789 → 447123456789
-
-            '
-        content_type:
-          type: string
-          description: Type of the message content (currently only text supported).
-          enum:
-          - text
-        content:
-          type: object
-          description: 'The message content to be sent.
-
-
-            - Supports both Basic RCS messages (160 characters) and Simple RCS messages (3072 characters)
-
-            - UTF-8 and emoji support included
-
-            '
-          oneOf:
-          - $ref: '#/components/schemas/RCSTextContent'
-        sms_fallback:
-          $ref: '#/components/schemas/RCSSMSFallback'
-        message_ref:
-          type: string
-          x-go-type-skip-optional-pointer: true
-          description: 'A reference supplied by your system. Maximum length of 500 characters.
-
-
-            This reference is included in webhook events so you can relate events with the original message.
-
-
-            For example, being able to relate a Link Hit event to a specific sent message.
-
-            '
-      required:
-      - sender
-      - recipient
-      - content_type
-      - content
-      example:
-        sender: DemoSender
-        recipient: '447903749662'
-        content_type: text
-        content:
-          text:
-            message: 'Hi Michael,
-
-              Just a quick reminder. You are amazing!!
-
-              Reply STOP to opt out.'
-        message_ref: order-12345
-    ProblemDetails:
-      description: 'A Problem Details object (RFC 9457).
-
-
-        Additional properties specific to the problem type may be present.
-
-        '
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/Uri'
-        title:
-          type: string
-          description: A short summary of the problem type. Written in English and readable for engineers (usually not suited for non technical stakeholders and not localized).
-        detail:
-          type: string
-          description: A human-readable explanation specific to this occurrence of the problem
-        status:
-          type: integer
-          description: The HTTP status code corresponding to this error.
-      required:
-      - type
-      - title
-      - detail
-      - status
-      example:
-        type: https://developers.kudosity.com/reference/errors
-        title: Description of the type of problem that occurred
-        detail: Description of specific occurrence of the problem
-        status: 400
-    RcsResponse:
+    RcsGetResponse:
       type: object
       properties:
         id:
           type: string
           description: Unique identifier for the message.
+        account_id:
+          type: string
+          description: Account identifier that sent the message.
         message_ref:
           type: string
           x-go-type-skip-optional-pointer: true
@@ -967,15 +876,28 @@ components:
           type: string
           format: date-time
           description: Timestamp in RFC3339 format (e.g., 2025-08-26T10:30:00Z) when the message was created on the server.
+        status:
+          $ref: '#/components/schemas/RcsMessageStatus'
+        events:
+          type: array
+          x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            json: events,omitempty
+          description: Array of lifecycle events for the message.
+          items:
+            $ref: '#/components/schemas/RCSMessageEvent'
       required:
       - id
+      - account_id
       - sender
       - recipient
       - content_type
       - content
       - created_at
+      - status
       example:
         id: 6fdae71c-dad7-4c36-9734-a69693ecf3b4
+        account_id: '123123'
         message_ref: order-12345
         sender: DemoSender
         recipient: '447903749662'
@@ -988,98 +910,14 @@ components:
 
               Reply STOP to opt out.'
         created_at: '2021-01-01T00:00:00Z'
-    RcsListMessagesMeta:
-      type: object
-      description: Metadata for the list messages response including pagination details.
-      properties:
-        pagination:
-          $ref: '#/components/schemas/PaginationMeta'
-      required:
-      - pagination
-    InputValidationProblem:
-      description: 'This problem occurs when the request is deemed unprocessable.
-
-
-        Your client issued a request that failed validation. Certain validation libraries return multi-errors and cannot be easily parsed into discreet types. This problem type, afforded the provider with the ability to surface all validation errors and negate the need for a trial and error workflow on your side.
-
-        '
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/ProblemDetails'
-      - properties:
-          issues:
-            description: An array of issues detected during input validation.
-            type: array
-            x-go-type-skip-optional-pointer: true
-            items:
-              $ref: '#/components/schemas/InputValidationIssue'
-      example:
-        type: https://developers.kudosity.com/reference/errors#input-validation
-        title: Invalid Request
-        detail: Request validation failed
-        status: 400
-        issues:
-        - name: field_name
-          message: field_name is required
-    RCSText:
-      type: object
-      description: Text content for the message.
-      properties:
-        message:
-          type: string
-          minLength: 1
-          maxLength: 3072
-          description: 'The text message body.
-
-
-            **Message Types:**
-
-            - **Basic RCS Messages**: Up to 160 characters (SMS format in RCS)
-
-            - **Simple RCS Messages**: Up to 3072 characters with emoji and UTF-8 support
-
-            '
-      required:
-      - message
-    NotFoundProblem:
-      description: 'This problem occurs when the requested resource could not be found.
-
-
-        Your client application tried to access a resource that does not exist (or could not be found). Please review how your users initiated such a request.
-
-        '
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/ProblemDetails'
-      example:
-        type: https://developers.kudosity.com/reference/errors#not-found
-        title: Not Found
-        detail: The requested resource was not found
-        status: 404
-    CommonErrorResponse:
-      allOf:
-      - type: object
-        properties:
-          error:
-            $ref: '#/components/schemas/ProblemDetails'
-        required:
-        - error
-      - $ref: '#/components/schemas/CommonResponseMeta'
-    TooManyRequestsProblem:
-      description: 'HTTP 429 Too Many Requests - Rate limit exceeded.
-
-
-        Your client application has sent too many requests in a given amount of time and should retry later.
-
-        '
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/ProblemDetails'
-      example:
-        type: https://developers.kudosity.com/reference/errors#too-many-requests
-        title: Too Many Requests
-        detail: Rate limit exceeded
-        status: 429
+        status: DELIVERED
+        events:
+        - event_type: SENT
+          created_at: '2021-01-01T00:00:30Z'
+          details: Message sent to Google RCS gateway
+        - event_type: DELIVERED
+          created_at: '2021-01-01T00:01:15Z'
+          details: Message delivered to recipient device
     CommonResponseMeta:
       type: object
       properties:
@@ -1089,30 +927,192 @@ components:
         meta:
           type: object
           description: Optional pagination, feature flags, etc.
-    RcsMessageStatus:
-      type: string
-      description: Current status of an RCS message.
-      enum:
-      - QUEUED
-      - SENT
-      - DELIVERED
-      - READ
-      - FAILED
-    RCSSMSFallback:
-      type: object
-      description: 'Provides intelligent fallback for non-RCS capable devices and carrier delivery issues. If the RCS message fails, the SMS will send the configured message to the recipient instead.
+  responses:
+    ListRcsMessagesSuccessResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonSuccessResponse'
+            - type: object
+              properties:
+                data:
+                  $ref: '#/components/schemas/RcsListMessagesData'
+                meta:
+                  $ref: '#/components/schemas/RcsListMessagesMeta'
+          example:
+            data:
+              messages:
+              - id: 6fdae71c-dad7-4c36-9734-a69693ecf3b4
+                message_ref: optional-ref-123
+                sender: DemoSender
+                recipient: '61411122211'
+                content_type: text
+                content:
+                  text:
+                    message: Hi Michael, just a quick reminder. You are amazing!
+                status: DELIVERED
+                created_at: '2021-01-01T00:00:00Z'
+            request: {}
+            meta:
+              pagination:
+                type: cursor
+                next_cursor: MTIzNDU2
+                prev_cursor: null
+                has_next: true
+                has_prev: false
+    InputValidationResponse:
+      description: Input Validation Error
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonErrorResponse'
+            - type: object
+              properties:
+                error:
+                  $ref: '#/components/schemas/InputValidationProblem'
+    ForbiddenErrorResponse:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonErrorResponse'
+            - type: object
+              properties:
+                error:
+                  $ref: '#/components/schemas/ForbiddenProblem'
+    RcsCapabilityCheckSuccessResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonSuccessResponse'
+            - type: object
+              properties:
+                data:
+                  $ref: '#/components/schemas/RcsCapabilityCheckData'
+          example:
+            data:
+              results:
+              - phone_number: '61400000000'
+                code: ENABLED
+              - phone_number: '61400000001'
+                code: UNREACHABLE
+            request: {}
+            meta: {}
+    UnauthorizedErrorResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonErrorResponse'
+            - type: object
+              properties:
+                error:
+                  $ref: '#/components/schemas/UnauthorizedProblem'
+    TooManyRequestsErrorResponse:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonErrorResponse'
+            - type: object
+              properties:
+                error:
+                  $ref: '#/components/schemas/TooManyRequestsProblem'
+    RCSSuccessResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonSuccessResponse'
+            - type: object
+              properties:
+                data:
+                  $ref: '#/components/schemas/RcsResponse'
+          example:
+            data:
+              id: 6fdae71c-dad7-4c36-9734-a69693ecf3b4
+              message_ref: order-12345
+              sender: DemoSender
+              recipient: '447903749662'
+              content_type: text
+              content:
+                text:
+                  message: 'Hi Michael,
 
-        '
-      properties:
-        sender:
-          type: string
-          description: The sender number to use for SMS fallback, which can be in [E.164](http://en.wikipedia.org/wiki/E.164) international format or an alphanumeric sender ID.
-          x-go-type-skip-optional-pointer: true
-        message:
-          type: string
-          description: The message to send through SMS. SMS messages are subject to certain character limitations, please read our SMS documentation for details.
-      required:
-      - message
+                    Just a quick reminder. You are amazing!!
+
+                    Reply STOP to opt out.'
+              created_at: '2021-01-01T00:00:00Z'
+            request: {}
+            meta: {}
+    GetSuccessResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonSuccessResponse'
+            - type: object
+              properties:
+                data:
+                  $ref: '#/components/schemas/RcsGetResponse'
+          example:
+            data:
+              id: 6fdae71c-dad7-4c36-9734-a69693ecf3b4
+              account_id: '123123'
+              message_ref: order-12345
+              sender: DemoSender
+              recipient: '447903749662'
+              content_type: text
+              content:
+                text:
+                  message: 'Hi Michael,
+
+                    Just a quick reminder. You are amazing!!
+
+                    Reply STOP to opt out.'
+              created_at: '2021-01-01T00:00:00Z'
+              status: DELIVERED
+              events:
+              - event_type: SENT
+                created_at: '2021-01-01T00:00:30Z'
+                details: Message sent to Google RCS gateway
+              - event_type: DELIVERED
+                created_at: '2021-01-01T00:01:15Z'
+                details: Message delivered to recipient device
+            request: {}
+            meta: {}
+    NotFoundErrorResponse:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonErrorResponse'
+            - type: object
+              properties:
+                error:
+                  $ref: '#/components/schemas/NotFoundProblem'
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonErrorResponse'
+            - type: object
+              properties:
+                error:
+                  $ref: '#/components/schemas/InternalServerErrorProblem'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

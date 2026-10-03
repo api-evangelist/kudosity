@@ -177,96 +177,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    WebhookListResponse:
-      type: object
-      description: List of webhooks response.
-      properties:
-        webhooks:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebhookResponse'
-    WebhookResponse:
-      type: object
-      description: Webhook details.
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the webhook.
-          example: 67e3e4af-62e8-4515-8b67-6f20d0c51ffb
-        filter:
-          $ref: '#/components/schemas/Filter'
-        name:
-          type: string
-          description: Name of the webhook.
-          example: Hook
-        url:
-          type: string
-          description: URL (https) that accepts JSON encoded POST requests.
-          format: uri
-          example: https://webhook.site/uuid
-        rate_limit:
-          type: integer
-          description: Rate limit for the webhook in requests per second.
-          example: 10
-        is_sandbox:
-          type: boolean
-          deprecated: true
-          description: Deprecated. Will be removed in a future version.
-          example: false
-        created_at:
-          type: string
-          format: date-time
-          description: Timestamp when the webhook was created.
-          example: '2025-04-14T00:59:32.75819Z'
-        updated_at:
-          type: string
-          format: date-time
-          description: Timestamp when the webhook was last updated.
-          example: '2025-04-14T00:59:32.75819Z'
-      required:
-      - id
-      - name
-      - url
-      - rate_limit
-      - is_sandbox
-      - created_at
-      - updated_at
-    EventType:
-      type: string
-      enum:
-      - LINK_HIT
-      - OPT_OUT
-      - MMS_STATUS
-      - SMS_INBOUND
-      - SMS_STATUS
-      - MMS_INBOUND
-      - WHATSAPP_STATUS
-      - WHATSAPP_INBOUND
-      - RCS_STATUS
-      - RCS_INBOUND
-      description: 'Event type string values:
-
-        - LINK_HIT: Link hit event when a recipient visits a tracked link
-
-        - OPT_OUT: Opt out event when a recipient visits an opt-out link or by sending a message with the text "STOP"
-
-        - MMS_STATUS: Status change for a MMS messages. Currently only comprised of internal statuses (sent, failed)
-
-        - SMS_INBOUND: Inbound SMS sent from a recipient back to the sender
-
-        - SMS_STATUS: Status change for a SMS message. Includes internal statuses (sent, failed) and delivery receipts (soft_bounce, hard_bounce, delivered, undelivered). Multiple status events can be triggered for a single message
-
-        - MMS_INBOUND: Inbound MMS sent from a recipient back to the sender
-
-        - WHATSAPP_STATUS: Status change for Whatsapp messages
-
-        - WHATSAPP_INBOUND: Inbound Whatsapp sent from a recipient back to the sender
-
-        - RCS_STATUS: Status change for RCS messages
-
-        - RCS_INBOUND: Inbound RCS sent from a recipient back to the sender
-
-        '
     Filter:
       type:
       - object
@@ -313,6 +223,70 @@ components:
           example:
           - campaign_123
           - campaign_456
+    WebhookListResponse:
+      type: object
+      description: List of webhooks response.
+      properties:
+        webhooks:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookResponse'
+    WebhookDeleteResponse:
+      type: object
+      description: Webhook deletion confirmation response.
+      properties:
+        message:
+          type: string
+          description: Confirmation message
+          example: deleted
+      required:
+      - message
+    WebhookResponse:
+      type: object
+      description: Webhook details.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the webhook.
+          example: 67e3e4af-62e8-4515-8b67-6f20d0c51ffb
+        filter:
+          $ref: '#/components/schemas/Filter'
+        name:
+          type: string
+          description: Name of the webhook.
+          example: Hook
+        url:
+          type: string
+          description: URL (https) that accepts JSON encoded POST requests.
+          format: uri
+          example: https://webhook.site/uuid
+        rate_limit:
+          type: integer
+          description: Rate limit for the webhook in requests per second.
+          example: 10
+        is_sandbox:
+          type: boolean
+          deprecated: true
+          description: Deprecated. Will be removed in a future version.
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the webhook was created.
+          example: '2025-04-14T00:59:32.75819Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp when the webhook was last updated.
+          example: '2025-04-14T00:59:32.75819Z'
+      required:
+      - id
+      - name
+      - url
+      - rate_limit
+      - is_sandbox
+      - created_at
+      - updated_at
     WebhookRequest:
       type: object
       properties:
@@ -395,16 +369,42 @@ components:
       required:
       - name
       - url
-    WebhookDeleteResponse:
-      type: object
-      description: Webhook deletion confirmation response.
-      properties:
-        message:
-          type: string
-          description: Confirmation message
-          example: deleted
-      required:
-      - message
+    EventType:
+      type: string
+      enum:
+      - LINK_HIT
+      - OPT_OUT
+      - MMS_STATUS
+      - SMS_INBOUND
+      - SMS_STATUS
+      - MMS_INBOUND
+      - WHATSAPP_STATUS
+      - WHATSAPP_INBOUND
+      - RCS_STATUS
+      - RCS_INBOUND
+      description: 'Event type string values:
+
+        - LINK_HIT: Link hit event when a recipient visits a tracked link
+
+        - OPT_OUT: Opt out event when a recipient visits an opt-out link or by sending a message with the text "STOP"
+
+        - MMS_STATUS: Status change for a MMS messages. Currently only comprised of internal statuses (sent, failed)
+
+        - SMS_INBOUND: Inbound SMS sent from a recipient back to the sender
+
+        - SMS_STATUS: Status change for a SMS message. Includes internal statuses (sent, failed) and delivery receipts (soft_bounce, hard_bounce, delivered, undelivered). Multiple status events can be triggered for a single message
+
+        - MMS_INBOUND: Inbound MMS sent from a recipient back to the sender
+
+        - WHATSAPP_STATUS: Status change for Whatsapp messages
+
+        - WHATSAPP_INBOUND: Inbound Whatsapp sent from a recipient back to the sender
+
+        - RCS_STATUS: Status change for RCS messages
+
+        - RCS_INBOUND: Inbound RCS sent from a recipient back to the sender
+
+        '
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

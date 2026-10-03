@@ -110,86 +110,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    MMSResponse:
-      type: object
-      description: MMS message details.
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the MMS message.
-          example: 6fdae71c-dad7-4c36-9734-a69693ec2318
-        recipient:
-          type: string
-          description: The destination number for delivery.
-          example: '61435795809'
-        sender:
-          type: string
-          description: The sender number.
-          example: '61481074185'
-        country:
-          type: string
-          description: Country code.
-          example: AU
-          x-go-type-skip-optional-pointer: true
-        subject:
-          type: string
-          description: Subject of the message.
-          example: USS Enterprise
-          x-go-type-skip-optional-pointer: true
-        message:
-          type: string
-          description: Body text of the message.
-          example: Check out this amazing specimen.
-          x-go-type-skip-optional-pointer: true
-        message_ref:
-          type: string
-          description: Reference supplied by your system.
-          example: ncc1701d
-          x-go-type-skip-optional-pointer: true
-        content_urls:
-          type: array
-          description: List of media file URLs.
-          items:
-            type: string
-          example:
-          - http://res.cloudinary.com/burstsms/image/upload/v1590111670/enterprise-d_ghf9t8.jpg
-        status:
-          type: string
-          description: Status of the message.
-          example: sent
-        track_links:
-          type: boolean
-          description: Whether link tracking is enabled.
-          example: true
-        is_sandbox:
-          type: boolean
-          deprecated: true
-          description: Deprecated. Will be removed in a future version.
-          x-go-type-skip-optional-pointer: true
-        created_at:
-          type: string
-          format: date-time
-          description: Timestamp when the MMS was created.
-          example: '2022-03-29T04:42:01.631708Z'
-        updated_at:
-          type: string
-          format: date-time
-          description: Timestamp when the MMS was last updated.
-          example: '2022-03-29T04:42:01.776094Z'
-      required:
-      - id
-      - recipient
-      - sender
-      - country
-      - subject
-      - message
-      - message_ref
-      - content_urls
-      - status
-      - track_links
-      - created_at
-      - updated_at
-      - is_sandbox
     MMSSendRequest:
       type: object
       properties:
@@ -279,6 +199,86 @@ components:
       - sender
       - recipient
       - content_urls
+    MMSResponse:
+      type: object
+      description: MMS message details.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the MMS message.
+          example: 6fdae71c-dad7-4c36-9734-a69693ec2318
+        recipient:
+          type: string
+          description: The destination number for delivery.
+          example: '61435795809'
+        sender:
+          type: string
+          description: The sender number.
+          example: '61481074185'
+        country:
+          type: string
+          description: Country code.
+          example: AU
+          x-go-type-skip-optional-pointer: true
+        subject:
+          type: string
+          description: Subject of the message.
+          example: USS Enterprise
+          x-go-type-skip-optional-pointer: true
+        message:
+          type: string
+          description: Body text of the message.
+          example: Check out this amazing specimen.
+          x-go-type-skip-optional-pointer: true
+        message_ref:
+          type: string
+          description: Reference supplied by your system.
+          example: ncc1701d
+          x-go-type-skip-optional-pointer: true
+        content_urls:
+          type: array
+          description: List of media file URLs.
+          items:
+            type: string
+          example:
+          - http://res.cloudinary.com/burstsms/image/upload/v1590111670/enterprise-d_ghf9t8.jpg
+        status:
+          type: string
+          description: Status of the message.
+          example: sent
+        track_links:
+          type: boolean
+          description: Whether link tracking is enabled.
+          example: true
+        is_sandbox:
+          type: boolean
+          deprecated: true
+          description: Deprecated. Will be removed in a future version.
+          x-go-type-skip-optional-pointer: true
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the MMS was created.
+          example: '2022-03-29T04:42:01.631708Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp when the MMS was last updated.
+          example: '2022-03-29T04:42:01.776094Z'
+      required:
+      - id
+      - recipient
+      - sender
+      - country
+      - subject
+      - message
+      - message_ref
+      - content_urls
+      - status
+      - track_links
+      - created_at
+      - updated_at
+      - is_sandbox
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

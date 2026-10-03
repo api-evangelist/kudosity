@@ -219,13 +219,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    TextContent:
-      type: object
-      properties:
-        text:
-          $ref: '#/components/schemas/Text'
-      required:
-      - text
     WhatsappListMessagesData:
       type: object
       description: Container for the list of WhatsApp messages.
@@ -237,6 +230,21 @@ components:
             $ref: '#/components/schemas/WhatsappListMessageItem'
       required:
       - messages
+    NotFoundProblem:
+      description: 'This problem occurs when the requested resource could not be found.
+
+
+        Your client application tried to access a resource that does not exist (or could not be found). Please review how your users initiated such a request.
+
+        '
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProblemDetails'
+      example:
+        type: https://developers.kudosity.com/reference/errors#not-found
+        title: Not Found
+        detail: The requested resource was not found
+        status: 404
     TemplateContent:
       type: object
       properties:
@@ -244,6 +252,138 @@ components:
           $ref: '#/components/schemas/Template'
       required:
       - template
+    CommonSuccessResponse:
+      allOf:
+      - type: object
+        properties:
+          data:
+            type: object
+            description: Success response payload
+        required:
+        - data
+      - $ref: '#/components/schemas/CommonResponseMeta'
+    WhatsappContentType:
+      type: string
+      description: Type of the message content.
+      enum:
+      - text
+      - template
+      - custom
+    Custom:
+      type: object
+      description: Custom content following the Meta Cloud API guidelines.
+      additionalProperties: true
+    TooManyRequestsProblem:
+      description: 'HTTP 429 Too Many Requests - Rate limit exceeded.
+
+
+        Your client application has sent too many requests in a given amount of time and should retry later.
+
+        '
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProblemDetails'
+      example:
+        type: https://developers.kudosity.com/reference/errors#too-many-requests
+        title: Too Many Requests
+        detail: Rate limit exceeded
+        status: 429
+    Template:
+      type: object
+      description: Template details for the message content.
+      properties:
+        name:
+          type: string
+          description: 'The **exact name** of the WhatsApp template.
+
+
+            - **Format:** Lowercase, alphanumeric, underscores only.
+
+            - **Example:** `order_confirmation`
+
+            - **Must be pre-approved** in your WhatsApp Business account.
+
+            '
+        parameters:
+          type: array
+          description: "The **dynamic values** to populate placeholdes in the template message.\n\n- The number of parameters **must match** the template placeholders.\n- Supports **text only** (strings). Other types (e.g., images, documents) are not allowed.\n- **Example Usage:**\n  - Template: `\"Hello, {1}! Your order {2} has been shipped.\"`\n  - Parameters: `[\"Tony\", \"#12345\"]`\n  - Final message: `\"Hello, Tony! Your order #12345 has been shipped.\"`\n"
+          items:
+            type: string
+        locale:
+          type: string
+          x-go-type-skip-optional-pointer: true
+          description: Optional locale for the template (e.g., en_US), if not provided, the default locale is `en`.
+      required:
+      - name
+    Text:
+      type: object
+      description: Text content for the message.
+      properties:
+        message:
+          type: string
+          minLength: 1
+          description: The text message body.
+      required:
+      - message
+    TextContent:
+      type: object
+      properties:
+        text:
+          $ref: '#/components/schemas/Text'
+      required:
+      - text
+    WhatsappMessageStatus:
+      type: string
+      description: Current status of a WhatsApp message.
+      enum:
+      - QUEUED
+      - SENT
+      - DELIVERED
+      - READ
+      - FAILED
+    InputValidationProblem:
+      description: 'This problem occurs when the request is deemed unprocessable.
+
+
+        Your client issued a request that failed validation. Certain validation libraries return multi-errors and cannot be easily parsed into discreet types. This problem type, afforded the provider with the ability to surface all validation errors and negate the need for a trial and error workflow on your side.
+
+        '
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProblemDetails'
+      - properties:
+          issues:
+            description: An array of issues detected during input validation.
+            type: array
+            x-go-type-skip-optional-pointer: true
+            items:
+              $ref: '#/components/schemas/InputValidationIssue'
+      example:
+        type: https://developers.kudosity.com/reference/errors#input-validation
+        title: Invalid Request
+        detail: Request validation failed
+        status: 400
+        issues:
+        - name: field_name
+          message: field_name is required
+    InputValidationIssue:
+      type: object
+      description: 'An issue detected during input validation.
+
+        '
+      properties:
+        name:
+          type: string
+          description: The name of the param or field that failed validation.
+          x-go-type-skip-optional-pointer: true
+        code:
+          type: integer
+          description: The internal api specific error code.
+          x-go-type-skip-optional-pointer: true
+        message:
+          description: The error message
+          type: string
+          x-go-type-skip-optional-pointer: true
     WhatsappResponse:
       type: object
       properties:
@@ -296,10 +436,6 @@ components:
             parameters:
             - Joe
         created_at: '2021-01-01T00:00:00Z'
-    Uri:
-      type: string
-      description: string providing an URI formatted according to IETF RFC 3986.
-      format: uri
     WhatsappListMessageItem:
       type: object
       description: Summary representation of a WhatsApp message for list responses.
@@ -364,298 +500,6 @@ components:
         status: DELIVERED
         created_at: '2021-01-01T00:00:00Z'
         campaign_id: 9b2e4c1a-7f3d-4a8b-9c5e-2d1f6a8b3c4d
-    WhatsappListMessagesMeta:
-      type: object
-      description: Metadata for the list messages response including pagination details.
-      properties:
-        pagination:
-          $ref: '#/components/schemas/PaginationMeta'
-      required:
-      - pagination
-    InternalServerErrorProblem:
-      description: 'This problem occurs when the server encounters an unexpected condition that prevents it from fulfilling the request.
-
-
-        Your client application did everything correct. Unfortunately our API encountered a condition that resulted in this problem.
-
-        '
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/ProblemDetails'
-      example:
-        type: https://developers.kudosity.com/reference/errors#server-error
-        title: Server Error
-        detail: The server encountered an unexpected error
-        status: 500
-    CustomContent:
-      type: object
-      properties:
-        custom:
-          $ref: '#/components/schemas/Custom'
-      required:
-      - custom
-    CommonSuccessResponse:
-      allOf:
-      - type: object
-        properties:
-          data:
-            type: object
-            description: Success response payload
-        required:
-        - data
-      - $ref: '#/components/schemas/CommonResponseMeta'
-    PaginationMeta:
-      title: Pagination Metadata
-      description: 'Pagination metadata for cursor-based pagination.
-
-        Reusable across all paginated API endpoints.
-
-        '
-      type: object
-      required:
-      - type
-      - has_next
-      - has_prev
-      properties:
-        type:
-          type: string
-          description: The pagination strategy being used.
-          enum:
-          - cursor
-          example: cursor
-          x-oapi-codegen-extra-tags:
-            valid: required
-        next_cursor:
-          type:
-          - string
-          - 'null'
-          description: Cursor to fetch the next page of results. Omitted if there are no more results.
-          example: MTIzNDU2
-          x-oapi-codegen-extra-tags:
-            json: next_cursor,omitempty
-        prev_cursor:
-          type:
-          - string
-          - 'null'
-          description: Cursor to fetch the previous page of results. Omitted if on the first page.
-          example: MTIzNDkw
-          x-oapi-codegen-extra-tags:
-            json: prev_cursor,omitempty
-        has_next:
-          type: boolean
-          description: Indicates whether there are more results available after the current page.
-          example: true
-          x-oapi-codegen-extra-tags:
-            valid: required
-        has_prev:
-          type: boolean
-          description: Indicates whether there are results available before the current page.
-          example: false
-          x-oapi-codegen-extra-tags:
-            valid: required
-    Custom:
-      type: object
-      description: Custom content following the Meta Cloud API guidelines.
-      additionalProperties: true
-    Template:
-      type: object
-      description: Template details for the message content.
-      properties:
-        name:
-          type: string
-          description: 'The **exact name** of the WhatsApp template.
-
-
-            - **Format:** Lowercase, alphanumeric, underscores only.
-
-            - **Example:** `order_confirmation`
-
-            - **Must be pre-approved** in your WhatsApp Business account.
-
-            '
-        parameters:
-          type: array
-          description: "The **dynamic values** to populate placeholdes in the template message.\n\n- The number of parameters **must match** the template placeholders.\n- Supports **text only** (strings). Other types (e.g., images, documents) are not allowed.\n- **Example Usage:**\n  - Template: `\"Hello, {1}! Your order {2} has been shipped.\"`\n  - Parameters: `[\"Tony\", \"#12345\"]`\n  - Final message: `\"Hello, Tony! Your order #12345 has been shipped.\"`\n"
-          items:
-            type: string
-        locale:
-          type: string
-          x-go-type-skip-optional-pointer: true
-          description: Optional locale for the template (e.g., en_US), if not provided, the default locale is `en`.
-      required:
-      - name
-    InputValidationIssue:
-      type: object
-      description: 'An issue detected during input validation.
-
-        '
-      properties:
-        name:
-          type: string
-          description: The name of the param or field that failed validation.
-          x-go-type-skip-optional-pointer: true
-        code:
-          type: integer
-          description: The internal api specific error code.
-          x-go-type-skip-optional-pointer: true
-        message:
-          description: The error message
-          type: string
-          x-go-type-skip-optional-pointer: true
-    WhatsappMessageEvent:
-      type: object
-      description: Lifecycle event for a WhatsApp message.
-      properties:
-        event_type:
-          type: string
-          description: Type of event that occurred.
-          enum:
-          - SENT
-          - DELIVERED
-          - READ
-          - FAILED
-        created_at:
-          type: string
-          format: date-time
-          description: Timestamp in RFC3339 format (e.g., 2025-08-26T10:30:00Z) when the event occurred.
-        details:
-          type: string
-          description: Description of the event.
-      required:
-      - event_type
-      - created_at
-      - details
-      example:
-        event_type: DELIVERED
-        created_at: '2024-01-15T14:31:42Z'
-        details: Message delivered to recipient device
-    SMSFallback:
-      type: object
-      description: SMS fallback message details.
-      properties:
-        sender:
-          type: string
-          description: The sender number to use for SMS fallback, which can be in [E.164](http://en.wikipedia.org/wiki/E.164) international format or an alphanumeric sender ID.
-          x-go-type-skip-optional-pointer: true
-        message:
-          type: string
-          description: The message to send via SMS.
-      required:
-      - message
-    UnauthorizedProblem:
-      description: 'HTTP 401 Unauthorized - API authentication failed.
-
-
-        The request was rejected because the API key is missing, invalid, expired, or lacks sufficient permissions for this resource. Check your Authorization header and API key configuration.
-
-        '
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/ProblemDetails'
-      example:
-        type: https://developers.kudosity.com/reference/errors#unauthorized
-        title: API Authentication Failed
-        detail: Missing or invalid API key in Authorization header. Verify your API key is correct and has the required permissions
-        status: 401
-    ProblemDetails:
-      description: 'A Problem Details object (RFC 9457).
-
-
-        Additional properties specific to the problem type may be present.
-
-        '
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/Uri'
-        title:
-          type: string
-          description: A short summary of the problem type. Written in English and readable for engineers (usually not suited for non technical stakeholders and not localized).
-        detail:
-          type: string
-          description: A human-readable explanation specific to this occurrence of the problem
-        status:
-          type: integer
-          description: The HTTP status code corresponding to this error.
-      required:
-      - type
-      - title
-      - detail
-      - status
-      example:
-        type: https://developers.kudosity.com/reference/errors
-        title: Description of the type of problem that occurred
-        detail: Description of specific occurrence of the problem
-        status: 400
-    WhatsappMessageStatus:
-      type: string
-      description: Current status of a WhatsApp message.
-      enum:
-      - QUEUED
-      - SENT
-      - DELIVERED
-      - READ
-      - FAILED
-    WhatsappRequest:
-      type: object
-      properties:
-        sender:
-          type: string
-          x-go-type-skip-optional-pointer: true
-          description: 'Registered WhatsApp sender number.
-
-
-            - Must be in **international format** following the [E.164 standard](http://en.wikipedia.org/wiki/E.164) (e.g., +14155238886).
-
-            - Number must be registered with the WhatsApp Business API.
-
-            - **Optional.** When omitted, the account''s sender is used automatically. Accounts with multiple senders must specify one.
-
-            '
-        recipient:
-          type: string
-          format: phone
-          description: 'Recipient phone number in international format.
-
-
-            - Must follow **E.164 format** (e.g., `+14155238886` for a US number).
-
-            - No spaces, dashes, or special characters.
-
-            - The recipient must **have an active WhatsApp account**.
-
-            - Ensure the recipient **has opted in** to receive WhatsApp messages.
-
-            '
-        content_type:
-          $ref: '#/components/schemas/WhatsappContentType'
-        content:
-          type: object
-          description: "The message content to be sent.\n\n- Must follow the WhastApp-approved **template format** or be a **custom object** following the Meta Cloud API guidelines.\n- **Example JSON (Text Content):**\n  ```json\n  {\n    \"text\": {\n      \"message\": \"hello, world!\",\n    }\n  }\n  ```\n- **Example JSON (Template Content):**\n  ```json\n  {\n    \"template\": {\n      \"name\": \"order_update\",\n      \"parameters\": [\"123456\"]\n    }\n  }\n  ```\n- **Example JSON (Custom Content):**\n  ```json\n  {\n    \"custom\": {\n      \"type\": \"template\",\n      \"template\": {\n        \"name\": \"template_img_simple_1\",\n        \"language\": {\n          \"code\": \"en\",\n          \"policy\": \"deterministic\"\n        },\n        \"components\": [\n          {\n            \"type\": \"HEADER\",\n            \"parameters\": [\n              {\n                \"type\": \"image\",\n                \"image\": {\n                  \"link\": \"https://image-test.jpg\"\n                }\n              }\n            ]\n          }\n        ]\n      }\n    }\n  }\n  ```\n"
-          oneOf:
-          - $ref: '#/components/schemas/TextContent'
-          - $ref: '#/components/schemas/TemplateContent'
-          - $ref: '#/components/schemas/CustomContent'
-        sms_fallback:
-          $ref: '#/components/schemas/SMSFallback'
-        message_ref:
-          type: string
-          x-go-type-skip-optional-pointer: true
-          description: "A unique reference ID supplied by your system to track messages.\n\n- **Maximum Length:** 500 characters.\n- This `message_ref` will be included in webhook events, allowing you to correlate sent messages with received events.\n\n**Example Usage:**\n - Sending a message with `message_ref: \"order-12345\"`\n - Receiving a delivery webhook containing `message_ref: \"order-12345\"`, confirming it was delivered.\n"
-      required:
-      - recipient
-      - content_type
-      - content
-      example:
-        sender: '14155238886'
-        recipient: '61411122211'
-        content_type: template
-        content:
-          template:
-            name: welcome_new_customer
-            parameters:
-            - Joe
-        message_ref: optional-ref-123
     WhatsappGetResponse:
       type: object
       properties:
@@ -743,56 +587,139 @@ components:
         - event_type: DELIVERED
           created_at: '2021-01-01T00:01:15Z'
           details: Message delivered to recipient device
-    InputValidationProblem:
-      description: 'This problem occurs when the request is deemed unprocessable.
-
-
-        Your client issued a request that failed validation. Certain validation libraries return multi-errors and cannot be easily parsed into discreet types. This problem type, afforded the provider with the ability to surface all validation errors and negate the need for a trial and error workflow on your side.
-
-        '
+    SMSFallback:
       type: object
-      allOf:
-      - $ref: '#/components/schemas/ProblemDetails'
-      - properties:
-          issues:
-            description: An array of issues detected during input validation.
-            type: array
-            x-go-type-skip-optional-pointer: true
-            items:
-              $ref: '#/components/schemas/InputValidationIssue'
-      example:
-        type: https://developers.kudosity.com/reference/errors#input-validation
-        title: Invalid Request
-        detail: Request validation failed
-        status: 400
-        issues:
-        - name: field_name
-          message: field_name is required
-    Text:
-      type: object
-      description: Text content for the message.
+      description: SMS fallback message details.
       properties:
+        sender:
+          type: string
+          description: The sender number to use for SMS fallback, which can be in [E.164](http://en.wikipedia.org/wiki/E.164) international format or an alphanumeric sender ID.
+          x-go-type-skip-optional-pointer: true
         message:
           type: string
-          minLength: 1
-          description: The text message body.
+          description: The message to send via SMS.
       required:
       - message
-    NotFoundProblem:
-      description: 'This problem occurs when the requested resource could not be found.
+    UnauthorizedProblem:
+      description: 'HTTP 401 Unauthorized - API authentication failed.
 
 
-        Your client application tried to access a resource that does not exist (or could not be found). Please review how your users initiated such a request.
+        The request was rejected because the API key is missing, invalid, expired, or lacks sufficient permissions for this resource. Check your Authorization header and API key configuration.
 
         '
       type: object
       allOf:
       - $ref: '#/components/schemas/ProblemDetails'
       example:
-        type: https://developers.kudosity.com/reference/errors#not-found
-        title: Not Found
-        detail: The requested resource was not found
-        status: 404
+        type: https://developers.kudosity.com/reference/errors#unauthorized
+        title: API Authentication Failed
+        detail: Missing or invalid API key in Authorization header. Verify your API key is correct and has the required permissions
+        status: 401
+    ProblemDetails:
+      description: 'A Problem Details object (RFC 9457).
+
+
+        Additional properties specific to the problem type may be present.
+
+        '
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/Uri'
+        title:
+          type: string
+          description: A short summary of the problem type. Written in English and readable for engineers (usually not suited for non technical stakeholders and not localized).
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        status:
+          type: integer
+          description: The HTTP status code corresponding to this error.
+      required:
+      - type
+      - title
+      - detail
+      - status
+      example:
+        type: https://developers.kudosity.com/reference/errors
+        title: Description of the type of problem that occurred
+        detail: Description of specific occurrence of the problem
+        status: 400
+    InternalServerErrorProblem:
+      description: 'This problem occurs when the server encounters an unexpected condition that prevents it from fulfilling the request.
+
+
+        Your client application did everything correct. Unfortunately our API encountered a condition that resulted in this problem.
+
+        '
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProblemDetails'
+      example:
+        type: https://developers.kudosity.com/reference/errors#server-error
+        title: Server Error
+        detail: The server encountered an unexpected error
+        status: 500
+    WhatsappRequest:
+      type: object
+      properties:
+        sender:
+          type: string
+          x-go-type-skip-optional-pointer: true
+          description: 'Registered WhatsApp sender number.
+
+
+            - Must be in **international format** following the [E.164 standard](http://en.wikipedia.org/wiki/E.164) (e.g., +14155238886).
+
+            - Number must be registered with the WhatsApp Business API.
+
+            - **Optional.** When omitted, the account''s sender is used automatically. Accounts with multiple senders must specify one.
+
+            '
+        recipient:
+          type: string
+          format: phone
+          description: 'Recipient phone number in international format.
+
+
+            - Must follow **E.164 format** (e.g., `+14155238886` for a US number).
+
+            - No spaces, dashes, or special characters.
+
+            - The recipient must **have an active WhatsApp account**.
+
+            - Ensure the recipient **has opted in** to receive WhatsApp messages.
+
+            '
+        content_type:
+          $ref: '#/components/schemas/WhatsappContentType'
+        content:
+          type: object
+          description: "The message content to be sent.\n\n- Must follow the WhastApp-approved **template format** or be a **custom object** following the Meta Cloud API guidelines.\n- **Example JSON (Text Content):**\n  ```json\n  {\n    \"text\": {\n      \"message\": \"hello, world!\",\n    }\n  }\n  ```\n- **Example JSON (Template Content):**\n  ```json\n  {\n    \"template\": {\n      \"name\": \"order_update\",\n      \"parameters\": [\"123456\"]\n    }\n  }\n  ```\n- **Example JSON (Custom Content):**\n  ```json\n  {\n    \"custom\": {\n      \"type\": \"template\",\n      \"template\": {\n        \"name\": \"template_img_simple_1\",\n        \"language\": {\n          \"code\": \"en\",\n          \"policy\": \"deterministic\"\n        },\n        \"components\": [\n          {\n            \"type\": \"HEADER\",\n            \"parameters\": [\n              {\n                \"type\": \"image\",\n                \"image\": {\n                  \"link\": \"https://image-test.jpg\"\n                }\n              }\n            ]\n          }\n        ]\n      }\n    }\n  }\n  ```\n"
+          oneOf:
+          - $ref: '#/components/schemas/TextContent'
+          - $ref: '#/components/schemas/TemplateContent'
+          - $ref: '#/components/schemas/CustomContent'
+        sms_fallback:
+          $ref: '#/components/schemas/SMSFallback'
+        message_ref:
+          type: string
+          x-go-type-skip-optional-pointer: true
+          description: "A unique reference ID supplied by your system to track messages.\n\n- **Maximum Length:** 500 characters.\n- This `message_ref` will be included in webhook events, allowing you to correlate sent messages with received events.\n\n**Example Usage:**\n - Sending a message with `message_ref: \"order-12345\"`\n - Receiving a delivery webhook containing `message_ref: \"order-12345\"`, confirming it was delivered.\n"
+      required:
+      - recipient
+      - content_type
+      - content
+      example:
+        sender: '14155238886'
+        recipient: '61411122211'
+        content_type: template
+        content:
+          template:
+            name: welcome_new_customer
+            parameters:
+            - Joe
+        message_ref: optional-ref-123
     CommonErrorResponse:
       allOf:
       - type: object
@@ -802,28 +729,101 @@ components:
         required:
         - error
       - $ref: '#/components/schemas/CommonResponseMeta'
-    TooManyRequestsProblem:
-      description: 'HTTP 429 Too Many Requests - Rate limit exceeded.
+    Uri:
+      type: string
+      description: string providing an URI formatted according to IETF RFC 3986.
+      format: uri
+    CustomContent:
+      type: object
+      properties:
+        custom:
+          $ref: '#/components/schemas/Custom'
+      required:
+      - custom
+    WhatsappListMessagesMeta:
+      type: object
+      description: Metadata for the list messages response including pagination details.
+      properties:
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+      required:
+      - pagination
+    WhatsappMessageEvent:
+      type: object
+      description: Lifecycle event for a WhatsApp message.
+      properties:
+        event_type:
+          type: string
+          description: Type of event that occurred.
+          enum:
+          - SENT
+          - DELIVERED
+          - READ
+          - FAILED
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp in RFC3339 format (e.g., 2025-08-26T10:30:00Z) when the event occurred.
+        details:
+          type: string
+          description: Description of the event.
+      required:
+      - event_type
+      - created_at
+      - details
+      example:
+        event_type: DELIVERED
+        created_at: '2024-01-15T14:31:42Z'
+        details: Message delivered to recipient device
+    PaginationMeta:
+      title: Pagination Metadata
+      description: 'Pagination metadata for cursor-based pagination.
 
-
-        Your client application has sent too many requests in a given amount of time and should retry later.
+        Reusable across all paginated API endpoints.
 
         '
       type: object
-      allOf:
-      - $ref: '#/components/schemas/ProblemDetails'
-      example:
-        type: https://developers.kudosity.com/reference/errors#too-many-requests
-        title: Too Many Requests
-        detail: Rate limit exceeded
-        status: 429
-    WhatsappContentType:
-      type: string
-      description: Type of the message content.
-      enum:
-      - text
-      - template
-      - custom
+      required:
+      - type
+      - has_next
+      - has_prev
+      properties:
+        type:
+          type: string
+          description: The pagination strategy being used.
+          enum:
+          - cursor
+          example: cursor
+          x-oapi-codegen-extra-tags:
+            valid: required
+        next_cursor:
+          type:
+          - string
+          - 'null'
+          description: Cursor to fetch the next page of results. Omitted if there are no more results.
+          example: MTIzNDU2
+          x-oapi-codegen-extra-tags:
+            json: next_cursor,omitempty
+        prev_cursor:
+          type:
+          - string
+          - 'null'
+          description: Cursor to fetch the previous page of results. Omitted if on the first page.
+          example: MTIzNDkw
+          x-oapi-codegen-extra-tags:
+            json: prev_cursor,omitempty
+        has_next:
+          type: boolean
+          description: Indicates whether there are more results available after the current page.
+          example: true
+          x-oapi-codegen-extra-tags:
+            valid: required
+        has_prev:
+          type: boolean
+          description: Indicates whether there are results available before the current page.
+          example: false
+          x-oapi-codegen-extra-tags:
+            valid: required
     CommonResponseMeta:
       type: object
       properties:
@@ -845,6 +845,43 @@ components:
               properties:
                 error:
                   $ref: '#/components/schemas/InputValidationProblem'
+    GetWhatsappSuccessResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonSuccessResponse'
+            - type: object
+              properties:
+                data:
+                  $ref: '#/components/schemas/WhatsappGetResponse'
+          example:
+            data:
+              id: 6fdae71c-dad7-4c36-9734-a69693ecf3b4
+              account_id: '123123'
+              message_ref: optional-ref-123
+              sender: '14155238886'
+              recipient: '61411122211'
+              content_type: template
+              content:
+                template:
+                  name: welcome_new_customer
+                  parameters:
+                  - Joe
+              sms_fallback:
+                message: Welcome Joe! Your account is now active.
+              created_at: '2021-01-01T00:00:00Z'
+              status: DELIVERED
+              events:
+              - event_type: SENT
+                created_at: '2021-01-01T00:00:30Z'
+                details: Message sent to WhatsApp gateway
+              - event_type: DELIVERED
+                created_at: '2021-01-01T00:01:15Z'
+                details: Message delivered to recipient device
+            request: {}
+            meta: {}
     UnauthorizedErrorResponse:
       description: Unauthorized
       content:
@@ -856,8 +893,8 @@ components:
               properties:
                 error:
                   $ref: '#/components/schemas/UnauthorizedProblem'
-    InternalServerErrorResponse:
-      description: Internal Server Error
+    TooManyRequestsErrorResponse:
+      description: Too Many Requests
       content:
         application/json:
           schema:
@@ -866,33 +903,7 @@ components:
             - type: object
               properties:
                 error:
-                  $ref: '#/components/schemas/InternalServerErrorProblem'
-    SuccessResponse:
-      description: OK
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/CommonSuccessResponse'
-            - type: object
-              properties:
-                data:
-                  $ref: '#/components/schemas/WhatsappResponse'
-          example:
-            data:
-              id: 6fdae71c-dad7-4c36-9734-a69693ecf3b4
-              message_ref: optional-ref-123
-              sender: '14155238886'
-              recipient: '61411122211'
-              content_type: template
-              content:
-                template:
-                  name: welcome_new_customer
-                  parameters:
-                  - Joe
-              created_at: '2021-01-01T00:00:00Z'
-            request: {}
-            meta: {}
+                  $ref: '#/components/schemas/TooManyRequestsProblem'
     NotFoundErrorResponse:
       description: Not Found
       content:
@@ -904,6 +915,17 @@ components:
               properties:
                 error:
                   $ref: '#/components/schemas/NotFoundProblem'
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/CommonErrorResponse'
+            - type: object
+              properties:
+                error:
+                  $ref: '#/components/schemas/InternalServerErrorProblem'
     ListWhatsappMessagesSuccessResponse:
       description: OK
       content:
@@ -940,18 +962,7 @@ components:
                 prev_cursor: null
                 has_next: true
                 has_prev: false
-    TooManyRequestsErrorResponse:
-      description: Too Many Requests
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/CommonErrorResponse'
-            - type: object
-              properties:
-                error:
-                  $ref: '#/components/schemas/TooManyRequestsProblem'
-    GetWhatsappSuccessResponse:
+    SuccessResponse:
       description: OK
       content:
         application/json:
@@ -961,11 +972,10 @@ components:
             - type: object
               properties:
                 data:
-                  $ref: '#/components/schemas/WhatsappGetResponse'
+                  $ref: '#/components/schemas/WhatsappResponse'
           example:
             data:
               id: 6fdae71c-dad7-4c36-9734-a69693ecf3b4
-              account_id: '123123'
               message_ref: optional-ref-123
               sender: '14155238886'
               recipient: '61411122211'
@@ -975,17 +985,7 @@ components:
                   name: welcome_new_customer
                   parameters:
                   - Joe
-              sms_fallback:
-                message: Welcome Joe! Your account is now active.
               created_at: '2021-01-01T00:00:00Z'
-              status: DELIVERED
-              events:
-              - event_type: SENT
-                created_at: '2021-01-01T00:00:30Z'
-                details: Message sent to WhatsApp gateway
-              - event_type: DELIVERED
-                created_at: '2021-01-01T00:01:15Z'
-                details: Message delivered to recipient device
             request: {}
             meta: {}
   securitySchemes:
