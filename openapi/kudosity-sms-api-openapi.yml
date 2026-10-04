@@ -768,6 +768,67 @@ paths:
     - url: https://api.transmitsms.com
 components:
   schemas:
+    Direction:
+      type:
+      - string
+      - 'null'
+      description: 'Message direction.
+
+        - OUT: Sent to the provider.
+
+        - IN: Sent from the provider.
+
+        '
+      enum:
+      - OUT
+      - IN
+    Status:
+      type:
+      - string
+      - 'null'
+      description: 'Message status.
+
+        - PENDING: Queued for processing.
+
+        - SENT: Submitted to the provider.
+
+        - FAILED: Failed because of an error from the provider, a carrier, or the handset.
+
+        - DELIVERED: Delivered to handset.
+
+        - ACCEPTED: Accepted by the provider and delivery might have been attempted (but is not confirmed).
+
+        - SOFT_BOUNCE: Undeliverable due to handset being switched off, out of range or other temporary deliverability issue.
+
+        - HARD_BOUNCE: Handset was disconnected.
+
+        - OTHER: Any other DLR status from the provider.
+
+        - REJECTED: Message pending approval was rejected by the Kudosity support team.
+
+        - PENDING_APPROVAL: Message is pending approval by the Kudosity support team.
+
+        - SUBMITTED: Message is submitted to the provider.
+
+        - UNDELIVERABLE: Message is undeliverable.
+
+        - READ: Message is read by the recipient.
+
+        '
+      enum:
+      - PENDING
+      - SENT
+      - FAILED
+      - DELIVERED
+      - ACCEPTED
+      - SOFT_BOUNCE
+      - HARD_BOUNCE
+      - OTHER
+      - REJECTED
+      - PENDING_APPROVAL
+      - SUBMITTED
+      - UNDELIVERABLE
+      - READ
     OrderByField:
       type: string
       description: 'Sort order. Default is CREATED_AT_ASC.
@@ -780,88 +841,6 @@ components:
       enum:
       - CREATED_AT_ASC
       - CREATED_AT_DESC
-    SendSMSRequest:
-      type: object
-      properties:
-        message:
-          type: string
-          description: 'Body text of the message.
-
-            The message will be split into multiple parts if required. A part is 160 characters for a single SMS or 153 characters per part for multi-part SMS. If the message contains Unicode UTF8 encoded characters such as emoji’s or non latin character sets, then a single part is 70 characters or 67 characters for multiple parts.
-
-
-            More information on message length and encoding: https://support.transmitsms.com/s/article/44001076957-how-many-characters-can-i-have-in-my-text-message
-
-
-            If opt-out is required, insert parameter [opt-out-link] into the message and a link will be generated.
-
-            '
-          x-oapi-codegen-extra-tags:
-            valid: required
-        message_ref:
-          type: string
-          maxLength: 500
-          description: 'A reference supplied by your system. This reference will be passed back in webhooks so that you can relate events to messages you sent. For example, being able to relate a Link Hit event to a specific sent message.
-
-            '
-          x-go-type-skip-optional-pointer: true
-          x-oapi-codegen-extra-tags:
-            valid: length(0|500)
-        sender:
-          type: string
-          description: 'Sender is the number (or alphanumeric) that the message appears from on the handset.
-
-            Sender number must be assigned to your account for the country you are sending to. Contact us to get sender number(s) registered to your account.
-
-            Sender number functionality varies by country. You can send from an alphanumeric sender if it is available for the destination country.
-
-            Global SMS delivery list: https://support.transmitsms.com/s/article/page-products-connectivity-global-delivery-list
-
-
-            Alphanumeric senders (which cannot be replied to) have a maximum of 11 characters. Only letters, numbers, underscore, hyphen or space are allowed and they are included in the total character count. (Consecutive underscore, hyphen, space is not allowed.)
-
-            '
-          x-oapi-codegen-extra-tags:
-            valid: required
-        recipient:
-          type: string
-          description: "The destination number for delivery.\nCan be either in local format or in international format. Must be in the same country as the sender.\nFor international format, it should follow E.164 standard. http://en.wikipedia.org/wiki/E.164\n\nExamples of conversions to E.164 format:\n  Australia 0438 333 061 => 61438333061\n  New Zealand 0212172782 => 64212172782\n  USA (281) 869-1226 => 12818691226\n"
-          x-oapi-codegen-extra-tags:
-            valid: required
-        track_links:
-          type: boolean
-          description: 'Enable the link tracking feature which replaces links in outbound messages with shortened links. This allows us to track when recipients view links.
-
-            '
-          x-go-type-skip-optional-pointer: true
-      required:
-      - message
-      - sender
-      - recipient
-    ListSMSResponse:
-      type: object
-      description: List of SMS messages.
-      properties:
-        smses:
-          type: array
-          items:
-            $ref: '#/components/schemas/SMSResponse'
-        total_records:
-          type: string
-        total_segments:
-          type: string
-      required:
-      - smses
-      - total_records
-      - total_segments
-    Format:
-      type:
-      - string
-      - 'null'
-      description: Response format
-      enum:
-      - JSON
-      - CSV
     SMSResponse:
       type: object
       description: SMS message details.
@@ -964,20 +943,80 @@ components:
         direction: OUT
         created_at: '2022-03-28T06:12:52.450674000Z'
         updated_at: '2022-03-28T06:12:52.450674000Z'
-    Direction:
-      type:
-      - string
-      - 'null'
-      description: 'Message direction.
+    SendSMSRequest:
+      type: object
+      properties:
+        message:
+          type: string
+          description: 'Body text of the message.
 
-        - OUT: Sent to the provider.
+            The message will be split into multiple parts if required. A part is 160 characters for a single SMS or 153 characters per part for multi-part SMS. If the message contains Unicode UTF8 encoded characters such as emoji’s or non latin character sets, then a single part is 70 characters or 67 characters for multiple parts.
 
-        - IN: Sent from the provider.
 
-        '
-      enum:
-      - OUT
-      - IN
+            More information on message length and encoding: https://support.transmitsms.com/s/article/44001076957-how-many-characters-can-i-have-in-my-text-message
+
+
+            If opt-out is required, insert parameter [opt-out-link] into the message and a link will be generated.
+
+            '
+          x-oapi-codegen-extra-tags:
+            valid: required
+        message_ref:
+          type: string
+          maxLength: 500
+          description: 'A reference supplied by your system. This reference will be passed back in webhooks so that you can relate events to messages you sent. For example, being able to relate a Link Hit event to a specific sent message.
+
+            '
+          x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            valid: length(0|500)
+        sender:
+          type: string
+          description: 'Sender is the number (or alphanumeric) that the message appears from on the handset.
+
+            Sender number must be assigned to your account for the country you are sending to. Contact us to get sender number(s) registered to your account.
+
+            Sender number functionality varies by country. You can send from an alphanumeric sender if it is available for the destination country.
+
+            Global SMS delivery list: https://support.transmitsms.com/s/article/page-products-connectivity-global-delivery-list
+
+
+            Alphanumeric senders (which cannot be replied to) have a maximum of 11 characters. Only letters, numbers, underscore, hyphen or space are allowed and they are included in the total character count. (Consecutive underscore, hyphen, space is not allowed.)
+
+            '
+          x-oapi-codegen-extra-tags:
+            valid: required
+        recipient:
+          type: string
+          description: "The destination number for delivery.\nCan be either in local format or in international format. Must be in the same country as the sender.\nFor international format, it should follow E.164 standard. http://en.wikipedia.org/wiki/E.164\n\nExamples of conversions to E.164 format:\n  Australia 0438 333 061 => 61438333061\n  New Zealand 0212172782 => 64212172782\n  USA (281) 869-1226 => 12818691226\n"
+          x-oapi-codegen-extra-tags:
+            valid: required
+        track_links:
+          type: boolean
+          description: 'Enable the link tracking feature which replaces links in outbound messages with shortened links. This allows us to track when recipients view links.
+
+            '
+          x-go-type-skip-optional-pointer: true
+      required:
+      - message
+      - sender
+      - recipient
+    ListSMSResponse:
+      type: object
+      description: List of SMS messages.
+      properties:
+        smses:
+          type: array
+          items:
+            $ref: '#/components/schemas/SMSResponse'
+        total_records:
+          type: string
+        total_segments:
+          type: string
+      required:
+      - smses
+      - total_records
+      - total_segments
     ListSMSRequest:
       type: object
       properties:
@@ -1027,53 +1066,14 @@ components:
           items:
             $ref: '#/components/schemas/OrderByField'
           description: Sort order. Default is CREATED_AT_ASC.
-    Status:
+    Format:
       type:
       - string
       - 'null'
-      description: 'Message status.
-
-        - PENDING: Queued for processing.
-
-        - SENT: Submitted to the provider.
-
-        - FAILED: Failed because of an error from the provider, a carrier, or the handset.
-
-        - DELIVERED: Delivered to handset.
-
-        - ACCEPTED: Accepted by the provider and delivery might have been attempted (but is not confirmed).
-
-        - SOFT_BOUNCE: Undeliverable due to handset being switched off, out of range or other temporary deliverability issue.
-
-        - HARD_BOUNCE: Handset was disconnected.
-
-        - OTHER: Any other DLR status from the provider.
-
-        - REJECTED: Message pending approval was rejected by the Kudosity support team.
-
-        - PENDING_APPROVAL: Message is pending approval by the Kudosity support team.
-
-        - SUBMITTED: Message is submitted to the provider.
-
-        - UNDELIVERABLE: Message is undeliverable.
-
-        - READ: Message is read by the recipient.
-
-        '
+      description: Response format
       enum:
-      - PENDING
-      - SENT
-      - FAILED
-      - DELIVERED
-      - ACCEPTED
-      - SOFT_BOUNCE
-      - HARD_BOUNCE
-      - OTHER
-      - REJECTED
-      - PENDING_APPROVAL
-      - SUBMITTED
-      - UNDELIVERABLE
-      - READ
+      - JSON
+      - CSV
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
