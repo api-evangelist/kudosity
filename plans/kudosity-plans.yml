@@ -31,3 +31,39 @@ notes:
   it is quote-based.
 - No included message volume is stated for any tier.
 - 'Rates are indicative: "actual rates depend on send frequency, volume, use case, and routing requirements."'
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - hybrid
+  units:
+  - message
+  plans:
+  - name: Pay as you go
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - message
+    periods: []
+  - name: Growth
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - message
+    periods: []
+  - name: Scale
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - message
+    periods: []
+  - name: Enterprise
+    access: other
+    model: unstated
+    model_how: derived
+    units:
+    - other
+    periods: []

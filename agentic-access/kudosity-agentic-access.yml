@@ -1,22 +1,28 @@
-generated: '2026-07-27'
+generated: '2026-09-23'
 method: generated
-source: openapi/_original/kudosity-transmit-message-openapi-original.yml, openapi/_original/kudosity-transmit-sms-openapi-original.yml
+source: openapi/kudosity-account-api-openapi.yml, openapi/kudosity-contacts-lists-api-openapi.yml,
+  openapi/kudosity-email-sms-api-openapi.yml, openapi/kudosity-keywords-api-openapi.yml, openapi/kudosity-mms-api-openapi.yml,
+  openapi/kudosity-numbers-api-openapi.yml, openapi/kudosity-rcs-api-openapi.yml, openapi/kudosity-reporting-api-openapi.yml,
+  openapi/kudosity-senders-api-openapi.yml, openapi/kudosity-sms-api-openapi.yml, openapi/kudosity-webhook-api-openapi.yml,
+  openapi/kudosity-whats-app-api-openapi.yml
 description: Recommended x-agentic-access execution contracts, classified heuristically from
   the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
   audience per deployment. See research/curity/agentic-governance/.
 summary:
   operations: 57
   by_action_class:
-    connected: 15
-    acting: 42
+    connected: 26
+    acting: 31
   by_consequence:
-    read: 15
+    read: 26
+    write: 21
+    safety-critical: 1
     physical: 9
-    write: 33
-  human_in_the_loop_required: 0
+  human_in_the_loop_required: 1
 operations:
-- path: /v2/whatsapp/messages
+- path: /get-balance.json
   method: get
+  operationId: getGetBalanceJson
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -24,60 +30,9 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /v2/whatsapp/messages
+- path: /add-contacts-bulk.json
   method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: physical
-    subject: required
-    audience: null
-    token:
-      max-ttl: 300
-      exchange: true
-      purpose-required: true
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /v2/whatsapp/messages/{id}
-  method: get
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /v2/rcs/messages
-  method: get
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /v2/rcs/messages
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: physical
-    subject: required
-    audience: null
-    token:
-      max-ttl: 300
-      exchange: true
-      purpose-required: true
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /v2/rcs/capabilities
-  method: post
+  operationId: postAddContactsBulkJson
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -91,52 +46,211 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /v2/rcs/messages/{id}
-  method: get
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /v2/sms/{id}
-  method: get
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /v2/sms
-  method: get
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /v2/sms
+- path: /add-list.json
   method: post
+  operationId: postAddListJson
   x-agentic-access:
     action-class: acting
-    consequence: physical
+    consequence: write
     subject: required
     audience: null
     token:
-      max-ttl: 300
-      exchange: true
-      purpose-required: true
+      max-ttl: 900
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
       - high-value
     audit: required
+- path: /add-field-to-list.json
+  method: post
+  operationId: postAddFieldToListJson
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /remove-list.json
+  method: post
+  operationId: postRemoveListJson
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /add-to-list.json
+  method: post
+  operationId: postAddToListJson
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /edit-list-member.json
+  method: post
+  operationId: postEditListMemberJson
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /delete-from-list.json
+  method: post
+  operationId: postDeleteFromListJson
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /optout-list-member.json
+  method: post
+  operationId: postOptoutListMemberJson
+  x-agentic-access:
+    action-class: acting
+    consequence: safety-critical
+    subject: required
+    audience: null
+    token:
+      max-ttl: 120
+      exchange: true
+      purpose-required: true
+      proof-of-possession: true
+    escalation:
+      human-in-the-loop: required
+    audit: required
+- path: /add-contacts-bulk-progress.json
+  method: post
+  operationId: postAddContactsBulkProgressJson
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /add-email.json
+  method: post
+  operationId: postAddEmailJson
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /delete-email.json
+  method: post
+  operationId: postDeleteEmailJson
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /add-keyword.json
+  method: post
+  operationId: postAddKeywordJson
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /edit-keyword.json
+  method: post
+  operationId: postEditKeywordJson
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /get-keywords.json
+  method: post
+  operationId: postGetKeywordsJson
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
 - path: /v2/mms
   method: post
+  operationId: postV2Mms
   x-agentic-access:
     action-class: acting
     consequence: physical
@@ -154,6 +268,7 @@ operations:
     audit: required
 - path: /v2/mms/{id}
   method: get
+  operationId: getV2MmsById
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -161,8 +276,9 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /v2/webhook
+- path: /lease-number.json
   method: post
+  operationId: postLeaseNumberJson
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -176,8 +292,9 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /v2/webhook
+- path: /get-numbers.json
   method: get
+  operationId: getGetNumbersJson
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -185,8 +302,9 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /v2/webhook/{id}
-  method: get
+- path: /get-number.json
+  method: post
+  operationId: postGetNumberJson
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -194,8 +312,9 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /v2/webhook/{id}
-  method: put
+- path: /edit-number-options.json
+  method: post
+  operationId: postEditNumberOptionsJson
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -209,8 +328,37 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /v2/webhook/{id}
-  method: delete
+- path: /v2/rcs/messages
+  method: get
+  operationId: getV2RcsMessages
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v2/rcs/messages
+  method: post
+  operationId: postV2RcsMessages
+  x-agentic-access:
+    action-class: acting
+    consequence: physical
+    subject: required
+    audience: null
+    token:
+      max-ttl: 300
+      exchange: true
+      purpose-required: true
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v2/rcs/capabilities
+  method: post
+  operationId: postV2RcsCapabilities
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -224,8 +372,129 @@ operations:
       - abnormal
       - high-value
     audit: required
+- path: /v2/rcs/messages/{id}
+  method: get
+  operationId: getV2RcsMessagesById
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /get-sms.json
+  method: post
+  operationId: postGetSmsJson
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /get-sms-delivery-status.json
+  method: post
+  operationId: postGetSmsDeliveryStatusJson
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /get-sms-sent-count.json
+  method: post
+  operationId: postGetSmsSentCountJson
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /get-user-sms-sent.json
+  method: post
+  operationId: postGetUserSmsSentJson
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /get-contact-sms-stats.json
+  method: get
+  operationId: getGetContactSmsStatsJson
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /get-sms-stats.json
+  method: post
+  operationId: postGetSmsStatsJson
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /get-sms-sent.json
+  method: post
+  operationId: postGetSmsSentJson
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /get-message-report.json
+  method: post
+  operationId: postGetMessageReportJson
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /get-list.json
+  method: post
+  operationId: postGetListJson
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /get-lists.json
+  method: get
+  operationId: getGetListsJson
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /get-contact.json
+  method: post
+  operationId: postGetContactJson
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
 - path: /v2/senders/registrations
   method: get
+  operationId: getV2SendersRegistrations
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -235,6 +504,7 @@ operations:
     audit: none
 - path: /v2/senders/registrations
   method: post
+  operationId: postV2SendersRegistrations
   x-agentic-access:
     action-class: acting
     consequence: physical
@@ -252,6 +522,7 @@ operations:
     audit: required
 - path: /v2/senders/phone-numbers/{phone_number}
   method: delete
+  operationId: deleteV2SendersPhoneNumbersByPhoneNumber
   x-agentic-access:
     action-class: acting
     consequence: physical
@@ -269,6 +540,7 @@ operations:
     audit: required
 - path: /v2/senders/registrations/{registration_id}/verifications
   method: post
+  operationId: postV2SendersRegistrationsByRegistrationIdVerifications
   x-agentic-access:
     action-class: acting
     consequence: physical
@@ -286,6 +558,45 @@ operations:
     audit: required
 - path: /v2/senders/registrations/{registration_id}/verifications/confirmation
   method: post
+  operationId: postV2SendersRegistrationsByRegistrationIdVerificationsConfirmation
+  x-agentic-access:
+    action-class: acting
+    consequence: physical
+    subject: required
+    audience: null
+    token:
+      max-ttl: 300
+      exchange: true
+      purpose-required: true
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v2/sms/{id}
+  method: get
+  operationId: getV2SmsById
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v2/sms
+  method: get
+  operationId: getV2Sms
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v2/sms
+  method: post
+  operationId: postV2Sms
   x-agentic-access:
     action-class: acting
     consequence: physical
@@ -303,6 +614,7 @@ operations:
     audit: required
 - path: /send-sms.json
   method: post
+  operationId: postSendSmsJson
   x-agentic-access:
     action-class: acting
     consequence: physical
@@ -318,23 +630,9 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /add-contacts-bulk.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
 - path: /cancel-sms.json
   method: post
+  operationId: postCancelSmsJson
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -350,6 +648,7 @@ operations:
     audit: required
 - path: /format-number.json
   method: post
+  operationId: postFormatNumberJson
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -365,6 +664,7 @@ operations:
     audit: required
 - path: /get-sms-responses.json
   method: post
+  operationId: postGetSmsResponsesJson
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -380,6 +680,7 @@ operations:
     audit: required
 - path: /get-user-sms-responses.json
   method: get
+  operationId: getGetUserSmsResponsesJson
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -387,8 +688,9 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /get-sms.json
+- path: /v2/webhook
   method: post
+  operationId: postV2Webhook
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -402,53 +704,9 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /get-sms-delivery-status.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /get-sms-sent-count.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /get-user-sms-sent.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /get-contact-sms-stats.json
+- path: /v2/webhook
   method: get
+  operationId: getV2Webhook
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -456,68 +714,9 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /get-sms-stats.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /get-sms-sent.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /get-message-report.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /get-list.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /get-lists.json
+- path: /v2/webhook/{id}
   method: get
+  operationId: getV2WebhookById
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -525,8 +724,9 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /get-contact.json
-  method: post
+- path: /v2/webhook/{id}
+  method: put
+  operationId: putV2WebhookById
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -540,8 +740,9 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /add-list.json
-  method: post
+- path: /v2/webhook/{id}
+  method: delete
+  operationId: deleteV2WebhookById
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -555,128 +756,9 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /add-field-to-list.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /remove-list.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /add-to-list.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /edit-list-member.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /delete-from-list.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /optout-list-member.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /add-contacts-bulk-progress.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /lease-number.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /get-numbers.json
+- path: /v2/whatsapp/messages
   method: get
+  operationId: getV2WhatsappMessages
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -684,113 +766,27 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /get-number.json
+- path: /v2/whatsapp/messages
   method: post
+  operationId: postV2WhatsappMessages
   x-agentic-access:
     action-class: acting
-    consequence: write
+    consequence: physical
     subject: required
     audience: null
     token:
-      max-ttl: 900
+      max-ttl: 300
+      exchange: true
+      purpose-required: true
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
       - high-value
     audit: required
-- path: /edit-number-options.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /add-email.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /delete-email.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /add-keyword.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /edit-keyword.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /get-keywords.json
-  method: post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /get-balance.json
+- path: /v2/whatsapp/messages/{id}
   method: get
+  operationId: getV2WhatsappMessagesById
   x-agentic-access:
     action-class: connected
     consequence: read
