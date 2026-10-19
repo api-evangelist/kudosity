@@ -1,0 +1,12 @@
+{
+ "url": "https://developers.kudosity.com/openapi/public-openapi.yaml",
+ "requested_url": "https://developers.kudosity.com/openapi/public-openapi.yaml",
+ "status": 200,
+ "content_type": "application/json; charset=utf-8",
+ "bytes": 160228,
+ "sha256": "2baa23e74a5f73c2fc34e342750e274198a7789a9a08cf28eb2d63ec90a6d7e9",
+ "fetched_at": "2026-10-19",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "equivalent",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the provider's current document describes the same operations (Jaccard 1.0), but the bytes differ, so the archive is an earlier or reformatted copy."
+}
