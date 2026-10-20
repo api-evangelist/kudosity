@@ -3,16 +3,13 @@ method: searched
 status: published
 source: https://developers.kudosity.com/docs/mcp
 deployment:
-  mode: both
+  mode: remote
   endpoint: https://developers.kudosity.com/mcp
-  install: npx kudosity-mcp
-  package: https://www.npmjs.com/package/kudosity-mcp
-  auth: api-key
   verified: probed
-  note: 'tools/list on the hosted endpoint answers anonymously (probed 2026-09-03 — full tool list with
-    inputSchema returned, no credentials); execute-request needs account credentials at call time. The
-    stdio twin is the first-party kudosity-mcp npm package (0.5.0, published 2026-07-27, bin kudosity-mcp),
-    from the same github.com/kudosity/mcp source.'
+  probe: live
+  tools: 6
+  checked: '2026-08-12'
+  source: catalog MCP census
 server:
   name: Kudosity
   version: '1.0'
@@ -110,11 +107,28 @@ divergence:
     get-response-schema, list-security-schemes, search-documentation and get-code-snippet are not exposed
     as discrete tools, and route-kudosity-operations is live but undocumented. Documented-vs-live drift
     — worth reporting to the provider.
-deployment:
-  mode: remote
-  endpoint: https://developers.kudosity.com/mcp
-  verified: probed
-  probe: live
-  tools: 6
-  checked: '2026-08-12'
-  source: catalog MCP census
+tool_quality:
+  tool_count: 6
+  tokens_total: 1104
+  tokens_per_tool_median: 145
+  heavy_tools: []
+  heavy_tool_count: 0
+  params_total: 7
+  params_undescribed: 0
+  params_described_pct: 100.0
+  tools_with_undescribed_params: 0
+  tools_annotated: 6
+  annotated_pct: 100.0
+  state_changing_unhinted: []
+  tools_missing_schema: 0
+  short_descriptions: 0
+  duplicate_descriptions: 0
+  duplicate_names: 0
+  nonportable_names: []
+  output_schema_count: 0
+  token_estimate: chars/3.6 of each compact tool definition
+  source: mcp/kudosity-mcp-tools.json
+  measured: '2026-10-20'
+  scored: false
+  note: Facts from the saved tools/list capture (mcp_tool_quality.py); recorded, not scored. Checks learned
+    from Glimind's agent-readiness audit.
