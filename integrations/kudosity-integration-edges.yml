@@ -85,6 +85,24 @@ edges:
     detected: '2026-10-20'
   detected_by: sweep-compliance-assurance.py
   first_seen: '2026-10-20'
+- partner_name: Bubble (own)
+  partner: bubble
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://bubble.io/plugin/kudosity-sms---multi-user-1695182802323x859119314996035600
+  mirror_of: bubble/integrations/bubble-integration-edges.yml
+  apps:
+  - Kudosity SMS - Multi User
+  - Kudosity SMS
+  listing_count: 1
+  detected: '2026-10-23'
+  detected_by: mirror-platform-listings.py
+  category: Api
 generated: '2026-10-14'
 method: searched
 checked:
@@ -92,5 +110,6 @@ checked:
 - https://eucoc.cloud/en/public-register/list-of-adherent-services
 - https://registry.modelcontextprotocol.io/v0/servers
 - https://zapier.com/api/v4/apps/
+- bubble/integrations/bubble-integration-edges.yml
 source:
 - https://zapier.com/api/v4/apps/
